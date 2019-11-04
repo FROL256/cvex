@@ -7,6 +7,8 @@
 
 #ifdef __x86_64
   #include <xmmintrin.h> // SSE
+  #include <emmintrin.h> // SSE2
+  #include <smmintrin.h> // SSE4.1 
 #endif
 
 namespace cvex
@@ -122,7 +124,25 @@ namespace cvex
   static inline void prefetch(const float* ptr) {  __builtin_prefetch(ptr); }
   static inline void prefetch(const int* ptr)   {  __builtin_prefetch(ptr); }
 
-  // dot3, dot3v (please see dot3v/dot3s in curent vfloat4_x64.h)
+  #ifdef __x86_64
+  static inline float   dot3f(const vfloat4 a, const vfloat4 b) { return _mm_cvtss_f32(_mm_dp_ps(a, b, 0x7f)); }
+  static inline vfloat4 dot3v(const vfloat4 a, const vfloat4 b) { return _mm_dp_ps(a, b, 0x7f); }
+  #else
+  static inline float   dot3f(const vfloat4 a, const vfloat4 b) 
+  {
+    const vfloat4 mres = a*b; 
+    return mres[0] + mres[1] + mres[2]; 
+  }
+
+  static inline vfloat4 dot3v(const vfloat4 a, const vfloat4 b) 
+  {
+    const vfloat4 mres = a*b;
+    const float res    = mres[0] + mres[1] + mres[2];
+    return vfloat4{res,res,res,res}; 
+  }
+
+  #endif
+
   // cross3
   // length3
   // cmpgt3
@@ -132,6 +152,8 @@ namespace cvex
   // shuffle2_xy_xy, shuffle2_xy_zw, shuffle2_zw_zw ?
   
   // add_s, subb_s, ... ?
+
+  //color_compress_bgra, color_compress_rgba 
 
 };
 
