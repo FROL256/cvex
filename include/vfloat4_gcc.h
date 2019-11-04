@@ -49,7 +49,7 @@ namespace cvex
   static inline vuint4  make_vuint (_uint32_t a, _uint32_t b, _uint32_t c, _uint32_t d) { return vuint4 {a,b,c,d}; } // 
   static inline vfloat4 make_vfloat(float a, float b, float c, float d)                 { return vfloat4{a,b,c,d}; } //
 
-  // convert
+  // convert and cast
   //
   static inline vint4   to_int32  (vfloat4 a)  { return vint4  { (int)a[0], (int)a[1], (int)a[2], (int)a[3]}; }
   static inline vint4   to_int32  (vuint4  a)  { return (vint4)a; }
@@ -60,6 +60,11 @@ namespace cvex
   static inline vfloat4 to_float32(vint4 a)    { return vfloat4{(float)a[0], (float)a[1], (float)a[2], (float)a[3]}; }
   static inline vfloat4 to_float32(vuint4 a)   { return vfloat4{(float)a[0], (float)a[1], (float)a[2], (float)a[3]}; }
   
+  static inline vfloat4 as_vfloat(const vint4 a_val)  { return reinterpret_cast<vfloat4>(a_val); }
+  static inline vfloat4 as_vfloat(const vuint4 a_val) { return reinterpret_cast<vfloat4>(a_val); }
+  static inline vint4   as_vint (const vfloat4 a_val) { return reinterpret_cast<vint4>(a_val);   }
+  static inline vuint4  as_vuint(const vfloat4 a_val) { return reinterpret_cast<vuint4>(a_val);  }
+
   // math; all basic operators should be implemented by gcc, so we don't define them here
   //
   #ifdef __x86_64
@@ -67,6 +72,10 @@ namespace cvex
   #else
   static inline vfloat4 rcp_e(vfloat4 a)       { return 1.0f/a; }
   #endif
+
+  static inline vfloat4 vmin  (const vfloat4 a, const vfloat4 b) { return a < b ? a : b; }
+  static inline vfloat4 vmax  (const vfloat4 a, const vfloat4 b) { return a > b ? a : b; }
+  static inline vfloat4 vclamp(const vfloat4 x, const vfloat4 minVal, const vfloat4 maxVal) { return vmax(vmin(x, maxVal), minVal); }
 
   // shuffle operations ...
   //
@@ -101,10 +110,8 @@ namespace cvex
   }
 
   static inline bool test_bits_any(const vfloat4 a) { return test_bits_any(reinterpret_cast<vuint4>(a)); }
-
-  static inline vfloat4 vmin  (const vfloat4 a, const vfloat4 b) { return a < b ? a : b; }
-  static inline vfloat4 vmax  (const vfloat4 a, const vfloat4 b) { return a > b ? a : b; }
-  static inline vfloat4 vclamp(const vfloat4 x, const vfloat4 minVal, const vfloat4 maxVal) { return vmax(vmin(x, maxVal), minVal); }
+  
+  // test_bits_all (!!!)
 
   #ifdef __x86_64
   static void set_ftz() { _MM_SET_ROUNDING_MODE(_MM_ROUND_TOWARD_ZERO); }
@@ -114,6 +121,18 @@ namespace cvex
 
   static inline void prefetch(const float* ptr) {  __builtin_prefetch(ptr); }
   static inline void prefetch(const int* ptr)   {  __builtin_prefetch(ptr); }
+
+  // dot3, dot3v (please see dot3v/dot3s in curent vfloat4_x64.h)
+  // cross3
+  // length3
+  // cmpgt3
+
+  // extract_<0,1,2,3>
+
+  // shuffle2_xy_xy, shuffle2_xy_zw, shuffle2_zw_zw ?
+  
+  // add_s, subb_s, ... ?
+
 };
 
 #endif //TEST_GL_TOP_VFLOAT4_GCC_H

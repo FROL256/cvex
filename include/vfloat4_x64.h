@@ -75,6 +75,7 @@ namespace cvex
   static inline vfloat4 to_float32(const vint4 a_val) { return _mm_cvtepi32_ps(a_val);}
 
   static inline vfloat4 floor(const vfloat4 a_val) { return _mm_floor_ps(a_val); }
+  static inline vfloat4 ceil (const vfloat4 a_val) { return _mm_ceil_ps(a_val); }
 
   static inline vfloat4 min(const vfloat4 a, const vfloat4 b) {return _mm_min_ps(a, b);}
   static inline vfloat4 max(const vfloat4 a, const vfloat4 b) {return _mm_max_ps(a, b);}
@@ -125,7 +126,6 @@ namespace cvex
   static inline bool test_any(const vfloat4 a) { return (_mm_movemask_ps(a) & 15) != 0; }
   static inline bool test_all(const vint4 a)   { return (_mm_movemask_ps(_mm_castsi128_ps(a)) & 15) == 15; }
   static inline bool test_any(const vint4 a)   { return (_mm_movemask_ps(_mm_castsi128_ps(a)) & 15) != 0; }
-
 
   // it is strongly not recommended to use these functions because their general implementation could be slow
   //
@@ -194,6 +194,5 @@ static inline cvex::vint4 operator>=(const cvex::vfloat4 a, const cvex::vfloat4 
 static inline cvex::vint4 operator<=(const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_vint(_mm_cmple_ps(a, b)); }
 
 #endif
-
 
 #endif //TEST_GL_TOP_VFLOAT4_H
