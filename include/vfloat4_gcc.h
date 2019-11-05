@@ -140,8 +140,16 @@ namespace cvex
     const float res    = mres[0] + mres[1] + mres[2];
     return vfloat4{res,res,res,res}; 
   }
-
   #endif
+  
+  //inline __m128 CrossProduct(__m128 a, __m128 b)
+  //{
+  //  return _mm_sub_ps(
+  //    _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(3, 0, 2, 1)), _mm_shuffle_ps(b, b, _MM_SHUFFLE(3, 1, 0, 2))), 
+  //    _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(3, 1, 0, 2)), _mm_shuffle_ps(b, b, _MM_SHUFFLE(3, 0, 2, 1)))
+  //  );
+  //}
+
 
   // cross3
   // length3

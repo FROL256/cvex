@@ -1,5 +1,6 @@
 #include <iostream>
 #include "include/vfloat4_gcc.h"
+#include "tests/tests.h"
 
 int main(int argc, const char** argv)
 {
@@ -27,6 +28,11 @@ int main(int argc, const char** argv)
   for(int i=0;i<4;i++)
     std::cout << result[i] << ", ";
   std::cout << std::endl;
+
+
+  std::cout << vf4_test001_basic_arithmetic() << std::endl;
+  std::cout << vi4_test002_basic_arithmetic() << std::endl;
+  std::cout << vu4_test003_basic_arithmetic() << std::endl;
 
   return 0;
 }
