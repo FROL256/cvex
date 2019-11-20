@@ -115,3 +115,43 @@ bool vu4_test003_basic_arithmetic()
   
   return passed;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bool vf4_test004_basic_arithmetic()
+{
+  const vfloat4 Cx1 = {1.0f, 2.0f, 3.0f, 4.0f};
+  const float   Cx2 = 5.0f;
+
+  const auto Cx3 = Cx2*(Cx2 - Cx1);
+  const auto Cx4 = (Cx1 + Cx2)*Cx2;
+  const auto Cx5 = Cx2/(Cx2 - Cx1);
+
+  float result1[4];
+  float result2[4];
+  float result3[4];
+
+  cvex::store_u(result1, Cx3);
+  cvex::store_u(result2, Cx4);
+  cvex::store_u(result3, Cx5);
+  
+  // check 
+  //
+  bool passed = true;
+
+  for(int i=0;i<4;i++)
+  {
+    const float expr1 = Cx2*(Cx2 - Cx1[i]);
+    const float expr2 = (Cx1[i] + Cx2)*Cx2;
+    const float expr3 = Cx2/(Cx2 - Cx1[i]);
+
+    if(fabs(result1[i] - expr1) > 1e-6f || fabs(result2[i] - expr2) > 1e-6f || fabs(result3[i] - expr3) > 1e-6f)  
+    {
+      passed = false;
+      break;
+    } 
+  }
+  
+  return passed;
+}
+
