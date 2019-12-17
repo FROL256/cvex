@@ -9,7 +9,7 @@
 
 using namespace cvex;
 
-bool vf4_test001_basic_arithmetic()
+bool vf4_test001_basic()
 {
   const vfloat4 Cx1 = {1.0f, 2.0f, 3.0f, 4.0f};
   const vfloat4 Cx2 = {5.0f, 5.0f, 6.0f, 7.0f};
@@ -46,7 +46,7 @@ bool vf4_test001_basic_arithmetic()
   return passed;
 }
 
-bool vi4_test002_basic_arithmetic()
+bool vi4_test002_basic()
 {
   const vint4 Cx1 = {10, 20, -3, 4};
   const vint4 Cx2 = {50, -5, 6,  7};
@@ -83,7 +83,7 @@ bool vi4_test002_basic_arithmetic()
   return passed;
 }
 
-bool vu4_test003_basic_arithmetic()
+bool vu4_test003_basic()
 {
   const vuint4 Cx1 = {10, 20, 3, 4};
   const vuint4 Cx2 = {50, +5, 6, 7};
@@ -122,7 +122,7 @@ bool vu4_test003_basic_arithmetic()
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool vf4_test004_basic_arithmetic()
+bool vf4_test004_basic()
 {
   const vfloat4 Cx1 = {1.0f, 2.0f, 3.0f, 4.0f};
   const float   Cx2 = 5.0f;
@@ -164,7 +164,7 @@ bool vf4_test004_basic_arithmetic()
   return passed;
 }
 
-bool vi4_test005_basic_arithmetic()
+bool vi4_test005_basic()
 {
   const vint4 Cx1 = {1, -2, 3, -4};
   const int   Cx2 = 5;
@@ -206,7 +206,7 @@ bool vi4_test005_basic_arithmetic()
   return passed;
 }
 
-bool vu4_test006_basic_arithmetic()
+bool vu4_test006_basic()
 {
   const vuint4       Cx1 = {1, 2, 3, 4};
   const unsigned int Cx2 = 5;
@@ -245,5 +245,134 @@ bool vu4_test006_basic_arithmetic()
     } 
   }
   
+  return passed;
+}
+
+bool vi4_test007_and_or()
+{
+  const vint4 Cx1 = {-1, -2, 3, 4};
+  const vint4 Cx2 = {+1, +2, 63355, 63355};
+  const vint4 Cx3 = {-1, -1, int(0xF0F00000), 0x00000000};
+
+  const auto Cr1 = (Cx1 & (~Cx3)) | Cx2;
+  const auto Cr2 = (Cx2 & Cx3)    | Cx1;
+
+  int result1[4];
+  int result2[4];
+
+  cvex::store_u(result1, Cr1);
+  cvex::store_u(result2, Cr2);
+
+  bool passed = true;
+
+  for(int i=0;i<4;i++)
+  {
+    const int expr1 = (Cx1[i] & (~Cx3[i])) | Cx2[i];
+    const int expr2 = (Cx2[i] & Cx3[i])    | Cx1[i];
+
+    if(result1[i] != expr1 || result2[i] != expr2)    
+    {
+      passed = false;
+      break;
+    } 
+  }
+
+  return passed;
+}
+
+bool vu4_test008_and_or()
+{
+  const vuint4 Cx1 = {0xFFFFFFFF, (unsigned int)(-2), 3, 4};
+  const vuint4 Cx2 = {+1, +2, 63355, 63355};
+  const vuint4 Cx3 = {0xFFFFFFFF, 0xFFFFFFFF, 0xF0F00000, 0x00000000};
+
+  const auto Cr1 = (Cx1 & (~Cx3)) | Cx2;
+  const auto Cr2 = (Cx2 & Cx3)    | Cx1;
+
+  unsigned int result1[4];
+  unsigned int result2[4];
+
+  cvex::store_u(result1, Cr1);
+  cvex::store_u(result2, Cr2);
+
+  bool passed = true;
+
+  for(int i=0;i<4;i++)
+  {
+    const unsigned int expr1 = (Cx1[i] & (~Cx3[i])) | Cx2[i];
+    const unsigned int expr2 = (Cx2[i] & Cx3[i])    | Cx1[i];
+
+    if(result1[i] != expr1 || result2[i] != expr2)    
+    {
+      passed = false;
+      break;
+    } 
+  }
+
+  return passed;
+}
+
+bool vi4_test009_shift()
+{
+  const vint4 Cx1 = {-1, -2, 3, 4};
+  const vint4 Cx2 = {+1, +2, 63355, 63355};
+  const vint4 Cx3 = {-1, -1, int(0xF0F00000), 0x00000000};
+
+  const auto Cr1 = (Cx1 << 8) | (Cx2 >> 17); 
+  const auto Cr2 = (Cx3 << 9) | (Cx3 >> 4); 
+
+  int result1[4];
+  int result2[4];
+
+  cvex::store_u(result1, Cr1);
+  cvex::store_u(result2, Cr2);
+
+  bool passed = true;
+
+  for(int i=0;i<4;i++)
+  {
+    const int expr1 = (Cx1[i] << 8) | (Cx2[i] >> 17);
+    const int expr2 = (Cx3[i] << 9) | (Cx3[i] >> 4); 
+
+    if(result1[i] != expr1 || result2[i] != expr2)    
+    {
+      passed = false;
+      break;
+    } 
+  }
+
+  return passed;
+}
+
+
+bool vu4_test010_shift()
+{
+  const vuint4 Cx1 = {0xFFFFFFFF, (unsigned int)(-2), 3, 4};
+  const vuint4 Cx2 = {+1, +2, 63355, 63355};
+  const vuint4 Cx3 = {0xFFFFFFFF, 0xFFFFFFFF, 0xF0F00000, 0x00000000};
+
+  const auto Cr1 = (Cx1 << 8) | (Cx2 >> 17); 
+  const auto Cr2 = (Cx3 << 9) | (Cx3 >> 4); 
+
+  unsigned int result1[4];
+  unsigned int result2[4];
+
+  cvex::store_u(result1, Cr1);
+  cvex::store_u(result2, Cr2);
+
+  bool passed = true;
+
+  for(int i=0;i<4;i++)
+  {
+    const unsigned int expr1 = (Cx1[i] << 8) | (Cx2[i] >> 17);
+    const unsigned int expr2 = (Cx3[i] << 9) | (Cx3[i] >> 4); 
+
+    if(result1[i] != expr1 || result2[i] != expr2)    
+    {
+      passed = false;
+      break;
+    } 
+  }
+
   return passed;
 }

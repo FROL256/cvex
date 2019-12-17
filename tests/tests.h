@@ -1,12 +1,25 @@
+//// tests entry points
+//
+void run_all_tests();
 
 //// vector-vector (+,-,*,/)
 //
-bool vf4_test001_basic_arithmetic();
-bool vi4_test002_basic_arithmetic();
-bool vu4_test003_basic_arithmetic();
+bool vf4_test001_basic();
+bool vi4_test002_basic();
+bool vu4_test003_basic();
 
 //// vector-scalar (+,-,*,/)
 //
-bool vf4_test004_basic_arithmetic();
-bool vi4_test005_basic_arithmetic();
-bool vu4_test006_basic_arithmetic();
+bool vf4_test004_basic();
+bool vi4_test005_basic();
+bool vu4_test006_basic();
+
+//// vector-vector (&,|,~)
+//
+bool vi4_test007_and_or();
+bool vu4_test008_and_or();
+
+//// vector-scalar (>>, <<)
+//
+bool vi4_test009_shift();
+bool vu4_test010_shift();
