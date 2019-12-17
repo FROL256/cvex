@@ -40,7 +40,9 @@ int main(int argc, const char** argv)
   std::cout << vi4_test002_basic_arithmetic() << std::endl;
   std::cout << vu4_test003_basic_arithmetic() << std::endl;
 
-  std::cout << vf4_test004_basic_arithmetic() << std::endl;
+  std::cout << vf4_test004_basic_arithmetic() << std::endl; //
+  std::cout << vi4_test005_basic_arithmetic() << std::endl;
+  std::cout << vu4_test006_basic_arithmetic() << std::endl;
 
   int test;
   std::cin >> test;
