@@ -23,3 +23,9 @@ bool vu4_test008_and_or();
 //
 bool vi4_test009_shift();
 bool vu4_test010_shift();
+
+//// splat
+//
+bool vf4_test011_splat();
+bool vi4_test012_splat();
+bool vu4_test013_splat();

@@ -47,10 +47,6 @@ namespace cvex
   static inline vuint4  splat(_uint32_t x) { return vuint4 {x,x,x,x}; }
   static inline vfloat4 splat(float x)     { return vfloat4{x,x,x,x}; }
 
-  static inline vint4   make_vint  (int a, int b, int c, int d)                         { return vint4  {a,b,c,d}; } // 
-  static inline vuint4  make_vuint (_uint32_t a, _uint32_t b, _uint32_t c, _uint32_t d) { return vuint4 {a,b,c,d}; } // 
-  static inline vfloat4 make_vfloat(float a, float b, float c, float d)                 { return vfloat4{a,b,c,d}; } //
-
   // convert and cast
   //
   static inline vint4   to_int32  (vfloat4 a)  { return vint4  { (int)a[0], (int)a[1], (int)a[2], (int)a[3]}; }

@@ -376,3 +376,86 @@ bool vu4_test010_shift()
 
   return passed;
 }
+
+
+bool vf4_test011_splat()
+{
+  const vfloat4 Cx1 = cvex::splat(1.0f);
+  const vfloat4 Cx2 = cvex::splat(-5.0f);
+
+  float result1[4];
+  float result2[4];
+
+  cvex::store_u(result1, Cx1);
+  cvex::store_u(result2, Cx2);
+  
+  // check 
+  //
+  bool passed = true;
+
+  for(int i=0;i<4;i++)
+  {
+    if(fabs(result1[i] - 1.0f) > 1e-6f || fabs(result2[i] - (-5.0f)) > 1e-6f)  
+    {
+      passed = false;
+      break;
+    } 
+  }
+  
+  return passed;
+}
+
+
+bool vi4_test012_splat()
+{
+  const vint4 Cx1 = cvex::splat(1);
+  const vint4 Cx2 = cvex::splat(-5);
+
+  int result1[4];
+  int result2[4];
+
+  cvex::store_u(result1, Cx1);
+  cvex::store_u(result2, Cx2);
+  
+  // check 
+  //
+  bool passed = true;
+
+  for(int i=0;i<4;i++)
+  {
+    if(result1[i] != 1 || result2[i] != -5)  
+    {
+      passed = false;
+      break;
+    } 
+  }
+  
+  return passed;
+}
+
+bool vu4_test013_splat()
+{
+  const vuint4 Cx1 = cvex::splat((unsigned int)(1));
+  const vuint4 Cx2 = cvex::splat(0xFFFF0000);
+
+  unsigned int result1[4];
+  unsigned int result2[4];
+
+  cvex::store_u(result1, Cx1);
+  cvex::store_u(result2, Cx2);
+  
+  // check 
+  //
+  bool passed = true;
+
+  for(int i=0;i<4;i++)
+  {
+    if(result1[i] != (unsigned int)(1) || result2[i] != 0xFFFF0000)  
+    {
+      passed = false;
+      break;
+    } 
+  }
+  
+  return passed;
+}
