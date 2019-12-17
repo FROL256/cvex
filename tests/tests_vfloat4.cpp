@@ -1,6 +1,10 @@
-#include <iostream>
-#include "../include/vfloat4_gcc.h"
+#ifdef WIN32
+  #include "include/vfloat4_x64.h"
+#else
+  #include "include/vfloat4_gcc.h"
+#endif 
 
+#include <iostream>
 #include <cmath>
 
 using namespace cvex;

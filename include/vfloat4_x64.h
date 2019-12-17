@@ -11,7 +11,8 @@
 
 #include <xmmintrin.h> // SSE
 #include <emmintrin.h> // SSE2
-#include <smmintrin.h> // SSE4.1 //#TODO: optionally
+#include <smmintrin.h> // SSE4.1 // #TODO: optionally
+#include <immintrin.h> // AVX    // #TODO: optionally
 
 #if __GNUC__
 #define ALIGN(X) __attribute__((__aligned__(X)))
@@ -21,22 +22,71 @@
 #error "Unsupported compiler"
 #endif
 
+#include <initializer_list>
+
 namespace cvex
 {
-  typedef __m128  vfloat4;
-  typedef __m128i vint4;
+  typedef unsigned           int _uint32_t;
+  typedef unsigned long long int _uint64_t;
+  typedef          long long int _sint64_t;
+
+  struct vfloat4
+  {
+    vfloat4() {}
+    vfloat4(const __m128& rhs) { data = rhs; }
+    vfloat4(const std::initializer_list<float> v) { _mm_loadu_ps(v.begin()); }
+
+    inline operator __m128() const { return data; }
+
+    inline float& operator[](int i)       { return data.m128_f32[i]; } // NOT RECOMMENDED TO USE!
+    inline float  operator[](int i) const { return data.m128_f32[i]; } // NOT RECOMMENDED TO USE!
+
+    __m128 data;
+  };
+
+  struct vint4
+  {
+    vint4() {}
+    vint4(const __m128i& rhs) { data = rhs; }
+    vint4(const std::initializer_list<int> v) { _mm_castps_si128(_mm_loadu_ps((const float*)v.begin())); }
+    inline operator __m128i() const { return data; }
+
+    inline int& operator[](int i)       { return data.m128i_i32[i]; } // NOT RECOMMENDED TO USE!
+    inline int  operator[](int i) const { return data.m128i_i32[i]; } // NOT RECOMMENDED TO USE! #TODO: integer version can be optimased
+
+    __m128i data;
+  };
+
+  struct vuint4
+  {
+    vuint4() {}
+    vuint4(const __m128i& rhs) { data = rhs; }
+    vuint4(const std::initializer_list<_uint32_t> v) { _mm_castps_si128(_mm_loadu_ps((const float*)v.begin())); }
+    inline operator __m128i() const { return data; }
+
+    inline _uint32_t& operator[](int i)       { return data.m128i_u32[i]; } // NOT RECOMMENDED TO USE!
+    inline _uint32_t  operator[](int i) const { return data.m128i_u32[i]; } // NOT RECOMMENDED TO USE! #TODO: integer version can be optimased
+
+    __m128i data;
+  };
 
   static inline void set_ftz() { _MM_SET_ROUNDING_MODE(_MM_ROUND_TOWARD_ZERO);}
 
-  static inline void store(float* data, vfloat4 a_val)   { _mm_store_ps(data, a_val);  }
-  static inline void store(int*   data, vint4 a_val)     { _mm_store_ps((float*)data, _mm_castsi128_ps(a_val));  }
+  static inline void store(float* data, vfloat4 a_val)    { _mm_store_ps(data, a_val);  }
+  static inline void store(int*   data, vint4 a_val)      { _mm_store_ps((float*)data, _mm_castsi128_ps(a_val)); }
+  static inline void store(_uint32_t* data, vuint4 a_val) { _mm_store_ps((float*)data, _mm_castsi128_ps(a_val)); }
 
-  static inline void store_u(float* data, vfloat4 a_val) { _mm_storeu_ps(data, a_val); }
-  static inline void store_u(int*   data,  vint4 a_val)  { _mm_storeu_ps((float*)data, _mm_castsi128_ps(a_val)); }
-  static inline void store_s(float* data, vfloat4 a_val) { _mm_store_ss(data, a_val);  } // store single ...
+  static inline void store_u(float* data, vfloat4 a_val)    { _mm_storeu_ps(data, a_val); }
+  static inline void store_u(int*   data,  vint4 a_val)     { _mm_storeu_ps((float*)data, _mm_castsi128_ps(a_val)); }
+  static inline void store_u(_uint32_t* data, vuint4 a_val) { _mm_storeu_ps((float*)data, _mm_castsi128_ps(a_val)); }
 
-  static inline auto load  (const float *data) -> vfloat4 { return _mm_load_ps(data);  }
-  static inline auto load  (const int *data)   -> vint4   { return _mm_castps_si128(_mm_load_ps((float*)data));  }
+  //static inline void store_s(float* data, vfloat4 a_val)    { _mm_store_ss(data, a_val);  }                          // store single ...
+  //static inline void store_s(int* data, vint4 a_val)        { _mm_store_ss((float*)data, _mm_castsi128_ps(a_val)); } // store single ...
+  //static inline void store_s(_uint32_t* data, vuint4 a_val) { _mm_store_ss((float*)data, _mm_castsi128_ps(a_val)); } // store single ...
+
+  static inline vfloat4 load(const float *data)     { return _mm_load_ps(data);  }
+  static inline vint4   load(const int *data)       { return _mm_castps_si128(_mm_load_ps((float*)data)); }
+  static inline vuint4  load(const _uint32_t *data) { return _mm_castps_si128(_mm_load_ps((float*)data)); }
 
   static inline auto load_u(const float *data) -> vfloat4 { return _mm_loadu_ps(data); }
   static inline auto load_u(const int *data)   -> vint4   { return _mm_castps_si128(_mm_loadu_ps((float*)data)); }
@@ -52,7 +102,7 @@ namespace cvex
   static inline vfloat4 shuffle_zxyw(vfloat4 a_src) { return _mm_shuffle_ps(a_src, a_src, _MM_SHUFFLE(3, 1, 0, 2)); }
   static inline vfloat4 shuffle_zwzw(vfloat4 a_src) { return _mm_shuffle_ps(a_src, a_src, _MM_SHUFFLE(3, 2, 3, 2)); }
 
-  static inline void stream(void *data, vint4 a_val) { _mm_stream_si128((vint4 *) data, a_val); }
+  //static inline void stream(void *data, vint4 a_val) { _mm_stream_si128((vint4 *) data, a_val); }
 
   static inline auto splat(const int i)          -> vint4   { return _mm_set_epi32(i, i, i, i); }
   static inline auto splat(const unsigned int i) -> vint4   { return _mm_set_epi32(i, i, i, i); }
@@ -68,8 +118,9 @@ namespace cvex
 
   static inline vint4 make_vint(const int a, const int b, const int c, const int d) { return _mm_set_epi32(d, c, b, a); }
 
-  static inline vfloat4 as_vfloat(const vint4 a_val) { return _mm_castsi128_ps(a_val); }
-  static inline vint4   as_vint(const vfloat4 a_val) { return _mm_castps_si128(a_val); }
+  static inline vfloat4 as_vfloat(const vint4 a_val)  { return _mm_castsi128_ps(a_val); }
+  static inline vint4   as_vint(const vfloat4 a_val)  { return _mm_castps_si128(a_val); }
+  static inline vuint4  as_vuint(const vfloat4 a_val) { return _mm_castps_si128(a_val); }
 
   static inline vint4   to_int32(const vfloat4 a_val) { return _mm_cvtps_epi32(a_val);}
   static inline vfloat4 to_float32(const vint4 a_val) { return _mm_cvtepi32_ps(a_val);}
@@ -170,17 +221,44 @@ static inline cvex::vfloat4 operator-(const float a, const cvex::vfloat4 b) { re
 static inline cvex::vfloat4 operator*(const float a, const cvex::vfloat4 b) { return _mm_mul_ps(_mm_broadcast_ss(&a), b); }
 static inline cvex::vfloat4 operator/(const float a, const cvex::vfloat4 b) { return _mm_div_ps(_mm_broadcast_ss(&a), b); }
 
-static inline cvex::vint4 operator+(const cvex::vint4 a, const cvex::vint4 b) { return _mm_add_epi32(a, b); }
-static inline cvex::vint4 operator-(const cvex::vint4 a, const cvex::vint4 b) { return _mm_sub_epi32(a, b); }
+static inline cvex::vint4 operator+(const cvex::vint4 a, const cvex::vint4 b) { return _mm_add_epi32(a, b);   }
+static inline cvex::vint4 operator-(const cvex::vint4 a, const cvex::vint4 b) { return _mm_sub_epi32(a, b);   }
 static inline cvex::vint4 operator*(const cvex::vint4 a, const cvex::vint4 b) { return _mm_mullo_epi32(a, b); }
+static inline cvex::vint4 operator/(const cvex::vint4 a, const cvex::vint4 b) 
+{ 
+  cvex::vint4 res;
+  res.data.m128i_i32[0] = a.data.m128i_i32[0] / b.data.m128i_i32[0];
+  res.data.m128i_i32[1] = a.data.m128i_i32[1] / b.data.m128i_i32[1];
+  res.data.m128i_i32[2] = a.data.m128i_i32[2] / b.data.m128i_i32[2];
+  res.data.m128i_i32[3] = a.data.m128i_i32[3] / b.data.m128i_i32[3];
+  return res;
+} 
 
 static inline cvex::vint4 operator+(const cvex::vint4 a, const int b) { return _mm_add_epi32(a, cvex::splat(b)); }
 static inline cvex::vint4 operator-(const cvex::vint4 a, const int b) { return _mm_sub_epi32(a, cvex::splat(b)); }
 static inline cvex::vint4 operator*(const cvex::vint4 a, const int b) { return _mm_mullo_epi32(a, cvex::splat(b)); }
+static inline cvex::vint4 operator/(const cvex::vint4 a, const int b)
+{
+  cvex::vint4 res;
+  res.data.m128i_i32[0] = a.data.m128i_i32[0] / b;
+  res.data.m128i_i32[1] = a.data.m128i_i32[1] / b;
+  res.data.m128i_i32[2] = a.data.m128i_i32[2] / b;
+  res.data.m128i_i32[3] = a.data.m128i_i32[3] / b;
+  return res;
+}
 
 static inline cvex::vint4 operator+(const int a, const cvex::vint4 b) { return _mm_add_epi32(cvex::splat(a), b); }
 static inline cvex::vint4 operator-(const int a, const cvex::vint4 b) { return _mm_sub_epi32(cvex::splat(a), b); }
 static inline cvex::vint4 operator*(const int a, const cvex::vint4 b) { return _mm_mullo_epi32(cvex::splat(a), b); }
+static inline cvex::vint4 operator/(const int a, const cvex::vint4 b)
+{
+  cvex::vint4 res;
+  res.data.m128i_i32[0] = a / b.data.m128i_i32[0];
+  res.data.m128i_i32[1] = a / b.data.m128i_i32[1];
+  res.data.m128i_i32[2] = a / b.data.m128i_i32[2];
+  res.data.m128i_i32[3] = a / b.data.m128i_i32[3];
+  return res;
+}
 
 static inline cvex::vint4 operator<<(const cvex::vint4 a, const int val) { return _mm_slli_epi32(a, val); }
 static inline cvex::vint4 operator>>(const cvex::vint4 a, const int val) { return _mm_srli_epi32(a, val); }
@@ -188,10 +266,56 @@ static inline cvex::vint4 operator>>(const cvex::vint4 a, const int val) { retur
 static inline cvex::vint4 operator|(const cvex::vint4 a, const cvex::vint4 b) { return _mm_or_si128(a,b); }
 static inline cvex::vint4 operator&(const cvex::vint4 a, const cvex::vint4 b) { return _mm_and_si128(a, b); }
 
-static inline cvex::vint4 operator> (const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_vint(_mm_cmpgt_ps(a, b)); }
-static inline cvex::vint4 operator< (const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_vint(_mm_cmplt_ps(a, b)); }
-static inline cvex::vint4 operator>=(const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_vint(_mm_cmpge_ps(a, b)); }
-static inline cvex::vint4 operator<=(const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_vint(_mm_cmple_ps(a, b)); }
+static inline cvex::vuint4 operator> (const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_vuint(_mm_cmpgt_ps(a, b)); }
+static inline cvex::vuint4 operator< (const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_vuint(_mm_cmplt_ps(a, b)); }
+static inline cvex::vuint4 operator>=(const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_vuint(_mm_cmpge_ps(a, b)); }
+static inline cvex::vuint4 operator<=(const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_vuint(_mm_cmple_ps(a, b)); }
+
+static inline cvex::vuint4 operator+(const cvex::vuint4 a, const cvex::vuint4 b) { return _mm_add_epi32(a, b); }
+static inline cvex::vuint4 operator-(const cvex::vuint4 a, const cvex::vuint4 b) { return _mm_sub_epi32(a, b); }
+static inline cvex::vuint4 operator*(const cvex::vuint4 a, const cvex::vuint4 b) { return _mm_mullo_epi32(a, b); }
+static inline cvex::vuint4 operator/(const cvex::vuint4 a, const cvex::vuint4 b)
+{
+  cvex::vuint4 res;
+  res.data.m128i_u32[0] = a.data.m128i_u32[0] / b.data.m128i_u32[0];
+  res.data.m128i_u32[1] = a.data.m128i_u32[1] / b.data.m128i_u32[1];
+  res.data.m128i_u32[2] = a.data.m128i_u32[2] / b.data.m128i_u32[2];
+  res.data.m128i_u32[3] = a.data.m128i_u32[3] / b.data.m128i_u32[3];
+  return res;
+}
+
+static inline cvex::vuint4 operator+(const cvex::vuint4 a, const unsigned int b) { return _mm_add_epi32(a, cvex::splat(b)); }
+static inline cvex::vuint4 operator-(const cvex::vuint4 a, const unsigned int b) { return _mm_sub_epi32(a, cvex::splat(b)); }
+static inline cvex::vuint4 operator*(const cvex::vuint4 a, const unsigned int b) { return _mm_mullo_epi32(a, cvex::splat(b)); }
+static inline cvex::vuint4 operator/(const cvex::vuint4 a, const unsigned int b)
+{
+  cvex::vuint4 res;
+  res.data.m128i_u32[0] = a.data.m128i_u32[0] / b;
+  res.data.m128i_u32[1] = a.data.m128i_u32[1] / b;
+  res.data.m128i_u32[2] = a.data.m128i_u32[2] / b;
+  res.data.m128i_u32[3] = a.data.m128i_u32[3] / b;
+  return res;
+}
+
+static inline cvex::vuint4 operator+(const unsigned int a, const cvex::vuint4 b) { return _mm_add_epi32(cvex::splat(a), b); }
+static inline cvex::vuint4 operator-(const unsigned int a, const cvex::vuint4 b) { return _mm_sub_epi32(cvex::splat(a), b); }
+static inline cvex::vuint4 operator*(const unsigned int a, const cvex::vuint4 b) { return _mm_mullo_epi32(cvex::splat(a), b); }
+static inline cvex::vuint4 operator/(const unsigned int a, const cvex::vuint4 b)
+{
+  cvex::vuint4 res;
+  res.data.m128i_u32[0] = a / b.data.m128i_u32[0];
+  res.data.m128i_u32[1] = a / b.data.m128i_u32[1];
+  res.data.m128i_u32[2] = a / b.data.m128i_u32[2];
+  res.data.m128i_u32[3] = a / b.data.m128i_u32[3];
+  return res;
+}
+
+static inline cvex::vuint4 operator<<(const cvex::vuint4 a, const int val) { return _mm_slli_epi32(a, val); }
+static inline cvex::vuint4 operator>>(const cvex::vuint4 a, const int val) { return _mm_srli_epi32(a, val); }
+
+static inline cvex::vuint4 operator|(const cvex::vuint4 a, const cvex::vuint4 b) { return _mm_or_si128(a, b); }
+static inline cvex::vuint4 operator&(const cvex::vuint4 a, const cvex::vuint4 b) { return _mm_and_si128(a, b); }
+
 
 #endif
 

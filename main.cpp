@@ -1,5 +1,11 @@
 #include <iostream>
-#include "include/vfloat4_gcc.h"
+
+#ifdef WIN32
+  #include "include/vfloat4_x64.h"
+#else
+  #include "include/vfloat4_gcc.h"
+#endif 
+
 #include "tests/tests.h"
 
 int main(int argc, const char** argv)
@@ -36,5 +42,7 @@ int main(int argc, const char** argv)
 
   std::cout << vf4_test004_basic_arithmetic() << std::endl;
 
+  int test;
+  std::cin >> test;
   return 0;
 }
