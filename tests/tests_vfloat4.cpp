@@ -459,3 +459,78 @@ bool vu4_test013_splat()
   
   return passed;
 }
+
+bool vfi4_test014_convert()
+{
+  const vint4  Cx1 = cvex::splat(-2456);
+  const vuint4 Cx2 = cvex::splat(0xFFFFFF00);
+
+  const vfloat4 Cf1 = to_float32(Cx1);
+  const vfloat4 Cf2 = to_float32(Cx2);
+
+  float result1[4];
+  float result2[4];
+
+  cvex::store_u(result1, Cf1);
+  cvex::store_u(result2, Cf2);
+
+  // check 
+  //
+  bool passed = true;
+  
+  const float res1 = float(-2456);
+  const float res2 = float(0xFFFFFF00);
+
+  for (int i = 0; i<4; i++)
+  {
+    if (fabs(result1[i] - res1) > 1e-6f || fabs(result2[i] - res2) > 1e-6f)
+    {
+      passed = false;
+      break;
+    }
+  }
+
+  return passed;
+}
+
+bool viu4_test015_convert()
+{
+  const vfloat4 Cx1 = { -334324.0f, -0.0f, 1.0f, 23423523.0f };
+  const vfloat4 Cx2 = { -10000.0f, 0.0f, 100.0f, 0.000005f };
+
+  const vint4  Cr1 = to_int32(Cx1);
+  const vuint4 Cr2 = to_uint32(Cx2);
+  const vuint4 Cr3 = to_uint32(Cr1);
+  const vint4  Cr4 = to_int32(Cr2);
+
+  int          result1[4];
+  unsigned int result2[4];
+  unsigned int result3[4];
+  int          result4[4];
+
+  cvex::store_u(result1, Cr1);
+  cvex::store_u(result2, Cr2);
+  cvex::store_u(result3, Cr3);
+  cvex::store_u(result4, Cr4);
+
+  // check 
+  //
+  bool passed = true;
+
+  const int          res1[4] = { int(-334324.0f), int(-0.0f), int(1.0f), int(23423523.0f) };
+  const unsigned int res2[4] = { (unsigned int)(-10000.0f),  (unsigned int)(0.0f),  (unsigned int)(100.0f),  (unsigned int)(0.000005f) };
+  const unsigned int res3[4] = { (unsigned int)(res1[0]), (unsigned int)(res1[1]), (unsigned int)(res1[2]), (unsigned int)(res1[3]) };
+  const          int res4[4] = { (int)(res2[0]), (int)(res2[1]), (int)(res2[2]), (int)(res2[3]) };
+
+  for (int i=0; i<4; i++)
+  {
+    if (result1[i] != res1[i] || result2[i] != res2[i] || 
+        result3[i] != res3[i] || result4[i] != res4[i])
+    {
+      passed = false;
+      break;
+    }
+  }
+
+  return passed;
+}

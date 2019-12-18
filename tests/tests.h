@@ -29,3 +29,8 @@ bool vu4_test010_shift();
 bool vf4_test011_splat();
 bool vi4_test012_splat();
 bool vu4_test013_splat();
+
+//// convert
+//
+bool vfi4_test014_convert();
+bool viu4_test015_convert();

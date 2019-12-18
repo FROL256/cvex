@@ -29,6 +29,9 @@ void run_all_tests()
       { &vf4_test011_splat, "vf4_test011_splat" },
       { &vi4_test012_splat, "vi4_test012_splat" },
       { &vu4_test013_splat, "vu4_test013_splat" },
+
+      { &vfi4_test014_convert, "vfi4_test014_convert" },
+      { &viu4_test015_convert, "viu4_test015_convert" },
   };
 
   const auto arraySize = sizeof(tests)/sizeof(TestRun);

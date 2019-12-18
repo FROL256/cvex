@@ -136,8 +136,36 @@ namespace cvex
   static inline vint4   as_vint(const vfloat4 a_val)  { return _mm_castps_si128(a_val); }
   static inline vuint4  as_vuint(const vfloat4 a_val) { return _mm_castps_si128(a_val); }
 
-  static inline vint4   to_int32(const vfloat4 a_val) { return _mm_cvtps_epi32(a_val);}
   static inline vfloat4 to_float32(const vint4 a_val) { return _mm_cvtepi32_ps(a_val);}
+  static inline vfloat4 to_float32(const vuint4 a_val)
+  { 
+    CVEX_ALIGNED(16) unsigned int temp_a[4];
+    cvex::store(temp_a, a_val);
+    return {float(temp_a[0]), float(temp_a[1]), float(temp_a[2]), float(temp_a[3]) };
+  }
+
+  static inline vint4 to_int32(const vfloat4 a_val) { return _mm_cvtps_epi32(a_val); }
+  static inline vint4 to_int32(const vuint4  a_val) 
+  { 
+    vint4 res;
+    res.data = a_val.data;
+    return res; 
+  }
+
+  static inline vuint4 to_uint32(const vfloat4 a_val) 
+  {
+    CVEX_ALIGNED(16) float temp_a[4];
+    cvex::store(temp_a, a_val);
+    return { _uint32_t(temp_a[0]), _uint32_t(temp_a[1]), _uint32_t(temp_a[2]), _uint32_t(temp_a[3]) };
+  }
+
+  static inline vuint4 to_uint32(const vint4  a_val)
+  {
+    vuint4 res;
+    res.data = a_val.data;
+    return res;
+  }
+
 
   static inline vfloat4 floor(const vfloat4 a_val) { return _mm_floor_ps(a_val); }
   static inline vfloat4 ceil (const vfloat4 a_val) { return _mm_ceil_ps(a_val); }
