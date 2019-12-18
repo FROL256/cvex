@@ -40,7 +40,7 @@ void run_all_tests()
     if(res)
       std::cout << "PASSED!";
     else 
-      std::cout << "FAILED!";
+      std::cout << "FAILED!\tFAILED!";
     std::cout << std::endl;
   }
 

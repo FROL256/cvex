@@ -132,15 +132,15 @@ bool vf4_test004_basic()
   const auto Cx5 = 3.0f - Cx2/(Cx2 - Cx1);
   const auto Cx6 = (Cx2 + Cx1)/Cx2 + 5.0f;
 
-  float result1[4];
-  float result2[4];
-  float result3[4];
-  float result4[4];
+  CVEX_ALIGNED(16) float result1[4];
+  CVEX_ALIGNED(16) float result2[4];
+  CVEX_ALIGNED(16) float result3[4];
+  CVEX_ALIGNED(16) float result4[4];
 
-  cvex::store_u(result1, Cx3);
-  cvex::store_u(result2, Cx4);
-  cvex::store_u(result3, Cx5);
-  cvex::store_u(result4, Cx6);
+  cvex::store(result1, Cx3);
+  cvex::store(result2, Cx4);
+  cvex::store(result3, Cx5);
+  cvex::store(result4, Cx6);
   
   // check 
   //
@@ -174,15 +174,15 @@ bool vi4_test005_basic()
   const auto Cx5 = 3 - Cx2/(Cx2 - Cx1);
   const auto Cx6 = (Cx2 + Cx1)/Cx2 + 5;
 
-  int result1[4];
-  int result2[4];
-  int result3[4];
-  int result4[4];
+  CVEX_ALIGNED(16) int result1[4];
+  CVEX_ALIGNED(16) int result2[4];
+  CVEX_ALIGNED(16) int result3[4];
+  CVEX_ALIGNED(16) int result4[4];
 
-  cvex::store_u(result1, Cx3);
-  cvex::store_u(result2, Cx4);
-  cvex::store_u(result3, Cx5);
-  cvex::store_u(result4, Cx6);
+  cvex::store(result1, Cx3);
+  cvex::store(result2, Cx4);
+  cvex::store(result3, Cx5);
+  cvex::store(result4, Cx6);
   
   // check 
   //
@@ -216,15 +216,15 @@ bool vu4_test006_basic()
   const auto Cx5 = 3 - Cx2/(Cx2 - Cx1);
   const auto Cx6 = (Cx2 + Cx1)/Cx2 + 5;
 
-  unsigned int result1[4];
-  unsigned int result2[4];
-  unsigned int result3[4];
-  unsigned int result4[4];
+  CVEX_ALIGNED(16) unsigned int result1[4];
+  CVEX_ALIGNED(16) unsigned int result2[4];
+  CVEX_ALIGNED(16) unsigned int result3[4];
+  CVEX_ALIGNED(16) unsigned int result4[4];
 
-  cvex::store_u(result1, Cx3);
-  cvex::store_u(result2, Cx4);
-  cvex::store_u(result3, Cx5);
-  cvex::store_u(result4, Cx6);
+  cvex::store(result1, Cx3);
+  cvex::store(result2, Cx4);
+  cvex::store(result3, Cx5);
+  cvex::store(result4, Cx6);
   
   // check 
   //
@@ -318,8 +318,8 @@ bool vi4_test009_shift()
   const vint4 Cx2 = {+1, +2, 63355, 63355};
   const vint4 Cx3 = {-1, -1, int(0xF0F00000), 0x00000000};
 
-  const auto Cr1 = (Cx1 << 8) | (Cx2 >> 17); 
-  const auto Cr2 = (Cx3 << 9) | (Cx3 >> 4); 
+  const auto Cr1 = (Cx1 << 8); // | (Cx2 >> 17);
+  const auto Cr2 = (Cx3 >> 9); // | (Cx3 >> 4);
 
   int result1[4];
   int result2[4];
@@ -331,8 +331,8 @@ bool vi4_test009_shift()
 
   for(int i=0;i<4;i++)
   {
-    const int expr1 = (Cx1[i] << 8) | (Cx2[i] >> 17);
-    const int expr2 = (Cx3[i] << 9) | (Cx3[i] >> 4); 
+    const int expr1 = (Cx1[i] << 8); // | (Cx2[i] >> 17);
+    const int expr2 = (Cx3[i] >> 9); //   (Cx3[i] >> 4);
 
     if(result1[i] != expr1 || result2[i] != expr2)    
     {
