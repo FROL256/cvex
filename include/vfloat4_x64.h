@@ -42,7 +42,7 @@ namespace cvex
   {
     vfloat4() {}
     vfloat4(const __m128& rhs) { data = rhs; }
-    vfloat4(const std::initializer_list<float> v) { _mm_loadu_ps(v.begin()); } // #DANGER!!!!
+    vfloat4(const std::initializer_list<float> v) { data =_mm_loadu_ps(v.begin()); }
 
     inline operator __m128() const { return data; }
 
@@ -58,7 +58,7 @@ namespace cvex
   {
     vint4() {}
     vint4(const __m128i& rhs) { data = rhs; }
-    vint4(const std::initializer_list<int> v) { _mm_castps_si128(_mm_loadu_ps((const float*)v.begin())); } // #DANGER!!!!
+    vint4(const std::initializer_list<int> v) { data = _mm_castps_si128(_mm_loadu_ps((const float*)v.begin())); } 
     inline operator __m128i() const { return data; }
 
     #ifdef WIN32
@@ -73,7 +73,7 @@ namespace cvex
   {
     vuint4() {}
     vuint4(const __m128i& rhs) { data = rhs; }
-    vuint4(const std::initializer_list<_uint32_t> v) { _mm_castps_si128(_mm_loadu_ps((const float*)v.begin())); } // #DANGER!!!!
+    vuint4(const std::initializer_list<_uint32_t> v) { data = _mm_castps_si128(_mm_loadu_ps((const float*)v.begin())); }
     inline operator __m128i() const { return data; }
 
     #ifdef WIN32
@@ -242,14 +242,9 @@ static inline cvex::vint4 operator/(const cvex::vint4 a, const cvex::vint4 b)
 { 
   CVEX_ALIGNED(16) int temp_a[4];
   CVEX_ALIGNED(16) int temp_b[4];
-  CVEX_ALIGNED(16) int temp_r[4];
   cvex::store(temp_a, a);
   cvex::store(temp_b, b);
-  temp_r[0] = temp_a[0] / temp_b[0];
-  temp_r[1] = temp_a[1] / temp_b[1];
-  temp_r[2] = temp_a[2] / temp_b[2];
-  temp_r[3] = temp_a[3] / temp_b[3];
-  return cvex::load(temp_r);
+  return { temp_a[0] / temp_b[0], temp_a[1] / temp_b[1], temp_a[2] / temp_b[2], temp_a[3] / temp_b[3] };
 } 
 
 static inline cvex::vint4 operator+(const cvex::vint4 a, const int b) { return _mm_add_epi32(a, cvex::splat(b)); }
@@ -258,13 +253,8 @@ static inline cvex::vint4 operator*(const cvex::vint4 a, const int b) { return _
 static inline cvex::vint4 operator/(const cvex::vint4 a, const int b)
 {
   CVEX_ALIGNED(16) int temp_a[4];
-  CVEX_ALIGNED(16) int temp_r[4];
   cvex::store(temp_a, a);
-  temp_r[0] = temp_a[0] / b;
-  temp_r[1] = temp_a[1] / b;
-  temp_r[2] = temp_a[2] / b;
-  temp_r[3] = temp_a[3] / b;
-  return cvex::load(temp_r);
+  return { temp_a[0] / b, temp_a[1] / b, temp_a[2] / b, temp_a[3] / b };
 }
 
 static inline cvex::vint4 operator+(const int a, const cvex::vint4 b) { return _mm_add_epi32(cvex::splat(a), b); }
@@ -273,13 +263,8 @@ static inline cvex::vint4 operator*(const int a, const cvex::vint4 b) { return _
 static inline cvex::vint4 operator/(const int a, const cvex::vint4 b)
 {
   CVEX_ALIGNED(16) int temp_b[4];
-  CVEX_ALIGNED(16) int temp_r[4];
   cvex::store(temp_b, b);
-  temp_r[0] = a / temp_b[0];
-  temp_r[1] = a / temp_b[1];
-  temp_r[2] = a / temp_b[2];
-  temp_r[3] = a / temp_b[3];
-  return cvex::load(temp_r);
+  return { a / temp_b[0], a / temp_b[1], a / temp_b[2], a / temp_b[3] };
 }
 
 static inline cvex::vint4 operator<<(const cvex::vint4 a, const int val) { return _mm_slli_epi32(a, val); }
@@ -301,14 +286,9 @@ static inline cvex::vuint4 operator/(const cvex::vuint4 a, const cvex::vuint4 b)
 {
   CVEX_ALIGNED(16) unsigned int temp_a[4];
   CVEX_ALIGNED(16) unsigned int temp_b[4];
-  CVEX_ALIGNED(16) unsigned int temp_r[4];
   cvex::store(temp_a, a);
   cvex::store(temp_b, b);
-  temp_r[0] = temp_a[0] / temp_b[0];
-  temp_r[1] = temp_a[1] / temp_b[1];
-  temp_r[2] = temp_a[2] / temp_b[2];
-  temp_r[3] = temp_a[3] / temp_b[3];
-  return cvex::load(temp_r);
+  return { temp_a[0] / temp_b[0], temp_a[1] / temp_b[1], temp_a[2] / temp_b[2], temp_a[3] / temp_b[3] };
 }
 
 static inline cvex::vuint4 operator+(const cvex::vuint4 a, const unsigned int b) { return _mm_add_epi32(a, cvex::splat(b)); }
@@ -317,13 +297,8 @@ static inline cvex::vuint4 operator*(const cvex::vuint4 a, const unsigned int b)
 static inline cvex::vuint4 operator/(const cvex::vuint4 a, const unsigned int b)
 {
   CVEX_ALIGNED(16) unsigned int temp_a[4];
-  CVEX_ALIGNED(16) unsigned int temp_r[4];
   cvex::store(temp_a, a);
-  temp_r[0] = temp_a[0] / b;
-  temp_r[1] = temp_a[1] / b;
-  temp_r[2] = temp_a[2] / b;
-  temp_r[3] = temp_a[3] / b;
-  return cvex::load(temp_r);
+  return { temp_a[0] / b, temp_a[1] / b, temp_a[2] / b, temp_a[3] / b };
 }
 
 static inline cvex::vuint4 operator+(const unsigned int a, const cvex::vuint4 b) { return _mm_add_epi32(cvex::splat(a), b); }
@@ -332,13 +307,8 @@ static inline cvex::vuint4 operator*(const unsigned int a, const cvex::vuint4 b)
 static inline cvex::vuint4 operator/(const unsigned int a, const cvex::vuint4 b)
 {
   CVEX_ALIGNED(16) unsigned int temp_b[4];
-  CVEX_ALIGNED(16) unsigned int temp_r[4];
   cvex::store(temp_b, b);
-  temp_r[0] = a / temp_b[0];
-  temp_r[1] = a / temp_b[1];
-  temp_r[2] = a / temp_b[2];
-  temp_r[3] = a / temp_b[3];
-  return cvex::load(temp_r);
+  return { a / temp_b[0], a / temp_b[1], a / temp_b[2], a / temp_b[3] };
 }
 
 static inline cvex::vuint4 operator<<(const cvex::vuint4 a, const int val) { return _mm_slli_epi32(a, val); }

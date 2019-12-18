@@ -42,6 +42,7 @@ void run_all_tests()
     else 
       std::cout << "FAILED!\tFAILED!";
     std::cout << std::endl;
+    std::cout.flush();
   }
 
 }
