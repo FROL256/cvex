@@ -38,7 +38,9 @@ int main(int argc, const char** argv)
 
   run_all_tests();
 
-  //int test;
-  //std::cin >> test;
+#ifdef WIN32
+  int test;
+  std::cin >> test;
+#endif
   return 0;
 }

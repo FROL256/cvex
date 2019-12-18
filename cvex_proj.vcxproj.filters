@@ -21,6 +21,9 @@
     <ClCompile Include="tests\tests_vfloat4.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="tests\tests_all.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\vfloat4_x64.h">

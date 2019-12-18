@@ -104,9 +104,9 @@ namespace cvex
 
   //static inline void stream(void *data, vint4 a_val) { _mm_stream_si128((vint4 *) data, a_val); }
 
-  static inline auto splat(const int i)          -> vint4   { return _mm_set_epi32(i, i, i, i); }
-  static inline auto splat(const unsigned int i) -> vint4   { return _mm_set_epi32(i, i, i, i); }
-  static inline auto splat(const float i)        -> vfloat4 { return _mm_set_ps   (i, i, i, i); }
+  static inline vint4   splat(const int i)       { return _mm_set1_epi32(i); }
+  static inline vuint4  splat(const _uint32_t i) { return _mm_set1_epi32(i); }
+  static inline vfloat4 splat(const float i)     { return _mm_set1_ps   (i); }
 
   static inline vint4 shift_ll(const vint4 v, const int val) { return _mm_slli_epi32(v, val); }
   static inline vint4 shift_rl(const vint4 v, const int val) { return _mm_srli_epi32(v, val); }
@@ -265,6 +265,7 @@ static inline cvex::vint4 operator>>(const cvex::vint4 a, const int val) { retur
 
 static inline cvex::vint4 operator|(const cvex::vint4 a, const cvex::vint4 b) { return _mm_or_si128(a,b); }
 static inline cvex::vint4 operator&(const cvex::vint4 a, const cvex::vint4 b) { return _mm_and_si128(a, b); }
+static inline cvex::vint4 operator~(const cvex::vint4 a)                      { return _mm_andnot_si128(a, _mm_set1_epi32(0xFFFFFFFF)); }
 
 static inline cvex::vuint4 operator> (const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_vuint(_mm_cmpgt_ps(a, b)); }
 static inline cvex::vuint4 operator< (const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_vuint(_mm_cmplt_ps(a, b)); }
@@ -315,6 +316,7 @@ static inline cvex::vuint4 operator>>(const cvex::vuint4 a, const int val) { ret
 
 static inline cvex::vuint4 operator|(const cvex::vuint4 a, const cvex::vuint4 b) { return _mm_or_si128(a, b); }
 static inline cvex::vuint4 operator&(const cvex::vuint4 a, const cvex::vuint4 b) { return _mm_and_si128(a, b); }
+static inline cvex::vuint4 operator~(const cvex::vuint4 a)                       { return _mm_andnot_si128(a, _mm_set1_epi32(0xFFFFFFFF)); }
 
 
 #endif

@@ -129,6 +129,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="tests\tests_all.cpp" />
     <ClCompile Include="tests\tests_vfloat4.cpp" />
   </ItemGroup>
   <ItemGroup>
