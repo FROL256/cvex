@@ -939,3 +939,161 @@ bool vf4_test027_shuffle()
   return (b1 && b2 && b3 && b4 && b5);
 }
 
+bool vf4_test028_length()
+{
+  const cvex::vfloat4 Cx1 = { 1.0f, 2.0f, 3.0f, 4.0f };
+
+  const float   dot1 = cvex::length3f(Cx1);
+  const vfloat4 dot2 = cvex::length3v(Cx1);
+  const float   dot3 = cvex::length4f(Cx1);
+  const vfloat4 dot4 = cvex::length4v(Cx1);
+
+  CVEX_ALIGNED(16) float result1[4];
+  CVEX_ALIGNED(16) float result2[4];
+  cvex::store(result1, dot2);
+  cvex::store(result2, dot4);
+
+  const float ref_dp3 = sqrtf(1.0f*1.0f + 2.0f*2.0f + 3.0f*3.0f);
+  const float ref_dp4 = sqrtf(1.0f*1.0f + 2.0f*2.0f + 3.0f*3.0f + 4.0f*4.0f);
+
+  const bool b1 = fabs(dot1 - ref_dp3) < 1e-6f;
+  const bool b2 = fabs(result1[0] - ref_dp3) < 1e-6f && 
+                  fabs(result1[1] - ref_dp3) < 1e-6f && 
+                  fabs(result1[2] - ref_dp3) < 1e-6f &&
+                  fabs(result1[3] - ref_dp3) < 1e-6f;
+
+  const bool b3 = fabs(dot3 - ref_dp4) < 1e-6f;
+  const bool b4 = fabs(result2[0] - ref_dp4) < 1e-6f &&
+                  fabs(result2[1] - ref_dp4) < 1e-6f &&
+                  fabs(result2[2] - ref_dp4) < 1e-6f &&
+                  fabs(result2[3] - ref_dp4) < 1e-6f;
+                  
+  return (b1 && b2 && b3 && b4);
+}
+
+bool vf4_test029_ext_splt()
+{
+  const cvex::vfloat4 Cx1 = { 1.0f, 2.0f, 3.0f, 4.0f };
+
+  const cvex::vfloat4 Cr1 = splat_0(Cx1);
+  const cvex::vfloat4 Cr2 = splat_1(Cx1);
+  const cvex::vfloat4 Cr3 = splat_2(Cx1);
+  const cvex::vfloat4 Cr4 = splat_3(Cx1);
+
+  CVEX_ALIGNED(16) float result1[4];
+  CVEX_ALIGNED(16) float result2[4];
+  CVEX_ALIGNED(16) float result3[4];
+  CVEX_ALIGNED(16) float result4[4];
+
+  cvex::store(result1, Cr1);
+  cvex::store(result2, Cr2);
+  cvex::store(result3, Cr3);
+  cvex::store(result4, Cr4);
+
+
+  const float x = extract_0(Cx1);
+  const float y = extract_1(Cx1);
+  const float z = extract_2(Cx1);
+  const float w = extract_3(Cx1);
+
+  bool passed = true;
+  for (int i = 0; i<4; i++)
+  {
+    const bool b1 = (result1[i] == 1.0f);
+    const bool b2 = (result2[i] == 2.0f);
+    const bool b3 = (result3[i] == 3.0f);
+    const bool b4 = (result4[i] == 4.0f);
+
+    if (!b1 || !b2 || !b3 || !b4)
+    {
+      passed = false;
+      break;
+    }
+  }
+  return passed && (x == 1.0f) && (y == 2.0f) && (z == 3.0f) && (w == 4.0f);
+}
+
+
+bool vi4_test030_ext_splt()
+{
+  const cvex::vint4 Cx1 = { 1, 2, 3, 4 };
+
+  const cvex::vint4 Cr1 = splat_0(Cx1);
+  const cvex::vint4 Cr2 = splat_1(Cx1);
+  const cvex::vint4 Cr3 = splat_2(Cx1);
+  const cvex::vint4 Cr4 = splat_3(Cx1);
+
+  CVEX_ALIGNED(16) int result1[4];
+  CVEX_ALIGNED(16) int result2[4];
+  CVEX_ALIGNED(16) int result3[4];
+  CVEX_ALIGNED(16) int result4[4];
+
+  cvex::store(result1, Cr1);
+  cvex::store(result2, Cr2);
+  cvex::store(result3, Cr3);
+  cvex::store(result4, Cr4);
+
+
+  const int x = extract_0(Cx1);
+  const int y = extract_1(Cx1);
+  const int z = extract_2(Cx1);
+  const int w = extract_3(Cx1);
+
+  bool passed = true;
+  for (int i = 0; i<4; i++)
+  {
+    const bool b1 = (result1[i] == 1);
+    const bool b2 = (result2[i] == 2);
+    const bool b3 = (result3[i] == 3);
+    const bool b4 = (result4[i] == 4);
+
+    if (!b1 || !b2 || !b3 || !b4)
+    {
+      passed = false;
+      break;
+    }
+  }
+  return passed && (x == 1) && (y == 2) && (z == 3) && (w == 4);
+}
+
+bool vu4_test031_ext_splt()
+{
+  const cvex::vuint4 Cx1 = { 1, 2, 3, 4 };
+
+  const cvex::vuint4 Cr1 = splat_0(Cx1);
+  const cvex::vuint4 Cr2 = splat_1(Cx1);
+  const cvex::vuint4 Cr3 = splat_2(Cx1);
+  const cvex::vuint4 Cr4 = splat_3(Cx1);
+
+  CVEX_ALIGNED(16) unsigned int result1[4];
+  CVEX_ALIGNED(16) unsigned int result2[4];
+  CVEX_ALIGNED(16) unsigned int result3[4];
+  CVEX_ALIGNED(16) unsigned int result4[4];
+
+  cvex::store(result1, Cr1);
+  cvex::store(result2, Cr2);
+  cvex::store(result3, Cr3);
+  cvex::store(result4, Cr4);
+
+
+  const unsigned int x = extract_0(Cx1);
+  const unsigned int y = extract_1(Cx1);
+  const unsigned int z = extract_2(Cx1);
+  const unsigned int w = extract_3(Cx1);
+
+  bool passed = true;
+  for (int i = 0; i<4; i++)
+  {
+    const bool b1 = (result1[i] == 1);
+    const bool b2 = (result2[i] == 2);
+    const bool b3 = (result3[i] == 3);
+    const bool b4 = (result4[i] == 4);
+
+    if (!b1 || !b2 || !b3 || !b4)
+    {
+      passed = false;
+      break;
+    }
+  }
+  return passed && (x == 1) && (y == 2) && (z == 3) && (w == 4);
+}

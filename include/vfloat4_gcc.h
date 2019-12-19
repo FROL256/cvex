@@ -19,6 +19,8 @@
 #error "Unsupported compiler"
 #endif
 
+#include <cmath>
+
 namespace cvex
 { 
   typedef unsigned           int _uint32_t;
@@ -146,11 +148,46 @@ namespace cvex
     return shuffle_yzxw(a*b_yzx - a_yzx*b);
   }
 
+  static inline vfloat4 splat_0(const vfloat4 v) { return __builtin_shuffle(v, vint4{0,0,0,0}); }
+  static inline vfloat4 splat_1(const vfloat4 v) { return __builtin_shuffle(v, vint4{1,1,1,1}); }
+  static inline vfloat4 splat_2(const vfloat4 v) { return __builtin_shuffle(v, vint4{2,2,2,2}); }
+  static inline vfloat4 splat_3(const vfloat4 v) { return __builtin_shuffle(v, vint4{3,3,3,3}); }
+
+  static inline vint4 splat_0(const vint4 v) { return __builtin_shuffle(v, vint4{0,0,0,0}); }
+  static inline vint4 splat_1(const vint4 v) { return __builtin_shuffle(v, vint4{1,1,1,1}); }
+  static inline vint4 splat_2(const vint4 v) { return __builtin_shuffle(v, vint4{2,2,2,2}); }
+  static inline vint4 splat_3(const vint4 v) { return __builtin_shuffle(v, vint4{3,3,3,3}); }
+
+  static inline vuint4 splat_0(const vuint4 v) { return __builtin_shuffle(v, vint4{0,0,0,0}); }
+  static inline vuint4 splat_1(const vuint4 v) { return __builtin_shuffle(v, vint4{1,1,1,1}); }
+  static inline vuint4 splat_2(const vuint4 v) { return __builtin_shuffle(v, vint4{2,2,2,2}); }
+  static inline vuint4 splat_3(const vuint4 v) { return __builtin_shuffle(v, vint4{3,3,3,3}); }
+
+  static inline int extract_0(const vint4 a_val) { return a_val[0]; }
+  static inline int extract_1(const vint4 a_val) { return a_val[1]; }
+  static inline int extract_2(const vint4 a_val) { return a_val[2]; }
+  static inline int extract_3(const vint4 a_val) { return a_val[3]; }
+
+  static inline unsigned int extract_0(const vuint4 a_val) { return a_val[0]; }
+  static inline unsigned int extract_1(const vuint4 a_val) { return a_val[1]; }
+  static inline unsigned int extract_2(const vuint4 a_val) { return a_val[2]; }
+  static inline unsigned int extract_3(const vuint4 a_val) { return a_val[3]; }
+
+  static inline float extract_0(const vfloat4 a_val) { return a_val[0]; }
+  static inline float extract_1(const vfloat4 a_val) { return a_val[1]; }
+  static inline float extract_2(const vfloat4 a_val) { return a_val[2]; }
+  static inline float extract_3(const vfloat4 a_val) { return a_val[3]; }
+
   #ifdef __x86_64
   static inline float   dot3f(const vfloat4 a, const vfloat4 b) { return _mm_cvtss_f32(_mm_dp_ps(a, b, 0x7f)); }
   static inline vfloat4 dot3v(const vfloat4 a, const vfloat4 b) { return _mm_dp_ps(a, b, 0x7f); }
   static inline vfloat4 dot4v(const vfloat4 a, const vfloat4 b) { return _mm_dp_ps(a, b, 0xff); }
   static inline float   dot4f(const vfloat4 a, const vfloat4 b) { return _mm_cvtss_f32(_mm_dp_ps(a, b, 0xff)); }
+
+  static inline float   length3f(const vfloat4 a) { return _mm_cvtss_f32(_mm_sqrt_ss(dot3v(a,a)) ); }
+  static inline float   length4f(const vfloat4 a) { return _mm_cvtss_f32(_mm_sqrt_ss(dot4v(a,a)) ); }
+  static inline vfloat4 length3v(const vfloat4 a) { return _mm_sqrt_ps(dot3v(a,a)); }
+  static inline vfloat4 length4v(const vfloat4 a) { return _mm_sqrt_ps(dot4v(a,a)); }
 
   static inline vfloat4 floor(const vfloat4 a_val) { return _mm_floor_ps(a_val); }
   static inline vfloat4 ceil(const vfloat4 a_val)  { return _mm_ceil_ps(a_val);  }
@@ -169,6 +206,13 @@ namespace cvex
     return vfloat4{res,res,res,res}; 
   }
 
+  static inline vfloat4 length3v(const vfloat4 a) 
+  {
+    const vfloat4 mres = a*a;
+    const float res    = sqrtf(mres[0] + mres[1] + mres[2]);
+    return vfloat4{res,res,res,res}; 
+  }
+
   static inline float   dot4f(const vfloat4 a, const vfloat4 b) 
   {
     const vfloat4 mres = a*b; 
@@ -181,7 +225,17 @@ namespace cvex
     const float res    = mres[0] + mres[1] + mres[2] + mres[3];
     return vfloat4{res,res,res,res}; 
   }
+
+  static inline vfloat4 length4v(const vfloat4 a) 
+  {
+    const vfloat4 mres = a*a;
+    const float res    = sqrtf(mres[0] + mres[1] + mres[2] + mres[3]);
+    return vfloat4{res,res,res,res}; 
+  }
   
+  static inline float length3f(const vfloat4 a) { return sqrtf(dot3f(a,a)); }
+  static inline float length4f(const vfloat4 a) { return sqrtf(dot4f(a,a)); }
+
   static inline vfloat4 ceil(const vfloat4 a)
   {
     const vfloat4 res = {::ceil(a[0]), ::ceil(a[1]), ::ceil(a[2]), ::ceil(a[3])};
@@ -196,8 +250,8 @@ namespace cvex
 
   inline static void set_ftz() {}
   #endif
+  
 
-  // length3
   // cmpgt3
   // extract_<0,1,2,3>
 

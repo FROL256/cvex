@@ -54,10 +54,17 @@ bool vf4_test023_floor_ceil();
 bool vfiu_test024_test_bits();
 bool vfiu_test025_test_bits();
 
-//// dot, cross, shuffle
+//// dot, cross, shuffle, length
 //
 bool vf4_test026_dot_cross();
 bool vf4_test027_shuffle();
+bool vf4_test028_length();
 
-//// extract_*, splat_*, cmpgt3, cmplt3, color_pack
+//// extract, splat
+//
+bool vf4_test029_ext_splt();
+bool vi4_test030_ext_splt();
+bool vu4_test031_ext_splt();
+
+//// cmpgt3, cmplt3, color_pack
 //

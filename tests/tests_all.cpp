@@ -47,7 +47,12 @@ void run_all_tests()
       { &vfiu_test025_test_bits, "vfiu_test025_test_bits"},
 
       { &vf4_test026_dot_cross, "vf4_test026_dot_cross"},
-      { &vf4_test027_shuffle,   "vf4_test027_shuffle"},
+      { &vf4_test027_shuffle,   "vf4_test027_shuffle"  },
+      { &vf4_test028_length,    "vf4_test028_length"   },
+
+      { &vf4_test029_ext_splt, "vf4_test029_ext_splt"},
+      { &vi4_test030_ext_splt, "vi4_test030_ext_splt"},
+      { &vu4_test031_ext_splt, "vu4_test031_ext_splt"},
   };
 
   const auto arraySize = sizeof(tests)/sizeof(TestRun);

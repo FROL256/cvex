@@ -99,10 +99,6 @@ namespace cvex
   static inline void store_u(int*   data,  vint4 a_val)     { _mm_storeu_ps((float*)data, _mm_castsi128_ps(a_val)); }
   static inline void store_u(_uint32_t* data, vuint4 a_val) { _mm_storeu_ps((float*)data, _mm_castsi128_ps(a_val)); }
 
-  //static inline void store_s(float* data, vfloat4 a_val)    { _mm_store_ss(data, a_val);  }                          // store single ...
-  //static inline void store_s(int* data, vint4 a_val)        { _mm_store_ss((float*)data, _mm_castsi128_ps(a_val)); } // store single ...
-  //static inline void store_s(_uint32_t* data, vuint4 a_val) { _mm_store_ss((float*)data, _mm_castsi128_ps(a_val)); } // store single ...
-
   static inline vfloat4 load(const float *data)     { return _mm_load_ps(data);  }
   static inline vint4   load(const int *data)       { return _mm_castps_si128(_mm_load_ps((float*)data)); }
   static inline vuint4  load(const _uint32_t *data) { return _mm_castps_si128(_mm_load_ps((float*)data)); }
@@ -116,16 +112,6 @@ namespace cvex
   static inline vint4   splat(const int i)       { return _mm_set1_epi32(i); }
   static inline vuint4  splat(const _uint32_t i) { return _mm_set1_epi32(i); }
   static inline vfloat4 splat(const float i)     { return _mm_set1_ps   (i); }
-
-  static inline vint4 shift_ll(const vint4 v, const int val) { return _mm_slli_epi32(v, val); }
-  static inline vint4 shift_rl(const vint4 v, const int val) { return _mm_srli_epi32(v, val); }
-
-  static inline vfloat4 splat_0(const vfloat4 v) { return _mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, 0)); }
-  static inline vfloat4 splat_1(const vfloat4 v) { return _mm_shuffle_ps(v, v, _MM_SHUFFLE(1, 1, 1, 1)); }
-  static inline vfloat4 splat_2(const vfloat4 v) { return _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 2, 2, 2)); }
-  static inline vfloat4 splat_3(const vfloat4 v) { return _mm_shuffle_ps(v, v, _MM_SHUFFLE(3, 3, 3, 3)); }
-
-  static inline vint4 make_vint(const int a, const int b, const int c, const int d) { return _mm_set_epi32(d, c, b, a); }
 
   static inline vfloat4 as_float32(const vint4 a_val)   { return _mm_castsi128_ps(a_val); }
   static inline vfloat4 as_float32(const vuint4 a_val)  { return _mm_castsi128_ps(a_val); }
@@ -270,7 +256,10 @@ namespace cvex
   static inline vfloat4 dot4v(const vfloat4 a, const vfloat4 b) { return _mm_dp_ps(a, b, 0xff); }
   static inline float   dot4f(const vfloat4 a, const vfloat4 b) { return _mm_cvtss_f32(_mm_dp_ps(a, b, 0xff)); }
 
-  // #TODO: add extract for float4
+  static inline vfloat4 splat_0(const vfloat4 v) { return _mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, 0)); }
+  static inline vfloat4 splat_1(const vfloat4 v) { return _mm_shuffle_ps(v, v, _MM_SHUFFLE(1, 1, 1, 1)); }
+  static inline vfloat4 splat_2(const vfloat4 v) { return _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 2, 2, 2)); }
+  static inline vfloat4 splat_3(const vfloat4 v) { return _mm_shuffle_ps(v, v, _MM_SHUFFLE(3, 3, 3, 3)); }
 
   static inline int extract_0(const vint4 a_val) { return _mm_cvtsi128_si32(a_val); }
   static inline int extract_1(const vint4 a_val) { return _mm_extract_epi32(a_val, 1); }
@@ -281,6 +270,11 @@ namespace cvex
   static inline unsigned int extract_1(const vuint4 a_val) { return (unsigned int)_mm_extract_epi32(a_val, 1); }
   static inline unsigned int extract_2(const vuint4 a_val) { return (unsigned int)_mm_extract_epi32(a_val, 2); }
   static inline unsigned int extract_3(const vuint4 a_val) { return (unsigned int)_mm_extract_epi32(a_val, 3); }
+
+  static inline float extract_0(const vfloat4 a_val) { return _mm_cvtss_f32(a_val); }
+  static inline float extract_1(const vfloat4 a_val) { return _mm_cvtss_f32(splat_1(a_val)); }
+  static inline float extract_2(const vfloat4 a_val) { return _mm_cvtss_f32(splat_2(a_val)); }
+  static inline float extract_3(const vfloat4 a_val) { return _mm_cvtss_f32(splat_3(a_val)); }
 
   static inline vfloat4 shuffle_zyxw(vfloat4 a_src) { return _mm_shuffle_ps(a_src, a_src, _MM_SHUFFLE(3, 0, 1, 2)); }
   static inline vfloat4 shuffle_yzxw(vfloat4 a_src) { return _mm_shuffle_ps(a_src, a_src, _MM_SHUFFLE(3, 0, 2, 1)); }
