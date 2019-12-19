@@ -132,9 +132,9 @@ namespace cvex
 
   static inline vint4 make_vint(const int a, const int b, const int c, const int d) { return _mm_set_epi32(d, c, b, a); }
 
-  static inline vfloat4 as_vfloat(const vint4 a_val)  { return _mm_castsi128_ps(a_val); }
-  static inline vint4   as_vint(const vfloat4 a_val)  { return _mm_castps_si128(a_val); }
-  static inline vuint4  as_vuint(const vfloat4 a_val) { return _mm_castps_si128(a_val); }
+  static inline vfloat4 as_float32(const vint4 a_val)   { return _mm_castsi128_ps(a_val); }
+  static inline vint4   as_int32  (const vfloat4 a_val) { return _mm_castps_si128(a_val); }
+  static inline vuint4  as_uint32 (const vfloat4 a_val) { return _mm_castps_si128(a_val); }
 
   static inline vfloat4 to_float32(const vint4 a_val) { return _mm_cvtepi32_ps(a_val);}
   static inline vfloat4 to_float32(const vuint4 a_val)
@@ -179,27 +179,27 @@ namespace cvex
 
   static inline vfloat4 blend(const vfloat4 a, const vfloat4 b, const vint4 mask)
   {
-    return _mm_or_ps(_mm_and_ps(as_vfloat(mask), a),
-                     _mm_andnot_ps(as_vfloat(mask), b));
+    return _mm_or_ps(_mm_and_ps(as_float32(mask), a),
+                     _mm_andnot_ps(as_float32(mask), b));
   }
 
   static inline vint4 blend(const vint4 a, const vint4 b, const vint4 mask)
   {
-    return as_vint(_mm_or_ps(_mm_and_ps   (as_vfloat(mask), as_vfloat(a)),
-                             _mm_andnot_ps(as_vfloat(mask), as_vfloat(b))));
+    return as_int32(_mm_or_ps(_mm_and_ps   (as_float32(mask), as_float32(a)),
+                              _mm_andnot_ps(as_float32(mask), as_float32(b))));
   }
 
   static inline void transpose4(vfloat4& a0, vfloat4& a1, vfloat4& a2, vfloat4& a3)
   {
-    const vint4 b0 = _mm_unpacklo_epi32(as_vint(a0), as_vint(a1));
-    const vint4 b1 = _mm_unpackhi_epi32(as_vint(a0), as_vint(a1));
-    const vint4 b2 = _mm_unpacklo_epi32(as_vint(a2), as_vint(a3));
-    const vint4 b3 = _mm_unpackhi_epi32(as_vint(a2), as_vint(a3));
+    const vint4 b0 = _mm_unpacklo_epi32(as_int32(a0), as_int32(a1));
+    const vint4 b1 = _mm_unpackhi_epi32(as_int32(a0), as_int32(a1));
+    const vint4 b2 = _mm_unpacklo_epi32(as_int32(a2), as_int32(a3));
+    const vint4 b3 = _mm_unpackhi_epi32(as_int32(a2), as_int32(a3));
 
-    a0 = as_vfloat(_mm_unpacklo_epi64(b0, b2));
-    a1 = as_vfloat(_mm_unpackhi_epi64(b0, b2));
-    a2 = as_vfloat(_mm_unpacklo_epi64(b1, b3));
-    a3 = as_vfloat(_mm_unpackhi_epi64(b1, b3));
+    a0 = as_float32(_mm_unpacklo_epi64(b0, b2));
+    a1 = as_float32(_mm_unpackhi_epi64(b0, b2));
+    a2 = as_float32(_mm_unpacklo_epi64(b1, b3));
+    a3 = as_float32(_mm_unpackhi_epi64(b1, b3));
   }
 
   inline static int color_compress_bgra(const vfloat4 rel_col)
@@ -302,10 +302,10 @@ static inline cvex::vint4 operator|(const cvex::vint4 a, const cvex::vint4 b) { 
 static inline cvex::vint4 operator&(const cvex::vint4 a, const cvex::vint4 b) { return _mm_and_si128(a, b); }
 static inline cvex::vint4 operator~(const cvex::vint4 a)                      { return _mm_andnot_si128(a, _mm_set1_epi32(0xFFFFFFFF)); }
 
-static inline cvex::vuint4 operator> (const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_vuint(_mm_cmpgt_ps(a, b)); }
-static inline cvex::vuint4 operator< (const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_vuint(_mm_cmplt_ps(a, b)); }
-static inline cvex::vuint4 operator>=(const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_vuint(_mm_cmpge_ps(a, b)); }
-static inline cvex::vuint4 operator<=(const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_vuint(_mm_cmple_ps(a, b)); }
+static inline cvex::vuint4 operator> (const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_uint32(_mm_cmpgt_ps(a, b)); }
+static inline cvex::vuint4 operator< (const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_uint32(_mm_cmplt_ps(a, b)); }
+static inline cvex::vuint4 operator>=(const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_uint32(_mm_cmpge_ps(a, b)); }
+static inline cvex::vuint4 operator<=(const cvex::vfloat4 a, const cvex::vfloat4 b) { return cvex::as_uint32(_mm_cmple_ps(a, b)); }
 
 static inline cvex::vuint4 operator+(const cvex::vuint4 a, const cvex::vuint4 b) { return _mm_add_epi32(a, b); }
 static inline cvex::vuint4 operator-(const cvex::vuint4 a, const cvex::vuint4 b) { return _mm_sub_epi32(a, b); }

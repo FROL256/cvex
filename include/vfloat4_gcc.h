@@ -58,10 +58,10 @@ namespace cvex
   static inline vfloat4 to_float32(vint4 a)    { return vfloat4{(float)a[0], (float)a[1], (float)a[2], (float)a[3]}; }
   static inline vfloat4 to_float32(vuint4 a)   { return vfloat4{(float)a[0], (float)a[1], (float)a[2], (float)a[3]}; }
   
-  static inline vfloat4 as_vfloat(const vint4 a_val)  { return reinterpret_cast<vfloat4>(a_val); }
-  static inline vfloat4 as_vfloat(const vuint4 a_val) { return reinterpret_cast<vfloat4>(a_val); }
-  static inline vint4   as_vint (const vfloat4 a_val) { return reinterpret_cast<vint4>(a_val);   }
-  static inline vuint4  as_vuint(const vfloat4 a_val) { return reinterpret_cast<vuint4>(a_val);  }
+  static inline vfloat4 as_float32(const vint4 a_val)   { return reinterpret_cast<vfloat4>(a_val); }
+  static inline vfloat4 as_float32(const vuint4 a_val)  { return reinterpret_cast<vfloat4>(a_val); }
+  static inline vint4   as_int32  (const vfloat4 a_val) { return reinterpret_cast<vint4>(a_val);   }
+  static inline vuint4  as_uint32(const vfloat4 a_val)  { return reinterpret_cast<vuint4>(a_val);  }
 
   // math; all basic operators should be implemented by gcc, so we don't define them here
   //

@@ -30,7 +30,8 @@ bool vf4_test011_splat();
 bool vi4_test012_splat();
 bool vu4_test013_splat();
 
-//// convert
+//// convert and cast
 //
 bool vfi4_test014_convert();
 bool viu4_test015_convert();
+bool vfi4_test016_cast();

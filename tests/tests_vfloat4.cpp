@@ -534,3 +534,8 @@ bool viu4_test015_convert()
 
   return passed;
 }
+
+bool vfi4_test016_cast()
+{
+  return false;
+}
