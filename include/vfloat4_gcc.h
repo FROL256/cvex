@@ -11,6 +11,14 @@
   #include <smmintrin.h> // SSE4.1 
 #endif
 
+#if __GNUC__
+#define CVEX_ALIGNED(X) __attribute__((__aligned__(X)))
+#elif _MSC_VER
+#define CVEX_ALIGNED(X) __declspec(align(X))
+#else
+#error "Unsupported compiler"
+#endif
+
 namespace cvex
 { 
   typedef unsigned           int _uint32_t;
