@@ -35,7 +35,6 @@ int main(int argc, const char** argv)
     std::cout << result[i] << ", ";
   std::cout << std::endl;
 
-
   run_all_tests();
 
 #ifdef WIN32

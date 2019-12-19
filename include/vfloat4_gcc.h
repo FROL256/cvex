@@ -79,9 +79,17 @@ namespace cvex
   static inline vfloat4 rcp_e(vfloat4 a)       { return 1.0f/a; }
   #endif
 
-  static inline vfloat4 vmin  (const vfloat4 a, const vfloat4 b) { return a < b ? a : b; }
-  static inline vfloat4 vmax  (const vfloat4 a, const vfloat4 b) { return a > b ? a : b; }
-  static inline vfloat4 vclamp(const vfloat4 x, const vfloat4 minVal, const vfloat4 maxVal) { return vmax(vmin(x, maxVal), minVal); }
+  static inline vfloat4 min  (const vfloat4 a, const vfloat4 b) { return a < b ? a : b; }
+  static inline vfloat4 max  (const vfloat4 a, const vfloat4 b) { return a > b ? a : b; }
+  static inline vfloat4 clamp(const vfloat4 x, const vfloat4 minVal, const vfloat4 maxVal) { return max(min(x, maxVal), minVal); }
+
+  static inline vint4 min  (const vint4 a, const vint4 b) { return a < b ? a : b; }
+  static inline vint4 max  (const vint4 a, const vint4 b) { return a > b ? a : b; }
+  static inline vint4 clamp(const vint4 x, const vint4 minVal, const vint4 maxVal) { return max(min(x, maxVal), minVal); }
+
+  static inline vuint4 min  (const vuint4 a, const vuint4 b) { return a < b ? a : b; }
+  static inline vuint4 max  (const vuint4 a, const vuint4 b) { return a > b ? a : b; }
+  static inline vuint4 clamp(const vuint4 x, const vuint4 minVal, const vuint4 maxVal) { return max(min(x, maxVal), minVal); }
 
   // shuffle operations ...
   //

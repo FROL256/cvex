@@ -32,6 +32,11 @@ void run_all_tests()
 
       { &vfi4_test014_convert, "vfi4_test014_convert" },
       { &viu4_test015_convert, "viu4_test015_convert" },
+      { &vfi4_test016_cast,    "vfi4_test016_cast"    },
+
+      { &vf4_test017_mMcRcp,   "vf4_test017_mMcRcp"   },
+      { &vi4_test018_minMax,   "vi4_test018_minMax"   },
+      { &vu4_test019_minMax,   "vu4_test019_minMax"   },
   };
 
   const auto arraySize = sizeof(tests)/sizeof(TestRun);

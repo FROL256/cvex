@@ -537,5 +537,158 @@ bool viu4_test015_convert()
 
 bool vfi4_test016_cast()
 {
-  return false;
+  const vfloat4 Cx1 = { -334324.0f, -0.0f, 1.0f, 23423523.0f };
+  const vfloat4 Cx2 = { -10000.0f, 0.0f, 100.0f, 0.000005f };
+  
+  const vint4   Cx3 = as_int32(Cx1);
+  const vuint4  Cx4 = as_uint32(Cx2);
+
+  const vfloat4 Cr1 = as_float32(Cx3);
+  const vfloat4 Cr2 = as_float32(Cx4);
+
+  float result1[4];
+  float result2[4];
+  cvex::store_u(result1, Cr1);
+  cvex::store_u(result2, Cr2);
+
+  bool passed = true;
+
+  const float res1[4] = { -334324.0f, -0.0f, 1.0f, 23423523.0f };
+  const float res2[4] = { -10000.0f,  0.0f,  100.0f, 0.000005f };
+ 
+  for (int i = 0; i<4; i++)
+  {
+    if (result1[i] != res1[i] || result2[i] != res2[i])
+    {
+      passed = false;
+      break;
+    }
+  }
+
+  return passed;
+}
+
+
+bool vf4_test017_mMcRcp()
+{
+  const vfloat4 Cx1 = { +10000.0f,  -1.0f, 1.0f,   -99999999.0f };
+  const vfloat4 Cx2 = { +334324.0f, +1.0f, 100.0f, -0.000005f };
+  const vfloat4 Cx3 = { +10.0f,  +10.0f, +10.0f, +10.0f };
+
+  const vfloat4 Cr1 = cvex::min(Cx1, Cx2);
+  const vfloat4 Cr2 = cvex::max(Cx1, Cx2);
+  const vfloat4 Cr3 = cvex::clamp(Cx3, Cx1, Cx2);
+  const vfloat4 Cr4 = cvex::rcp_e(Cx2);
+
+  float result1[4];
+  float result2[4];
+  float result3[4];
+  float result4[4];
+
+  cvex::store_u(result1, Cr1);
+  cvex::store_u(result2, Cr2);
+  cvex::store_u(result3, Cr3);
+  cvex::store_u(result4, Cr4);
+
+  bool passed = true;
+
+  const float res1[4] = { +10000.0f,  -1.0f, 1.0f,   -99999999.0f };
+  const float res2[4] = { +334324.0f, +1.0f, 100.0f, -0.000005f };
+  const float res3[4] = { +10000.0f,  +1.0f, +10.0f, -0.000005f };
+  const float res4[4] = { 1.0f/Cx2[0],  1.0f / Cx2[1], 1.0f / Cx2[2], 1.0f / Cx2[3] };
+
+  for (int i = 0; i<4; i++)
+  {
+    const bool b1 = fabs(result1[i] - res1[i]) > 1e-6f;
+    const bool b2 = fabs(result2[i] - res2[i]) > 1e-6f;
+    const bool b3 = fabs(result3[i] - res3[i]) > 1e-6f;
+    const bool b4 = fabs(result4[i] - res4[i]) > 1e-3f;
+
+    if (b1 || b2 || b3 || b4)
+    {
+      passed = false;
+      break;
+    }
+  }
+  return passed;
+}
+
+bool vi4_test018_minMax()
+{
+  const vint4 Cx1 = { 10000,  -1, 1, -99999999 };
+  const vint4 Cx2 = { 334324, +1, 100, 1 };
+  const vint4 Cx3 = { 10,  10, +10, +10 };
+
+  const vint4 Cr1 = cvex::min(Cx1, Cx2);
+  const vint4 Cr2 = cvex::max(Cx1, Cx2);
+  const vint4 Cr3 = cvex::clamp(Cx3, Cx1, Cx2);
+
+  int result1[4];
+  int result2[4];
+  int result3[4];
+
+  cvex::store_u(result1, Cr1);
+  cvex::store_u(result2, Cr2);
+  cvex::store_u(result3, Cr3);
+
+  bool passed = true;
+
+  const int res1[4] = { 10000,  -1, 1, -99999999 };
+  const int res2[4] = { 334324, +1, 100, 1 };
+  const int res3[4] = { 10000,  +1, 10,  1};
+
+  for (int i = 0; i<4; i++)
+  {
+    const bool b1 = result1[i] != res1[i];
+    const bool b2 = result2[i] != res2[i];
+    const bool b3 = result3[i] != res3[i];
+
+    if (b1 || b2 || b3)
+    {
+      passed = false;
+      break;
+    }
+  }
+
+  return passed;
+}
+
+bool vu4_test019_minMax()
+{
+  const vuint4 Cx1 = { 10000,  1,  1,   1 };
+  const vuint4 Cx2 = { 334324, 1,  100, 99999999 };
+  const vuint4 Cx3 = { 10,     10, 10,  10 };
+
+  const vuint4 Cr1 = cvex::min(Cx1, Cx2);
+  const vuint4 Cr2 = cvex::max(Cx1, Cx2);
+  const vuint4 Cr3 = cvex::clamp(Cx3, Cx1, Cx2);
+
+  unsigned int result1[4];
+  unsigned int result2[4];
+  unsigned int result3[4];
+
+  cvex::store_u(result1, Cr1);
+  cvex::store_u(result2, Cr2);
+  cvex::store_u(result3, Cr3);
+
+  bool passed = true;
+
+  const unsigned int res1[4] = { 10000,  1, 1,   1 };
+  const unsigned int res2[4] = { 334324, 1, 100, 99999999 };
+  const unsigned int res3[4] = { 10000,  1, 10,  10 };
+
+  for (int i = 0; i<4; i++)
+  {
+    const bool b1 = result1[i] != res1[i];
+    const bool b2 = result2[i] != res2[i];
+    const bool b3 = result3[i] != res3[i];
+
+    if (b1 || b2 || b3)
+    {
+      passed = false;
+      break;
+    }
+  }
+
+  return passed;
 }

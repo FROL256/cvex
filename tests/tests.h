@@ -35,3 +35,9 @@ bool vu4_test013_splat();
 bool vfi4_test014_convert();
 bool viu4_test015_convert();
 bool vfi4_test016_cast();
+
+//// min, max, clamp, rcp_e
+//
+bool vf4_test017_mMcRcp();
+bool vi4_test018_minMax();
+bool vu4_test019_minMax();

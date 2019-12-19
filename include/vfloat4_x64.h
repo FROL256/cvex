@@ -32,6 +32,11 @@
 
 #include <initializer_list>
 
+#ifdef WIN32
+#undef min
+#undef max
+#endif
+
 namespace cvex
 {
   typedef unsigned           int _uint32_t;
@@ -133,6 +138,7 @@ namespace cvex
   static inline vint4 make_vint(const int a, const int b, const int c, const int d) { return _mm_set_epi32(d, c, b, a); }
 
   static inline vfloat4 as_float32(const vint4 a_val)   { return _mm_castsi128_ps(a_val); }
+  static inline vfloat4 as_float32(const vuint4 a_val)  { return _mm_castsi128_ps(a_val); }
   static inline vint4   as_int32  (const vfloat4 a_val) { return _mm_castps_si128(a_val); }
   static inline vuint4  as_uint32 (const vfloat4 a_val) { return _mm_castps_si128(a_val); }
 
@@ -167,15 +173,21 @@ namespace cvex
   }
 
 
-  static inline vfloat4 floor(const vfloat4 a_val) { return _mm_floor_ps(a_val); }
-  static inline vfloat4 ceil (const vfloat4 a_val) { return _mm_ceil_ps(a_val); }
-
   static inline vfloat4 min(const vfloat4 a, const vfloat4 b) {return _mm_min_ps(a, b);}
   static inline vfloat4 max(const vfloat4 a, const vfloat4 b) {return _mm_max_ps(a, b);}
-
-  static inline vfloat4 vclamp(const vfloat4 x, const vfloat4 minVal, const vfloat4 maxVal) { return _mm_max_ps(_mm_min_ps(x, maxVal), minVal); }
-
+  static inline vfloat4 clamp(const vfloat4 x, const vfloat4 minVal, const vfloat4 maxVal) { return _mm_max_ps(_mm_min_ps(x, maxVal), minVal); }
   static inline vfloat4 rcp_e(const vfloat4 a) { return _mm_rcp_ps(a); }
+
+  static inline vint4 min(const vint4 a, const vint4 b) { return _mm_min_epi32(a, b); }
+  static inline vint4 max(const vint4 a, const vint4 b) { return _mm_max_epi32(a, b); }
+  static inline vint4 clamp(const vint4 x, const vint4 minVal, const vint4 maxVal) { return _mm_max_epi32(_mm_min_epi32(x, maxVal), minVal); }
+
+  static inline vuint4 min(const vuint4 a, const vuint4 b) { return _mm_min_epu32(a, b); }
+  static inline vuint4 max(const vuint4 a, const vuint4 b) { return _mm_max_epu32(a, b); }
+  static inline vuint4 clamp(const vuint4 x, const vuint4 minVal, const vuint4 maxVal) { return _mm_max_epu32(_mm_min_epu32(x, maxVal), minVal); }
+
+  static inline vfloat4 floor(const vfloat4 a_val) { return _mm_floor_ps(a_val); }
+  static inline vfloat4 ceil(const vfloat4 a_val)  { return _mm_ceil_ps(a_val);  }
 
   static inline vfloat4 blend(const vfloat4 a, const vfloat4 b, const vint4 mask)
   {
@@ -196,13 +208,13 @@ namespace cvex
     const vint4 b2 = _mm_unpacklo_epi32(as_int32(a2), as_int32(a3));
     const vint4 b3 = _mm_unpackhi_epi32(as_int32(a2), as_int32(a3));
 
-    a0 = as_float32(_mm_unpacklo_epi64(b0, b2));
-    a1 = as_float32(_mm_unpackhi_epi64(b0, b2));
-    a2 = as_float32(_mm_unpacklo_epi64(b1, b3));
-    a3 = as_float32(_mm_unpackhi_epi64(b1, b3));
+    a0 = _mm_castsi128_ps(_mm_unpacklo_epi64(b0, b2));
+    a1 = _mm_castsi128_ps(_mm_unpackhi_epi64(b0, b2));
+    a2 = _mm_castsi128_ps(_mm_unpacklo_epi64(b1, b3));
+    a3 = _mm_castsi128_ps(_mm_unpackhi_epi64(b1, b3));
   }
 
-  inline static int color_compress_bgra(const vfloat4 rel_col)
+  inline static int color_pack_bgra(const vfloat4 rel_col)
   {
     static const vfloat4 const_255 = {255.0f, 255.0f, 255.0f, 255.0f};
 
