@@ -172,7 +172,6 @@ namespace cvex
     return res;
   }
 
-
   static inline vfloat4 min(const vfloat4 a, const vfloat4 b) {return _mm_min_ps(a, b);}
   static inline vfloat4 max(const vfloat4 a, const vfloat4 b) {return _mm_max_ps(a, b);}
   static inline vfloat4 clamp(const vfloat4 x, const vfloat4 minVal, const vfloat4 maxVal) { return _mm_max_ps(_mm_min_ps(x, maxVal), minVal); }
@@ -195,11 +194,24 @@ namespace cvex
                      _mm_andnot_ps(as_float32(mask), b));
   }
 
+  static inline vfloat4 blend(const vfloat4 a, const vfloat4 b, const vuint4 mask)
+  {
+    return _mm_or_ps(_mm_and_ps(as_float32(mask), a),
+                     _mm_andnot_ps(as_float32(mask), b));
+  }
+
   static inline vint4 blend(const vint4 a, const vint4 b, const vint4 mask)
   {
     return as_int32(_mm_or_ps(_mm_and_ps   (as_float32(mask), as_float32(a)),
                               _mm_andnot_ps(as_float32(mask), as_float32(b))));
   }
+
+  static inline vuint4 blend(const vuint4 a, const vuint4 b, const vuint4 mask)
+  {
+    return as_uint32(_mm_or_ps(_mm_and_ps(as_float32(mask), as_float32(a)),
+                     _mm_andnot_ps(as_float32(mask), as_float32(b))));
+  }
+
 
   static inline void transpose4(vfloat4& a0, vfloat4& a1, vfloat4& a2, vfloat4& a3)
   {

@@ -692,3 +692,103 @@ bool vu4_test019_minMax()
 
   return passed;
 }
+
+bool vf4_test020_blend()
+{
+  const vfloat4 Cx1  = { +1.0f, +2.0f, +3.0f, +4.0f };
+  const vfloat4 Cx2  = { -1.0f, -2.0f, -3.0f, -4.0f };
+
+  const vint4 mask1  = {int(0xFFFFFFFF), 0, int(0xFFFFFFFF), 0};
+  const vuint4 mask2 = {0, 0xFFFFFFFF, 0xFFFFFFFF, 0 };
+
+  const vfloat4 Cr1 = cvex::blend(Cx1, Cx2, mask1);
+  const vfloat4 Cr2 = cvex::blend(Cx1, Cx2, mask2);
+
+  float result1[4];
+  float result2[4];
+  cvex::store_u(result1, Cr1);
+  cvex::store_u(result2, Cr2);
+
+  bool passed = true;
+
+  const float res1[4] = { +1.0f, -2.0f, +3.0f, -4.0f };
+  const float res2[4] = { -1.0f, +2.0f, +3.0f, -4.0f };
+
+  for (int i = 0; i<4; i++)
+  {
+    const bool b1 = fabs(result1[i] - res1[i]) > 1e-6f;
+    const bool b2 = fabs(result2[i] - res2[i]) > 1e-6f;
+
+    if (b1 || b2)
+    {
+      passed = false;
+      break;
+    }
+  }
+  return passed;
+}
+
+bool vi4_test021_blend()
+{
+  const vint4 Cx1 = { +1, +2, +3, +4 };
+  const vint4 Cx2 = { -1, -2, -3, -4 };
+
+  const vint4 mask1 = { int(0xFFFFFFFF), 0, int(0xFFFFFFFF), 0 };
+  const vint4 mask2 = { 0, int(0xFFFFFFFF), int(0xFFFFFFFF), 0 };
+
+  const vint4 Cr1 = cvex::blend(Cx1, Cx2, mask1);
+  const vint4 Cr2 = cvex::blend(Cx1, Cx2, mask2);
+
+  int result1[4];
+  int result2[4];
+  cvex::store_u(result1, Cr1);
+  cvex::store_u(result2, Cr2);
+
+  bool passed = true;
+
+  const int res1[4] = { +1, -2, +3, -4 };
+  const int res2[4] = { -1, +2, +3, -4 };
+
+  for (int i = 0; i<4; i++)
+  {
+    if (result1[i] != res1[i] || result2[i] != res2[i])
+    {
+      passed = false;
+      break;
+    }
+  }
+  return passed;
+}
+
+
+bool vu4_test022_blend()
+{
+  const vuint4 Cx1 = { +1, +2, +3, +4 };
+  const vuint4 Cx2 = { (unsigned int)-1, (unsigned int)-2, (unsigned int)-3, (unsigned int)-4 };
+
+  const vuint4 mask1 = { 0xFFFFFFFF, 0, 0xFFFFFFFF, 0 };
+  const vuint4 mask2 = { 0, 0xFFFFFFFF, 0xFFFFFFFF, 0 };
+
+  const vuint4 Cr1 = cvex::blend(Cx1, Cx2, mask1);
+  const vuint4 Cr2 = cvex::blend(Cx1, Cx2, mask2);
+
+  unsigned int result1[4];
+  unsigned int result2[4];
+  cvex::store_u(result1, Cr1);
+  cvex::store_u(result2, Cr2);
+
+  bool passed = true;
+
+  const unsigned int res1[4] = { +1,  (unsigned int)-2, +3,  (unsigned int)-4 };
+  const unsigned int res2[4] = { (unsigned int)-1, +2, +3,  (unsigned int)-4 };
+
+  for (int i = 0; i<4; i++)
+  {
+    if (result1[i] != res1[i] || result2[i] != res2[i])
+    {
+      passed = false;
+      break;
+    }
+  }
+  return passed;
+}

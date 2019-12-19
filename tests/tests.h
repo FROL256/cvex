@@ -41,3 +41,9 @@ bool vfi4_test016_cast();
 bool vf4_test017_mMcRcp();
 bool vi4_test018_minMax();
 bool vu4_test019_minMax();
+
+//// blend, test_bits
+//
+bool vf4_test020_blend();
+bool vi4_test021_blend();
+bool vu4_test022_blend();
