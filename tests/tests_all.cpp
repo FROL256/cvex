@@ -47,6 +47,7 @@ void run_all_tests()
       { &vfiu_test025_test_bits, "vfiu_test025_test_bits"},
 
       { &vf4_test026_dot_cross, "vf4_test026_dot_cross"},
+      { &vf4_test027_shuffle,   "vf4_test027_shuffle"},
   };
 
   const auto arraySize = sizeof(tests)/sizeof(TestRun);

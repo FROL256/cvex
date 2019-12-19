@@ -167,16 +167,22 @@ namespace cvex
     const float res    = mres[0] + mres[1] + mres[2] + mres[3];
     return vfloat4{res,res,res,res}; 
   }
-  #endif
   
-  //inline __m128 CrossProduct(__m128 a, __m128 b)
-  //{
-  //  return _mm_sub_ps(
-  //    _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(3, 0, 2, 1)), _mm_shuffle_ps(b, b, _MM_SHUFFLE(3, 1, 0, 2))), 
-  //    _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(3, 1, 0, 2)), _mm_shuffle_ps(b, b, _MM_SHUFFLE(3, 0, 2, 1)))
-  //  );
-  //}
+  static inline vfloat4 shuffle_zyxw(vfloat4 a_src) { return __builtin_shuffle(a_src, vint4{2,1,0,3}); }
+  static inline vfloat4 shuffle_yzxw(vfloat4 a_src) { return __builtin_shuffle(a_src, vint4{1,2,0,3}); }
+  static inline vfloat4 shuffle_zxyw(vfloat4 a_src) { return __builtin_shuffle(a_src, vint4{2,0,1,3}); }
 
+  static inline vfloat4 shuffle_xyxy(vfloat4 a_src) { return __builtin_shuffle(a_src, vint4{0,1,0,1});  }
+  static inline vfloat4 shuffle_zwzw(vfloat4 a_src) { return __builtin_shuffle(a_src, vint4{2,3,2,3}); }
+
+  static inline vfloat4 cross3(const vfloat4 a, const vfloat4 b) 
+  {
+    const vfloat4 a_yzx = shuffle_yzxw(a);
+    const vfloat4 b_yzx = shuffle_yzxw(b);
+    return shuffle_yzxw(a*b_yzx - a_yzx*b);
+  }
+  
+  #endif
 
   // cross3
   // length3

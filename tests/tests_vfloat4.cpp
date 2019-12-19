@@ -909,4 +909,33 @@ bool vf4_test026_dot_cross()
   return b1 && b2 && b3 && b4 && b5;
 }
 
+bool vf4_test027_shuffle()
+{
+  const cvex::vfloat4 Cx1 = { 1.0f, 2.0f, 3.0f, 4.0f };
+
+  const cvex::vfloat4 Cr1 = shuffle_zyxw(Cx1);
+  const cvex::vfloat4 Cr2 = shuffle_yzxw(Cx1);
+  const cvex::vfloat4 Cr3 = shuffle_zxyw(Cx1);
+  const cvex::vfloat4 Cr4 = shuffle_xyxy(Cx1);
+  const cvex::vfloat4 Cr5 = shuffle_zwzw(Cx1);
+
+  CVEX_ALIGNED(16) float result1[4];
+  CVEX_ALIGNED(16) float result2[4];
+  CVEX_ALIGNED(16) float result3[4];
+  CVEX_ALIGNED(16) float result4[4];
+  CVEX_ALIGNED(16) float result5[4];
+  cvex::store(result1, Cr1);
+  cvex::store(result2, Cr2);
+  cvex::store(result3, Cr3);
+  cvex::store(result4, Cr4);
+  cvex::store(result5, Cr5);
+
+  const bool b1 = (result1[0] == 3.0f) && (result1[1] == 2.0f) && (result1[2] == 1.0f) && (result1[3] == 4.0f);
+  const bool b2 = (result2[0] == 2.0f) && (result2[1] == 3.0f) && (result2[2] == 1.0f) && (result2[3] == 4.0f);
+  const bool b3 = (result3[0] == 3.0f) && (result3[1] == 1.0f) && (result3[2] == 2.0f) && (result3[3] == 4.0f);
+  const bool b4 = (result4[0] == 1.0f) && (result4[1] == 2.0f) && (result4[2] == 1.0f) && (result4[3] == 2.0f);
+  const bool b5 = (result5[0] == 3.0f) && (result5[1] == 4.0f) && (result5[2] == 3.0f) && (result5[3] == 4.0f);
+ 
+  return (b1 && b2 && b3 && b4 && b5);
+}
 

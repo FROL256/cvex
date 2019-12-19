@@ -54,10 +54,10 @@ bool vf4_test023_floor_ceil();
 bool vfiu_test024_test_bits();
 bool vfiu_test025_test_bits();
 
-//// dot, cross
+//// dot, cross, shuffle
 //
 bool vf4_test026_dot_cross();
+bool vf4_test027_shuffle();
 
-
-//// shuffle
+//// extract_*, splat_*, cmpgt3, cmplt3, color_pack
 //

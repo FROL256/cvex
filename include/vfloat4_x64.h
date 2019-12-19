@@ -111,16 +111,6 @@ namespace cvex
   static inline vint4   load_u(const int *data)     { return _mm_castps_si128(_mm_loadu_ps((float*)data)); }
   static inline vfloat4 load_s(const float *data)   { return _mm_load_ss(data);  }
 
-  static inline int extract_0(const vint4 a_val)    { return _mm_cvtsi128_si32(a_val); }
-  static inline int extract_1(const vint4 a_val)    { return _mm_extract_epi32(a_val, 1); }
-  static inline int extract_2(const vint4 a_val)    { return _mm_extract_epi32(a_val, 2); }
-  static inline int extract_3(const vint4 a_val)    { return _mm_extract_epi32(a_val, 3); }
-
-  static inline vfloat4 shuffle_zyxw(vfloat4 a_src) { return _mm_shuffle_ps(a_src, a_src, _MM_SHUFFLE(3, 0, 1, 2)); }
-  static inline vfloat4 shuffle_yzxw(vfloat4 a_src) { return _mm_shuffle_ps(a_src, a_src, _MM_SHUFFLE(3, 0, 2, 1)); }
-  static inline vfloat4 shuffle_zxyw(vfloat4 a_src) { return _mm_shuffle_ps(a_src, a_src, _MM_SHUFFLE(3, 1, 0, 2)); }
-  static inline vfloat4 shuffle_zwzw(vfloat4 a_src) { return _mm_shuffle_ps(a_src, a_src, _MM_SHUFFLE(3, 2, 3, 2)); }
-
   //static inline void stream(void *data, vint4 a_val) { _mm_stream_si128((vint4 *) data, a_val); }
 
   static inline vint4   splat(const int i)       { return _mm_set1_epi32(i); }
@@ -226,17 +216,6 @@ namespace cvex
     a3 = _mm_castsi128_ps(_mm_unpackhi_epi64(b1, b3));
   }
 
-  inline static int color_pack_bgra(const vfloat4 rel_col)
-  {
-    static const vfloat4 const_255 = {255.0f, 255.0f, 255.0f, 255.0f};
-
-    const __m128i rgba = _mm_cvtps_epi32(_mm_mul_ps(cvex::shuffle_zyxw(rel_col), const_255));
-    const __m128i out  = _mm_packus_epi32(rgba, _mm_setzero_si128());
-    const __m128i out2 = _mm_packus_epi16(out, _mm_setzero_si128());
-
-    return _mm_cvtsi128_si32(out2);
-  }
-
   static inline bool test_bits_any(const vint4 a)
   {
     const _sint64_t* p1 = (const _sint64_t*)&a;
@@ -291,18 +270,43 @@ namespace cvex
   static inline vfloat4 dot4v(const vfloat4 a, const vfloat4 b) { return _mm_dp_ps(a, b, 0xff); }
   static inline float   dot4f(const vfloat4 a, const vfloat4 b) { return _mm_cvtss_f32(_mm_dp_ps(a, b, 0xff)); }
 
+  // #TODO: add extract for float4
+
+  static inline int extract_0(const vint4 a_val) { return _mm_cvtsi128_si32(a_val); }
+  static inline int extract_1(const vint4 a_val) { return _mm_extract_epi32(a_val, 1); }
+  static inline int extract_2(const vint4 a_val) { return _mm_extract_epi32(a_val, 2); }
+  static inline int extract_3(const vint4 a_val) { return _mm_extract_epi32(a_val, 3); }
+
+  static inline unsigned int extract_0(const vuint4 a_val) { return (unsigned int)_mm_cvtsi128_si32(a_val); }
+  static inline unsigned int extract_1(const vuint4 a_val) { return (unsigned int)_mm_extract_epi32(a_val, 1); }
+  static inline unsigned int extract_2(const vuint4 a_val) { return (unsigned int)_mm_extract_epi32(a_val, 2); }
+  static inline unsigned int extract_3(const vuint4 a_val) { return (unsigned int)_mm_extract_epi32(a_val, 3); }
+
+  static inline vfloat4 shuffle_zyxw(vfloat4 a_src) { return _mm_shuffle_ps(a_src, a_src, _MM_SHUFFLE(3, 0, 1, 2)); }
+  static inline vfloat4 shuffle_yzxw(vfloat4 a_src) { return _mm_shuffle_ps(a_src, a_src, _MM_SHUFFLE(3, 0, 2, 1)); }
+  static inline vfloat4 shuffle_zxyw(vfloat4 a_src) { return _mm_shuffle_ps(a_src, a_src, _MM_SHUFFLE(3, 1, 0, 2)); }
+
+  static inline vfloat4 shuffle_xyxy(vfloat4 a_src) { return _mm_shuffle_ps(a_src, a_src, _MM_SHUFFLE(1, 0, 1, 0)); }
+  static inline vfloat4 shuffle_zwzw(vfloat4 a_src) { return _mm_shuffle_ps(a_src, a_src, _MM_SHUFFLE(3, 2, 3, 2)); }
+
   static inline vfloat4 cross3(const vfloat4 a, const vfloat4 b) 
   { 
-    const __m128 a_yzx = _mm_shuffle_ps(a, a, _MM_SHUFFLE(3, 0, 2, 1));
-    const __m128 b_yzx = _mm_shuffle_ps(b, b, _MM_SHUFFLE(3, 0, 2, 1));
+    const __m128 a_yzx = shuffle_yzxw(a);
+    const __m128 b_yzx = shuffle_yzxw(b);
     const __m128 c     = _mm_sub_ps(_mm_mul_ps(a, b_yzx), _mm_mul_ps(a_yzx, b));
-    return _mm_shuffle_ps(c, c, _MM_SHUFFLE(3, 0, 2, 1));
+    return shuffle_yzxw(c);
   }
 
-  // it is strongly not recommended to use these functions because their general implementation could be slow
-  //
-  static inline vfloat4 shuffle2_xy_xy(const vfloat4 a, const vfloat4 b) { return _mm_shuffle_ps(a, b, _MM_SHUFFLE(1, 0, 1, 0)); }
-  static inline vfloat4 shuffle2_xy_zw(const vfloat4 a, const vfloat4 b) { return _mm_shuffle_ps(a, b, _MM_SHUFFLE(3, 2, 1, 0)); }
+  inline static int color_pack_bgra(const vfloat4 rel_col)
+  {
+    static const vfloat4 const_255 = { 255.0f, 255.0f, 255.0f, 255.0f };
+
+    const __m128i rgba = _mm_cvtps_epi32(_mm_mul_ps(cvex::shuffle_zyxw(rel_col), const_255));
+    const __m128i out  = _mm_packus_epi32(rgba, _mm_setzero_si128());
+    const __m128i out2 = _mm_packus_epi16(out, _mm_setzero_si128());
+
+    return _mm_cvtsi128_si32(out2);
+  }
 
   //static inline bool cmpgt_all_xyzw(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ps(a, b)) & 15) == 15; } // #TODO: UNTESTED!
   static inline bool cmpgt_all_xyz (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ps(a, b)) & 7)  == 7; }
