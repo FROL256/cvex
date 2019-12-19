@@ -285,14 +285,24 @@ namespace cvex
     return (a2 == _uint64_t(0xFFFFFFFFFFFFFFFF));
   }
 
+  static inline vfloat4 dot3v(const vfloat4 a, const vfloat4 b) { return _mm_dp_ps(a, b, 0x7f); }
+  static inline float   dot3f(const vfloat4 a, const vfloat4 b) { return _mm_cvtss_f32(_mm_dp_ps(a, b, 0x7f)); }
+
+  static inline vfloat4 dot4v(const vfloat4 a, const vfloat4 b) { return _mm_dp_ps(a, b, 0xff); }
+  static inline float   dot4f(const vfloat4 a, const vfloat4 b) { return _mm_cvtss_f32(_mm_dp_ps(a, b, 0xff)); }
+
+  static inline vfloat4 cross3(const vfloat4 a, const vfloat4 b) 
+  { 
+    const __m128 a_yzx = _mm_shuffle_ps(a, a, _MM_SHUFFLE(3, 0, 2, 1));
+    const __m128 b_yzx = _mm_shuffle_ps(b, b, _MM_SHUFFLE(3, 0, 2, 1));
+    const __m128 c     = _mm_sub_ps(_mm_mul_ps(a, b_yzx), _mm_mul_ps(a_yzx, b));
+    return _mm_shuffle_ps(c, c, _MM_SHUFFLE(3, 0, 2, 1));
+  }
 
   // it is strongly not recommended to use these functions because their general implementation could be slow
   //
   static inline vfloat4 shuffle2_xy_xy(const vfloat4 a, const vfloat4 b) { return _mm_shuffle_ps(a, b, _MM_SHUFFLE(1, 0, 1, 0)); }
   static inline vfloat4 shuffle2_xy_zw(const vfloat4 a, const vfloat4 b) { return _mm_shuffle_ps(a, b, _MM_SHUFFLE(3, 2, 1, 0)); }
-
-  static inline vfloat4 dot3v(const vfloat4 a, const vfloat4 b) { return _mm_dp_ps(a, b, 0x7f); }
-  static inline float   dot3f(const vfloat4 a, const vfloat4 b) { return _mm_cvtss_f32(_mm_dp_ps(a, b, 0x7f)); }
 
   //static inline bool cmpgt_all_xyzw(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ps(a, b)) & 15) == 15; } // #TODO: UNTESTED!
   static inline bool cmpgt_all_xyz (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ps(a, b)) & 7)  == 7; }

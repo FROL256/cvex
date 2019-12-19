@@ -864,3 +864,49 @@ bool vfiu_test025_test_bits()
 
   return (!b1 && !b2 && b3 && !b4 && b5 && !b6);
 }
+
+bool vf4_test026_dot_cross()
+{
+  const cvex::vfloat4 Cx1 = { 1.0f, 2.0f, 3.0f, 4.0f };
+  const cvex::vfloat4 Cx2 = { 5.0f, 6.0f, 7.0f, 8.0f };
+
+  const float   dot1 = cvex::dot3f(Cx1, Cx2);
+  const vfloat4 dot2 = cvex::dot3v(Cx1, Cx2);
+  const float   dot3 = cvex::dot4f(Cx1, Cx2);
+  const vfloat4 dot4 = cvex::dot4v(Cx1, Cx2);
+  const vfloat4 crs3 = cvex::cross3(Cx1, Cx2);
+
+  CVEX_ALIGNED(16) float result1[4];
+  CVEX_ALIGNED(16) float result2[4];
+  CVEX_ALIGNED(16) float result3[4];
+  cvex::store(result1, dot2);
+  cvex::store(result2, dot4);
+  cvex::store(result3, crs3);
+
+  const float ref_dp3 = 1.0f*5.0f + 2.0f*6.0f + 3.0f*7.0f;
+  const float ref_dp4 = 1.0f*5.0f + 2.0f*6.0f + 3.0f*7.0f + 4.0f*8.0f;
+
+  const float crs_ref[3] = { Cx1[1]*Cx2[2] - Cx1[2]*Cx2[1], 
+                             Cx1[2]*Cx2[0] - Cx1[0]*Cx2[2], 
+                             Cx1[0]*Cx2[1] - Cx1[1]*Cx2[0] };
+
+  const bool b1 = fabs(dot1 - ref_dp3) < 1e-6f;
+  const bool b2 = fabs(result1[0] - ref_dp3) < 1e-6f && 
+                  fabs(result1[1] - ref_dp3) < 1e-6f && 
+                  fabs(result1[2] - ref_dp3) < 1e-6f &&
+                  fabs(result1[3] - ref_dp3) < 1e-6f;
+
+  const bool b3 = fabs(dot3 - ref_dp4) < 1e-6f;
+  const bool b4 = fabs(result2[0] - ref_dp4) < 1e-6f &&
+                  fabs(result2[1] - ref_dp4) < 1e-6f &&
+                  fabs(result2[2] - ref_dp4) < 1e-6f &&
+                  fabs(result2[3] - ref_dp4) < 1e-6f;
+
+  const bool b5 = fabs(result3[0] - crs_ref[0]) < 1e-6f && 
+                  fabs(result3[1] - crs_ref[1]) < 1e-6f &&
+                  fabs(result3[2] - crs_ref[2]) < 1e-6f;
+
+  return b1 && b2 && b3 && b4 && b5;
+}
+
+

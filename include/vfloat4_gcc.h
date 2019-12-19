@@ -139,6 +139,8 @@ namespace cvex
   #ifdef __x86_64
   static inline float   dot3f(const vfloat4 a, const vfloat4 b) { return _mm_cvtss_f32(_mm_dp_ps(a, b, 0x7f)); }
   static inline vfloat4 dot3v(const vfloat4 a, const vfloat4 b) { return _mm_dp_ps(a, b, 0x7f); }
+  static inline vfloat4 dot4v(const vfloat4 a, const vfloat4 b) { return _mm_dp_ps(a, b, 0xff); }
+  static inline float   dot4f(const vfloat4 a, const vfloat4 b) { return _mm_cvtss_f32(_mm_dp_ps(a, b, 0xff)); }
   #else
   static inline float   dot3f(const vfloat4 a, const vfloat4 b) 
   {
@@ -150,6 +152,19 @@ namespace cvex
   {
     const vfloat4 mres = a*b;
     const float res    = mres[0] + mres[1] + mres[2];
+    return vfloat4{res,res,res,res}; 
+  }
+
+  static inline float   dot4f(const vfloat4 a, const vfloat4 b) 
+  {
+    const vfloat4 mres = a*b; 
+    return mres[0] + mres[1] + mres[2] + mres[3]; 
+  }
+
+  static inline vfloat4 dot4v(const vfloat4 a, const vfloat4 b) 
+  {
+    const vfloat4 mres = a*b;
+    const float res    = mres[0] + mres[1] + mres[2] + mres[3];
     return vfloat4{res,res,res,res}; 
   }
   #endif

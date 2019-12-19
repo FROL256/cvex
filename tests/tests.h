@@ -53,3 +53,11 @@ bool vu4_test022_blend();
 bool vf4_test023_floor_ceil();
 bool vfiu_test024_test_bits();
 bool vfiu_test025_test_bits();
+
+//// dot, cross
+//
+bool vf4_test026_dot_cross();
+
+
+//// shuffle
+//

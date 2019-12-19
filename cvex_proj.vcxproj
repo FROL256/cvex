@@ -133,6 +133,7 @@
     <ClCompile Include="tests\tests_vfloat4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\LiteMath.h" />
     <ClInclude Include="include\vfloat4_x64.h" />
     <ClInclude Include="include\vfloat8_x64.h" />
     <ClInclude Include="tests\tests.h" />

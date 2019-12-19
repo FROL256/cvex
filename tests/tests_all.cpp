@@ -44,7 +44,9 @@ void run_all_tests()
 
       { &vf4_test023_floor_ceil, "vf4_test023_floor_ceil"}, 
       { &vfiu_test024_test_bits, "vfiu_test024_test_bits"},
-      { &vfiu_test025_test_bits, "vfiu_test025_test_bits"}
+      { &vfiu_test025_test_bits, "vfiu_test025_test_bits"},
+
+      { &vf4_test026_dot_cross, "vf4_test026_dot_cross"},
   };
 
   const auto arraySize = sizeof(tests)/sizeof(TestRun);
