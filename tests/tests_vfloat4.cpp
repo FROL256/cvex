@@ -792,3 +792,75 @@ bool vu4_test022_blend()
   }
   return passed;
 }
+
+bool vf4_test023_floor_ceil()
+{
+  const vfloat4 Cx1 = { +1.5f, -2.5f, +3.2f, -4.8f };
+
+  const vfloat4 Cr1 = cvex::floor(Cx1);
+  const vfloat4 Cr2 = cvex::ceil(Cx1);
+
+  CVEX_ALIGNED(16) float result1[4];
+  CVEX_ALIGNED(16) float result2[4];
+  cvex::store(result1, Cr1);
+  cvex::store(result2, Cr2);
+
+  const float res1[4] = { +1.0f, -3.0f, +3.0f, -5.0f };
+  const float res2[4] = { +2.0f, -2.0f, +4.0f, -4.0f };
+
+  bool passed = true;
+  for (int i = 0; i<4; i++)
+  {
+    const bool b1 = fabs(result1[i] - res1[i]) > 1e-10f;
+    const bool b2 = fabs(result2[i] - res2[i]) > 1e-10f;
+
+    if (b1 || b2)
+    {
+      passed = false;
+      break;
+    }
+  }
+  return passed;
+}
+
+bool vfiu_test024_test_bits()
+{
+  const vfloat4 Cx1 = { 0.0f, 0.5f, 0.0f, 0.0f };
+  const vfloat4 Cx2 = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+  const vint4 Cx3 = { 0, 0, 4, 0 };
+  const vint4 Cx4 = { 0, 0, 0, 0 };
+
+  const vuint4 Cx5 = { 0, 0, 0, 8 };
+  const vuint4 Cx6 = { 0, 0, 0, 0 };
+
+  const bool b1 = cvex::test_bits_any(Cx1);
+  const bool b2 = cvex::test_bits_any(Cx2);
+  const bool b3 = cvex::test_bits_any(Cx3);
+  const bool b4 = cvex::test_bits_any(Cx4);
+  const bool b5 = cvex::test_bits_any(Cx5);
+  const bool b6 = cvex::test_bits_any(Cx6);
+
+  return (b1 && !b2 && b3 && !b4 && b5 && !b6);
+}
+
+bool vfiu_test025_test_bits()
+{
+  const vfloat4 Cx1 = { 0.0f, 0.5f, 0.0f, 0.0f };
+  const vfloat4 Cx2 = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+  const vint4 Cx3 = { -1, -1, -1, -1 };
+  const vint4 Cx4 = { -1, -1, -1, -10 };
+
+  const vuint4 Cx5 = { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
+  const vuint4 Cx6 = { 0xFFFFFFFF, 0, 0xFFFFFFFF, 0xFFFFFFFF };
+
+  const bool b1 = cvex::test_bits_all(Cx1);
+  const bool b2 = cvex::test_bits_all(Cx2);
+  const bool b3 = cvex::test_bits_all(Cx3);
+  const bool b4 = cvex::test_bits_all(Cx4);
+  const bool b5 = cvex::test_bits_all(Cx5);
+  const bool b6 = cvex::test_bits_all(Cx6);
+
+  return (!b1 && !b2 && b3 && !b4 && b5 && !b6);
+}

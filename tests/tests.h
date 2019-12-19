@@ -47,3 +47,9 @@ bool vu4_test019_minMax();
 bool vf4_test020_blend();
 bool vi4_test021_blend();
 bool vu4_test022_blend();
+
+//// floor, ceil, test_bits(any,all)
+//
+bool vf4_test023_floor_ceil();
+bool vfiu_test024_test_bits();
+bool vfiu_test025_test_bits();

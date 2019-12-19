@@ -237,12 +237,54 @@ namespace cvex
     return _mm_cvtsi128_si32(out2);
   }
 
-  static inline bool test_bits_any(const vint4 a) { return (_mm_movemask_ps(_mm_castsi128_ps(a)) & 15) != 0; }
+  static inline bool test_bits_any(const vint4 a)
+  {
+    const _sint64_t* p1 = (const _sint64_t*)&a;
+    const _sint64_t* p2 = p1 + 1;
+    const _sint64_t a2 = (*p1) | (*p2);
+    return (a2 != 0);
+  }
 
-  static inline bool test_all(const vfloat4 a) { return (_mm_movemask_ps(a) & 15) == 15; }
-  static inline bool test_any(const vfloat4 a) { return (_mm_movemask_ps(a) & 15) != 0; }
-  static inline bool test_all(const vint4 a)   { return (_mm_movemask_ps(_mm_castsi128_ps(a)) & 15) == 15; }
-  static inline bool test_any(const vint4 a)   { return (_mm_movemask_ps(_mm_castsi128_ps(a)) & 15) != 0; }
+  static inline bool test_bits_any(const vuint4 a)
+  {
+    const _uint64_t* p1 = (const _uint64_t*)&a;
+    const _uint64_t* p2 = p1 + 1;
+    const _uint64_t a2 = (*p1) | (*p2);
+    return (a2 != 0);
+  }
+
+  static inline bool test_bits_any(const vfloat4 a) 
+  { 
+    const _sint64_t* p1 = (const _sint64_t*)&a;
+    const _sint64_t* p2 = p1 + 1;
+    const _sint64_t a2  = (*p1) | (*p2);
+    return (a2 != 0);
+  }
+
+  static inline bool test_bits_all(const vint4 a)
+  {
+    const _uint64_t* p1 = (const _uint64_t*)&a;
+    const _uint64_t* p2 = p1 + 1;
+    const _uint64_t a2 = (*p1) & (*p2);
+    return (a2 == _uint64_t(0xFFFFFFFFFFFFFFFF));
+  }
+
+  static inline bool test_bits_all(const vuint4 a)
+  {
+    const _uint64_t* p1 = (const _uint64_t*)&a;
+    const _uint64_t* p2 = p1 + 1;
+    const _uint64_t a2 = (*p1) & (*p2);
+    return (a2 == _uint64_t(0xFFFFFFFFFFFFFFFF));
+  }
+
+  static inline bool test_bits_all(const vfloat4 a)
+  {
+    const _uint64_t* p1 = (const _uint64_t*)&a;
+    const _uint64_t* p2 = p1 + 1;
+    const _uint64_t a2 = (*p1) & (*p2);
+    return (a2 == _uint64_t(0xFFFFFFFFFFFFFFFF));
+  }
+
 
   // it is strongly not recommended to use these functions because their general implementation could be slow
   //
