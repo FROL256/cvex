@@ -70,4 +70,5 @@ bool vu4_test031_ext_splt();
 //
 bool vf4_test032_compare();
 bool vf4_test033_compare();
+bool vf4_test034_colpack();
 

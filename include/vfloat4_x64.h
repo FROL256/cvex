@@ -305,7 +305,18 @@ namespace cvex
     return shuffle_yzxw(c);
   }
 
-  inline static int color_pack_bgra(const vfloat4 rel_col)
+  inline static unsigned int color_pack_rgba(const vfloat4 rel_col)
+  {
+    static const vfloat4 const_255 = { 255.0f, 255.0f, 255.0f, 255.0f };
+  
+    const __m128i rgba = _mm_cvtps_epi32(_mm_mul_ps(rel_col, const_255));
+    const __m128i out  = _mm_packus_epi32(rgba, _mm_setzero_si128());
+    const __m128i out2 = _mm_packus_epi16(out, _mm_setzero_si128());
+  
+    return _mm_cvtsi128_si32(out2);
+  }
+
+  inline static unsigned int color_pack_bgra(const vfloat4 rel_col)
   {
     static const vfloat4 const_255 = { 255.0f, 255.0f, 255.0f, 255.0f };
 
@@ -315,20 +326,6 @@ namespace cvex
 
     return _mm_cvtsi128_si32(out2);
   }
-
-  //static inline bool cmpgt_all_xyzw(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ps(a, b)) & 15) == 15; } // #TODO: UNTESTED!
-  static inline bool cmpgt_all_xyz (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ps(a, b)) & 7)  == 7; }
-  static inline bool cmpgt_all_x   (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ss(a, b)) & 1)  == 1; }
-
-  // it is not recommended to use these functions because they are not general, but more hw specific
-  // due to _mm_***_ss is the x64 only feature, so, when using these functions you must guarantee that
-  // only first vector component must be used further. Other components are undefined!
-  //
-  static inline vfloat4 add_s(vfloat4 a, vfloat4 b) { return _mm_add_ss(a,b); } // #NOTE: assume you will never use .yzw coordinates!; only .x is valid!
-  static inline vfloat4 sub_s(vfloat4 a, vfloat4 b) { return _mm_sub_ss(a,b); } // #NOTE: assume you will never use .yzw coordinates!; only .x is valid!
-  static inline vfloat4 mul_s(vfloat4 a, vfloat4 b) { return _mm_mul_ss(a,b); } // #NOTE: assume you will never use .yzw coordinates!; only .x is valid!
-  static inline vfloat4 div_s(vfloat4 a, vfloat4 b) { return _mm_div_ss(a,b); } // #NOTE: assume you will never use .yzw coordinates!; only .x is valid!
-  static inline vfloat4 rcp_s(vfloat4 a)            { return _mm_rcp_ss(a);   } // #NOTE: assume you will never use .yzw coordinates!; only .x is valid!
 
   static inline void prefetch(const float* ptr) {  _mm_prefetch((const char*)ptr, _MM_HINT_T0); }
   static inline void prefetch(const int* ptr)   {  _mm_prefetch((const char*)ptr, _MM_HINT_T0); }

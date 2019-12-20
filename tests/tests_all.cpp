@@ -56,6 +56,7 @@ void run_all_tests()
 
       { &vf4_test032_compare, "vf4_test032_compare"},
       { &vf4_test033_compare, "vf4_test033_compare"},
+      { &vf4_test034_colpack, "vf4_test034_colpack"},
   };
 
   const auto arraySize = sizeof(tests)/sizeof(TestRun);

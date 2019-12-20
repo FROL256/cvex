@@ -1148,3 +1148,13 @@ bool vf4_test033_compare()
 
   return (!b1 && !b2 && !b3 && b4) && (!b5 && b6 && !b7 && b8);
 }
+
+bool vf4_test034_colpack()
+{
+  const cvex::vfloat4 Cx1 = { 0.25f, 0.5f, 0.0, 1.0f };
+
+  const unsigned int packed_rgba = cvex::color_pack_rgba(Cx1);
+  const unsigned int packed_bgra = cvex::color_pack_bgra(Cx1);
+
+  return (packed_bgra == 0xFF408000) && (packed_rgba == 0xFF008040);
+}

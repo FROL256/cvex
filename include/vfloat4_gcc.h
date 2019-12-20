@@ -177,7 +177,7 @@ namespace cvex
   static inline float extract_1(const vfloat4 a_val) { return a_val[1]; }
   static inline float extract_2(const vfloat4 a_val) { return a_val[2]; }
   static inline float extract_3(const vfloat4 a_val) { return a_val[3]; }
-  
+
   #ifdef __x86_64
   static inline float   dot3f(const vfloat4 a, const vfloat4 b) { return _mm_cvtss_f32(_mm_dp_ps(a, b, 0x7f)); }
   static inline vfloat4 dot3v(const vfloat4 a, const vfloat4 b) { return _mm_dp_ps(a, b, 0x7f); }
@@ -196,6 +196,28 @@ namespace cvex
   static inline bool cmplt3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmplt_ps(a, b)) & 7)  == 7; }
   static inline bool cmpge3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpge_ps(a, b)) & 7)  == 7; }
   static inline bool cmple3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmple_ps(a, b)) & 7)  == 7; }
+
+  inline static unsigned int color_pack_rgba(const vfloat4 rel_col)
+  {
+    static constexpr vfloat4 const_255 = { 255.0f, 255.0f, 255.0f, 255.0f };
+  
+    const __m128i rgba = _mm_cvtps_epi32(_mm_mul_ps(rel_col, const_255));
+    const __m128i out  = _mm_packus_epi32(rgba, _mm_setzero_si128());
+    const __m128i out2 = _mm_packus_epi16(out, _mm_setzero_si128());
+  
+    return _mm_cvtsi128_si32(out2);
+  }
+
+  inline static unsigned int color_pack_bgra(const vfloat4 rel_col)
+  {
+    static constexpr vfloat4 const_255 = { 255.0f, 255.0f, 255.0f, 255.0f };
+  
+    const __m128i rgba = _mm_cvtps_epi32(_mm_mul_ps(cvex::shuffle_zyxw(rel_col), const_255));
+    const __m128i out  = _mm_packus_epi32(rgba, _mm_setzero_si128());
+    const __m128i out2 = _mm_packus_epi16(out, _mm_setzero_si128());
+  
+    return _mm_cvtsi128_si32(out2);
+  }
 
   static inline void set_ftz() { _MM_SET_ROUNDING_MODE(_MM_ROUND_TOWARD_ZERO); }
   #else
@@ -259,8 +281,22 @@ namespace cvex
   static inline bool cmpge3(const vfloat4 a, const vfloat4 b) { return (a[0] >= b[0]) && (a[1] >= b[1]) && (a[2] >= b[2]); }
   static inline bool cmple3(const vfloat4 a, const vfloat4 b) { return (a[0] <= b[0]) && (a[1] <= b[1]) && (a[2] <= b[2]); }
 
+  inline static unsigned int color_pack_rgba(const vfloat4 rel_col)
+  {
+    static constexpr vfloat4 const_255 = { 256.0f, 256.0f, 256.0f, 256.0f };
+    const vuint4 rgba = to_uint32(_mm_mul_ps(rel_col, const_255));
+    return (rgba[3] << 24) | (rgba[2] << 16) | (rgba[1] << 8) | rgba[0];
+  }
+
+  inline static unsigned int color_pack_bgra(const vfloat4 rel_col)
+  {
+    static constexpr vfloat4 const_255 = { 256.0f, 256.0f, 256.0f, 256.0f };
+    const vuint4 rgba = to_uint32(_mm_mul_ps(cvex::shuffle_zyxw(rel_col), const_255));
+    return (rgba[3] << 24) | (rgba[2] << 16) | (rgba[1] << 8) | rgba[0];
+  }
+
   inline static void set_ftz() {}
-  
+
   #endif
 
   //color_compress_bgra, color_compress_rgba 
