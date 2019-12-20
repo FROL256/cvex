@@ -177,7 +177,7 @@ namespace cvex
   static inline float extract_1(const vfloat4 a_val) { return a_val[1]; }
   static inline float extract_2(const vfloat4 a_val) { return a_val[2]; }
   static inline float extract_3(const vfloat4 a_val) { return a_val[3]; }
-
+  
   #ifdef __x86_64
   static inline float   dot3f(const vfloat4 a, const vfloat4 b) { return _mm_cvtss_f32(_mm_dp_ps(a, b, 0x7f)); }
   static inline vfloat4 dot3v(const vfloat4 a, const vfloat4 b) { return _mm_dp_ps(a, b, 0x7f); }
@@ -191,6 +191,12 @@ namespace cvex
 
   static inline vfloat4 floor(const vfloat4 a_val) { return _mm_floor_ps(a_val); }
   static inline vfloat4 ceil(const vfloat4 a_val)  { return _mm_ceil_ps(a_val);  }
+
+  static inline bool cmpgt3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ps(a, b)) & 7)  == 7; }
+  static inline bool cmplt3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmplt_ps(a, b)) & 7)  == 7; }
+  static inline bool cmpge3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpge_ps(a, b)) & 7)  == 7; }
+  static inline bool cmple3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmple_ps(a, b)) & 7)  == 7; }
+
   static inline void set_ftz() { _MM_SET_ROUNDING_MODE(_MM_ROUND_TOWARD_ZERO); }
   #else
   static inline float   dot3f(const vfloat4 a, const vfloat4 b) 
@@ -248,12 +254,14 @@ namespace cvex
     return res;
   }
 
-  inline static void set_ftz() {}
-  #endif
-  
+  static inline bool cmpgt3(const vfloat4 a, const vfloat4 b) { return (a[0] > b[0]) && (a[1] > b[1]) && (a[2] > b[2]); }
+  static inline bool cmplt3(const vfloat4 a, const vfloat4 b) { return (a[0] < b[0]) && (a[1] < b[1]) && (a[2] < b[2]); }
+  static inline bool cmpge3(const vfloat4 a, const vfloat4 b) { return (a[0] >= b[0]) && (a[1] >= b[1]) && (a[2] >= b[2]); }
+  static inline bool cmple3(const vfloat4 a, const vfloat4 b) { return (a[0] <= b[0]) && (a[1] <= b[1]) && (a[2] <= b[2]); }
 
-  // cmpgt3
-  // extract_<0,1,2,3>
+  inline static void set_ftz() {}
+  
+  #endif
 
   //color_compress_bgra, color_compress_rgba 
 

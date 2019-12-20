@@ -1129,3 +1129,22 @@ bool vf4_test032_compare()
 
   return b1 && b2 && b3 && b4 && b5 && b6;
 }
+
+bool vf4_test033_compare()
+{
+  const cvex::vfloat4 Cx1 = { 1.0f, 2.0f, 7.0f, 10.0f };
+  const cvex::vfloat4 Cx2 = { 5.0f, 6.0f, 7.0f, 4.0f };
+  const cvex::vfloat4 Cx3 = { 5.0f, 6.0f, 8.0f, -4.0f };
+
+  const bool b1 = cmpgt3(Cx1, Cx2);
+  const bool b2 = cmplt3(Cx1, Cx2);
+  const bool b3 = cmpge3(Cx1, Cx2);
+  const bool b4 = cmple3(Cx1, Cx2);
+
+  const bool b5 = cmpgt3(Cx1, Cx3);
+  const bool b6 = cmplt3(Cx1, Cx3);
+  const bool b7 = cmpge3(Cx1, Cx3);
+  const bool b8 = cmple3(Cx1, Cx3);
+
+  return (!b1 && !b2 && !b3 && b4) && (!b5 && b6 && !b7 && b8);
+}
