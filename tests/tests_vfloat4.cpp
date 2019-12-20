@@ -1,11 +1,7 @@
-#ifdef WIN32
-  #include "include/vfloat4_x64.h"
-#else
-  #include "include/vfloat4_gcc.h"
-#endif 
-
 #include <iostream>
 #include <cmath>
+
+#include "include/vfloat4.h"
 
 using namespace cvex;
 
@@ -1096,4 +1092,40 @@ bool vu4_test031_ext_splt()
     }
   }
   return passed && (x == 1) && (y == 2) && (z == 3) && (w == 4);
+}
+
+bool vf4_test032_compare()
+{
+  const cvex::vfloat4 Cx1 = { 1.0f, 2.0f, 3.0f,  4.0f };
+  const cvex::vfloat4 Cx2 = { 0.0f, 3.0f, -3.0f, 4.0f };
+
+  const vint4 Cr1 = (Cx1 < Cx2);
+  const vint4 Cr2 = (Cx1 > Cx2);
+  const vint4 Cr3 = (Cx1 <= Cx2);
+  const vint4 Cr4 = (Cx1 >= Cx2);
+  const vint4 Cr5 = (Cx1 == Cx2);
+  const vint4 Cr6 = (Cx1 != Cx2);
+
+  CVEX_ALIGNED(16) int result1[4];
+  CVEX_ALIGNED(16) int result2[4];
+  CVEX_ALIGNED(16) int result3[4];
+  CVEX_ALIGNED(16) int result4[4];
+  CVEX_ALIGNED(16) int result5[4];
+  CVEX_ALIGNED(16) int result6[4];
+
+  cvex::store(result1, Cr1);
+  cvex::store(result2, Cr2);
+  cvex::store(result3, Cr3);
+  cvex::store(result4, Cr4);
+  cvex::store(result5, Cr5);
+  cvex::store(result6, Cr6);
+
+  const bool b1 = (result1[0] == 0) && (result1[1] == -1) && (result1[2] == 0) && (result1[3] == 0);
+  const bool b2 = (result2[0] == -1) && (result2[1] == 0) && (result2[2] == -1) && (result2[3] == 0);
+  const bool b3 = (result3[0] == 0) && (result3[1] == -1) && (result3[2] == 0) && (result3[3] == -1);
+  const bool b4 = (result4[0] == -1) && (result4[1] == 0) && (result4[2] == -1) && (result4[3] == -1);
+  const bool b5 = (result5[0] == 0) && (result5[1] == 0) && (result5[2] == 0) && (result5[3] == -1);
+  const bool b6 = (result6[0] == -1) && (result6[1] == -1) && (result6[2] == -1) && (result6[3] == 0);
+
+  return b1 && b2 && b3 && b4 && b5 && b6;
 }

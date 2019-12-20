@@ -53,6 +53,8 @@ void run_all_tests()
       { &vf4_test029_ext_splt, "vf4_test029_ext_splt"},
       { &vi4_test030_ext_splt, "vi4_test030_ext_splt"},
       { &vu4_test031_ext_splt, "vu4_test031_ext_splt"},
+
+      { &vf4_test032_compare, "vf4_test032_compare"},
   };
 
   const auto arraySize = sizeof(tests)/sizeof(TestRun);

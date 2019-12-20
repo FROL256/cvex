@@ -66,5 +66,6 @@ bool vf4_test029_ext_splt();
 bool vi4_test030_ext_splt();
 bool vu4_test031_ext_splt();
 
-//// cmpgt3, cmplt3, color_pack
+//// >, <, >=, <=, ==, !=
 //
+bool vf4_test032_compare();
