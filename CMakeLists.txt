@@ -16,8 +16,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx")
 #uncomment this to detect broken memory problems via gcc sanitizers
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fsanitize-address-use-after-scope -fno-omit-frame-pointer -fsanitize=leak -fsanitize=undefined -fsanitize=bounds-strict")
 
-add_executable(cvex_test main.cpp tests/tests_all.cpp
-                         tests/tests.h tests/tests_vfloat4.cpp
+add_executable(cvex_test main.cpp 
+                         tests/tests_all.cpp
+                         tests/tests.h 
+                         tests/tests_vfloat4.cpp
+                         tests/tests_vmatrix4.cpp
 )
 
 set_target_properties(cvex_test PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")

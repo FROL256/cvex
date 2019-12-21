@@ -57,6 +57,8 @@ void run_all_tests()
       { &vf4_test032_compare, "vf4_test032_compare"},
       { &vf4_test033_compare, "vf4_test033_compare"},
       { &vf4_test034_colpack, "vf4_test034_colpack"},
+
+      { &vf4_test035_matrixmul, "vf4_test035_matrixmul"},
   };
 
   const auto arraySize = sizeof(tests)/sizeof(TestRun);

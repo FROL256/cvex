@@ -299,8 +299,62 @@ namespace cvex
 
   #endif
 
-  //color_compress_bgra, color_compress_rgba 
+  static inline void mat4_mul_mat4(float* __restrict M, const float* __restrict A, const float* __restrict B) // modern gcc compiler succesfuly vectorize such implementation!
+  {
+  	M[ 0] = A[ 0] * B[ 0] + A[ 1] * B[ 4] + A[ 2] * B[ 8] + A[ 3] * B[12];
+  	M[ 1] = A[ 0] * B[ 1] + A[ 1] * B[ 5] + A[ 2] * B[ 9] + A[ 3] * B[13];
+  	M[ 2] = A[ 0] * B[ 2] + A[ 1] * B[ 6] + A[ 2] * B[10] + A[ 3] * B[14];
+  	M[ 3] = A[ 0] * B[ 3] + A[ 1] * B[ 7] + A[ 2] * B[11] + A[ 3] * B[15];
+  	M[ 4] = A[ 4] * B[ 0] + A[ 5] * B[ 4] + A[ 6] * B[ 8] + A[ 7] * B[12];
+  	M[ 5] = A[ 4] * B[ 1] + A[ 5] * B[ 5] + A[ 6] * B[ 9] + A[ 7] * B[13];
+  	M[ 6] = A[ 4] * B[ 2] + A[ 5] * B[ 6] + A[ 6] * B[10] + A[ 7] * B[14];
+  	M[ 7] = A[ 4] * B[ 3] + A[ 5] * B[ 7] + A[ 6] * B[11] + A[ 7] * B[15];
+  	M[ 8] = A[ 8] * B[ 0] + A[ 9] * B[ 4] + A[10] * B[ 8] + A[11] * B[12];
+  	M[ 9] = A[ 8] * B[ 1] + A[ 9] * B[ 5] + A[10] * B[ 9] + A[11] * B[13];
+  	M[10] = A[ 8] * B[ 2] + A[ 9] * B[ 6] + A[10] * B[10] + A[11] * B[14];
+  	M[11] = A[ 8] * B[ 3] + A[ 9] * B[ 7] + A[10] * B[11] + A[11] * B[15];
+  	M[12] = A[12] * B[ 0] + A[13] * B[ 4] + A[14] * B[ 8] + A[15] * B[12];
+  	M[13] = A[12] * B[ 1] + A[13] * B[ 5] + A[14] * B[ 9] + A[15] * B[13];
+  	M[14] = A[12] * B[ 2] + A[13] * B[ 6] + A[14] * B[10] + A[15] * B[14];
+  	M[15] = A[12] * B[ 3] + A[13] * B[ 7] + A[14] * B[11] + A[15] * B[15];
+  }
 
+  static inline void mat4_mul_vec4(float* __restrict RES, const float* __restrict B, const float* __restrict V) // FAILED TO VECTORIZE !!!
+  {
+  	RES[0] = V[0] * B[ 0] + V[1] * B[ 1] + V[2] * B[ 2] + V[3] * B[3];
+  	RES[1] = V[0] * B[ 4] + V[1] * B[ 5] + V[2] * B[ 6] + V[3] * B[7];
+  	RES[2] = V[0] * B[ 8] + V[1] * B[ 9] + V[2] * B[10] + V[3] * B[11];
+  	RES[3] = V[0] * B[12] + V[1] * B[13] + V[2] * B[14] + V[3] * B[15];
+  }
+
+  
+  struct vfloat4x4
+  {
+    vfloat4x4(){}
+    vfloat4x4(const float A[16])
+    {
+      row[0] = vfloat4{A[0], A[1], A[2], A[3]};
+      row[1] = vfloat4{A[4], A[5], A[6], A[7]};
+      row[2] = vfloat4{A[8], A[9], A[10],A[11]};
+      row[3] = vfloat4{A[12],A[13],A[14],A[15]};
+    }
+
+    inline vfloat4x4 operator*(const vfloat4x4& rhs)
+    {
+      vfloat4x4 res;
+      mat4_mul_mat4((float*)res.row, (const float*)row, (const float*)rhs.row);
+      return res;
+    }
+
+    vfloat4 row[4];
+  };
+
+  static inline vfloat4 operator*(const vfloat4x4& m, const vfloat4 v)
+  {
+    vfloat4 res;
+    mat4_mul_vec4((float*)&res, (const float*)m.row, (const float*)&v);
+    return res;
+  }
 };
 
 #endif //TEST_GL_TOP_VFLOAT4_GCC_H

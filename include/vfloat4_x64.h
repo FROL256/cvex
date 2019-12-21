@@ -287,8 +287,8 @@ namespace cvex
 
   static inline float extract_0(const vfloat4 a_val) { return _mm_cvtss_f32(a_val); }
   static inline float extract_1(const vfloat4 a_val) { return _mm_cvtss_f32(splat_1(a_val)); }
-  static inline float extract_2(const vfloat4 a_val) { return _mm_cvtss_f32(splat_2(a_val)); }
-  static inline float extract_3(const vfloat4 a_val) { return _mm_cvtss_f32(splat_3(a_val)); }
+  static inline float extract_2(const vfloat4 a_val) { return _mm_cvtss_f32(splat_2(a_val)); } // #TODO: stop pressing Port 5
+  static inline float extract_3(const vfloat4 a_val) { return _mm_cvtss_f32(splat_3(a_val)); } // #TODO: please consider _mm_cvtsi128_si32( _mm_srli_si128(a_val, 3*4) ); ??? 
 
   static inline vfloat4 shuffle_zyxw(vfloat4 a_src) { return _mm_shuffle_ps(a_src, a_src, _MM_SHUFFLE(3, 0, 1, 2)); }
   static inline vfloat4 shuffle_yzxw(vfloat4 a_src) { return _mm_shuffle_ps(a_src, a_src, _MM_SHUFFLE(3, 0, 2, 1)); }

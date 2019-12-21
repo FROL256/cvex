@@ -72,3 +72,6 @@ bool vf4_test032_compare();
 bool vf4_test033_compare();
 bool vf4_test034_colpack();
 
+//// matrix*matrix, matrix*vector
+//
+bool vf4_test035_matrixmul();
