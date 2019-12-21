@@ -26,8 +26,15 @@ namespace LiteMath
   {
     float2() :x(0), y(0) {}
     float2(float a, float b) : x(a), y(b) {}
+    
+    float& operator[](int i)       { return M[i]; }
+    float  operator[](int i) const { return M[i]; }
 
-    float x, y;
+    union
+    {
+      struct {float x, y; };
+      float M[2];
+    };
   };
 
   struct float3
@@ -36,7 +43,14 @@ namespace LiteMath
     float3(float a, float b, float c) : x(a), y(b), z(c) {}
     float3(const float* ptr) : x(ptr[0]), y(ptr[1]), z(ptr[2]) {}
 
-    float x, y, z;
+    float& operator[](int i)       { return M[i]; }
+    float  operator[](int i) const { return M[i]; }
+
+    union
+    {
+      struct {float x, y, z; };
+      float M[3];
+    };
   };
 
   struct float4
@@ -79,14 +93,6 @@ namespace LiteMath
   };
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  struct uchar4
-  {
-    uchar4() :x(0), y(0), z(0), w(0) {}
-    uchar4(unsigned char a, unsigned char b, unsigned char c, unsigned char d) : x(a), y(b), z(c), w(d) {}
-
-    unsigned char x, y, z, w;
-  };
 
   struct uint4
   {
