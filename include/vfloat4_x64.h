@@ -189,17 +189,17 @@ namespace cvex
   }
 
 
-  static inline void transpose4(vfloat4& a0, vfloat4& a1, vfloat4& a2, vfloat4& a3)
+  static inline void transpose4(const vfloat4 a[4], vfloat4 RES[4])
   {
-    const vint4 b0 = _mm_unpacklo_epi32(as_int32(a0), as_int32(a1));
-    const vint4 b1 = _mm_unpackhi_epi32(as_int32(a0), as_int32(a1));
-    const vint4 b2 = _mm_unpacklo_epi32(as_int32(a2), as_int32(a3));
-    const vint4 b3 = _mm_unpackhi_epi32(as_int32(a2), as_int32(a3));
+    const vint4 b0 = _mm_unpacklo_epi32(as_int32(a[0]), as_int32(a[1]));
+    const vint4 b1 = _mm_unpackhi_epi32(as_int32(a[0]), as_int32(a[1]));
+    const vint4 b2 = _mm_unpacklo_epi32(as_int32(a[2]), as_int32(a[3]));
+    const vint4 b3 = _mm_unpackhi_epi32(as_int32(a[2]), as_int32(a[3]));
 
-    a0 = _mm_castsi128_ps(_mm_unpacklo_epi64(b0, b2));
-    a1 = _mm_castsi128_ps(_mm_unpackhi_epi64(b0, b2));
-    a2 = _mm_castsi128_ps(_mm_unpacklo_epi64(b1, b3));
-    a3 = _mm_castsi128_ps(_mm_unpackhi_epi64(b1, b3));
+    RES[0] = _mm_castsi128_ps(_mm_unpacklo_epi64(b0, b2));
+    RES[1] = _mm_castsi128_ps(_mm_unpackhi_epi64(b0, b2));
+    RES[2] = _mm_castsi128_ps(_mm_unpacklo_epi64(b1, b3));
+    RES[3] = _mm_castsi128_ps(_mm_unpackhi_epi64(b1, b3));
   }
 
   static inline bool test_bits_any(const vint4 a)
@@ -327,8 +327,102 @@ namespace cvex
     return _mm_cvtsi128_si32(out2);
   }
 
+  static inline bool cmpgt3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ps(a, b)) & 7) == 7; }
+  static inline bool cmplt3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmplt_ps(a, b)) & 7) == 7; }
+  static inline bool cmpge3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpge_ps(a, b)) & 7) == 7; }
+  static inline bool cmple3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmple_ps(a, b)) & 7) == 7; }
+
+
   static inline void prefetch(const float* ptr) {  _mm_prefetch((const char*)ptr, _MM_HINT_T0); }
   static inline void prefetch(const int* ptr)   {  _mm_prefetch((const char*)ptr, _MM_HINT_T0); }
+
+  static inline void mat4_rowmajor_mul_mat4(float* __restrict M, const float* __restrict A, const float* __restrict B) // modern gcc compiler succesfuly vectorize such implementation!
+  {
+    M[0] = A[0] * B[0] + A[1] * B[4] + A[2] * B[8] + A[3] * B[12];
+    M[1] = A[0] * B[1] + A[1] * B[5] + A[2] * B[9] + A[3] * B[13];
+    M[2] = A[0] * B[2] + A[1] * B[6] + A[2] * B[10] + A[3] * B[14];
+    M[3] = A[0] * B[3] + A[1] * B[7] + A[2] * B[11] + A[3] * B[15];
+    M[4] = A[4] * B[0] + A[5] * B[4] + A[6] * B[8] + A[7] * B[12];
+    M[5] = A[4] * B[1] + A[5] * B[5] + A[6] * B[9] + A[7] * B[13];
+    M[6] = A[4] * B[2] + A[5] * B[6] + A[6] * B[10] + A[7] * B[14];
+    M[7] = A[4] * B[3] + A[5] * B[7] + A[6] * B[11] + A[7] * B[15];
+    M[8] = A[8] * B[0] + A[9] * B[4] + A[10] * B[8] + A[11] * B[12];
+    M[9] = A[8] * B[1] + A[9] * B[5] + A[10] * B[9] + A[11] * B[13];
+    M[10] = A[8] * B[2] + A[9] * B[6] + A[10] * B[10] + A[11] * B[14];
+    M[11] = A[8] * B[3] + A[9] * B[7] + A[10] * B[11] + A[11] * B[15];
+    M[12] = A[12] * B[0] + A[13] * B[4] + A[14] * B[8] + A[15] * B[12];
+    M[13] = A[12] * B[1] + A[13] * B[5] + A[14] * B[9] + A[15] * B[13];
+    M[14] = A[12] * B[2] + A[13] * B[6] + A[14] * B[10] + A[15] * B[14];
+    M[15] = A[12] * B[3] + A[13] * B[7] + A[14] * B[11] + A[15] * B[15];
+  }
+
+  static inline void mat4_rowmajor_mul_vec4(float* __restrict RES, const float* __restrict B, const float* __restrict V) // FAILED TO VECTORIZE !!!
+  {
+    RES[0] = V[0] * B[0] + V[1] * B[1] + V[2] * B[2] + V[3] * B[3];
+    RES[1] = V[0] * B[4] + V[1] * B[5] + V[2] * B[6] + V[3] * B[7];
+    RES[2] = V[0] * B[8] + V[1] * B[9] + V[2] * B[10] + V[3] * B[11];
+    RES[3] = V[0] * B[12] + V[1] * B[13] + V[2] * B[14] + V[3] * B[15];
+  }
+
+  static inline void mat4_colmajor_mul_vec4(float* __restrict RES, const float* __restrict B, const float* __restrict V) // modern gcc compiler succesfuly vectorize such implementation!
+  {
+    RES[0] = V[0] * B[0] + V[1] * B[4] + V[2] * B[8] + V[3] * B[12];
+    RES[1] = V[0] * B[1] + V[1] * B[5] + V[2] * B[9] + V[3] * B[13];
+    RES[2] = V[0] * B[2] + V[1] * B[6] + V[2] * B[10] + V[3] * B[14];
+    RES[3] = V[0] * B[3] + V[1] * B[7] + V[2] * B[11] + V[3] * B[15];
+  }
+
+  /**
+  \brief this class use colmajor memory layout for effitient vector-matrix operations
+  */
+  struct vfloat4x4
+  {
+    vfloat4x4() {}
+    vfloat4x4(const float A[16])
+    {
+      m_col[0] = vfloat4{ A[0], A[4], A[8], A[12] };
+      m_col[1] = vfloat4{ A[1], A[5], A[9], A[13] };
+      m_col[2] = vfloat4{ A[2], A[6], A[10], A[14] };
+      m_col[3] = vfloat4{ A[3], A[7], A[11], A[15] };
+    }
+
+    inline vfloat4x4 operator*(const vfloat4x4& rhs)
+    {
+      vfloat4x4 res;
+      //mat4_mul_mat4((float*)res.m_col, (const float*)m_col, (const float*)rhs.m_col);
+      mat4_rowmajor_mul_mat4((float*)res.m_col, (const float*)rhs.m_col, (const float*)m_col); // transpose chenge multiplication order (due to in fact we use colmajor)
+      return res;
+    }
+
+    inline vfloat4 get_col(int i) const { return m_col[i]; }
+    inline void    set_col(int i, vfloat4 a_col) { m_col[i] = a_col; }
+
+    inline vfloat4 get_row(int i) const { return vfloat4{ m_col[0][i], m_col[1][i], m_col[2][i], m_col[3][i] }; }
+    inline void    set_row(int i, vfloat4 a_col)
+    {
+      m_col[0][i] = a_col[0];
+      m_col[1][i] = a_col[1];
+      m_col[2][i] = a_col[2];
+      m_col[3][i] = a_col[3];
+    }
+
+  private:
+    vfloat4 m_col[4];
+  };
+
+  static inline vfloat4 operator*(const vfloat4x4& m, const vfloat4& v)
+  {
+    vfloat4 res;
+    mat4_colmajor_mul_vec4((float*)&res, (const float*)&m, (const float*)&v);
+    return res;
+  }
+
+  static inline vfloat4x4 transpose(const vfloat4x4& rhs)
+  {
+    vfloat4x4 res;
+    transpose4((const vfloat4*)&rhs, (vfloat4*)&res);
+    return res;
+  }
 };
 
 #ifdef WIN32 // MVSC does not define operators !!!

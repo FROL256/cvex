@@ -131,6 +131,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="tests\tests_all.cpp" />
     <ClCompile Include="tests\tests_vfloat4.cpp" />
+    <ClCompile Include="tests\tests_vmatrix4.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\LiteMath.h" />
