@@ -50,12 +50,6 @@ namespace cvex
     vfloat4(const std::initializer_list<float> v) { data =_mm_loadu_ps(v.begin()); }
 
     inline operator __m128() const { return data; }
-
-    #ifdef WIN32
-    inline float& operator[](int i)       { return data.m128_f32[i]; } // NOT RECOMMENDED TO USE!
-    inline float  operator[](int i) const { return data.m128_f32[i]; } // NOT RECOMMENDED TO USE!
-    #endif
-
     __m128 data;
   };
 
@@ -65,12 +59,6 @@ namespace cvex
     vint4(const __m128i& rhs) { data = rhs; }
     vint4(const std::initializer_list<int> v) { data = _mm_castps_si128(_mm_loadu_ps((const float*)v.begin())); } 
     inline operator __m128i() const { return data; }
-
-    #ifdef WIN32
-    inline int& operator[](int i)       { return data.m128i_i32[i]; } // NOT RECOMMENDED TO USE!
-    inline int  operator[](int i) const { return data.m128i_i32[i]; } // NOT RECOMMENDED TO USE! 
-    #endif
-
     __m128i data;
   };
 
@@ -80,11 +68,6 @@ namespace cvex
     vuint4(const __m128i& rhs) { data = rhs; }
     vuint4(const std::initializer_list<_uint32_t> v) { data = _mm_castps_si128(_mm_loadu_ps((const float*)v.begin())); }
     inline operator __m128i() const { return data; }
-
-    #ifdef WIN32
-    inline _uint32_t& operator[](int i)       { return data.m128i_u32[i]; } // NOT RECOMMENDED TO USE!
-    inline _uint32_t  operator[](int i) const { return data.m128i_u32[i]; } // NOT RECOMMENDED TO USE! 
-    #endif
 
     __m128i data;
   };

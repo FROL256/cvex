@@ -1,5 +1,5 @@
 #include <iostream>
-#include "include/vfloat4.h"
+#include "include/cmath.h"
 
 
 #include "tests/tests.h"

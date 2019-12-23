@@ -1,14 +1,15 @@
 #include <iostream>
 #include <cmath>
 
-#include "include/vfloat4.h"
+#include "include/cmath.h"
 
 using namespace cvex;
+using namespace cmath;
 
 bool vf4_test001_basic()
 {
-  const vfloat4 Cx1 = {1.0f, 2.0f, 3.0f, 4.0f};
-  const vfloat4 Cx2 = {5.0f, 5.0f, 6.0f, 7.0f};
+  const float4 Cx1(1.0f, 2.0f, 3.0f, 4.0f);
+  const float4 Cx2(5.0f, 5.0f, 6.0f, 7.0f);
 
   const auto Cx3 = Cx1 - Cx2;
   const auto Cx4 = (Cx1 + Cx2)*Cx1;
@@ -44,8 +45,8 @@ bool vf4_test001_basic()
 
 bool vi4_test002_basic()
 {
-  const vint4 Cx1 = {10, 20, -3, 4};
-  const vint4 Cx2 = {50, -5, 6,  7};
+  const int4 Cx1 = {10, 20, -3, 4};
+  const int4 Cx2 = {50, -5, 6,  7};
 
   const auto Cx3 = Cx1 - Cx2;
   const auto Cx4 = (Cx1 + Cx2)*Cx1;
@@ -120,7 +121,7 @@ bool vu4_test003_basic()
 
 bool vf4_test004_basic()
 {
-  const vfloat4 Cx1 = {1.0f, 2.0f, 3.0f, 4.0f};
+  const float4 Cx1 = {1.0f, 2.0f, 3.0f, 4.0f};
   const float   Cx2 = 5.0f;
 
   const auto Cx3 = Cx2*(Cx2 - Cx1) - 2.0f;
@@ -162,7 +163,7 @@ bool vf4_test004_basic()
 
 bool vi4_test005_basic()
 {
-  const vint4 Cx1 = {1, -2, 3, -4};
+  const int4 Cx1 = {1, -2, 3, -4};
   const int   Cx2 = 5;
 
   const auto Cx3 = Cx2*(Cx2 - Cx1) - 2;
@@ -246,9 +247,9 @@ bool vu4_test006_basic()
 
 bool vi4_test007_and_or()
 {
-  const vint4 Cx1 = {-1, -2, 3, 4};
-  const vint4 Cx2 = {+1, +2, 63355, 63355};
-  const vint4 Cx3 = {-1, -1, int(0xF0F00000), 0x00000000};
+  const int4 Cx1 = {-1, -2, 3, 4};
+  const int4 Cx2 = {+1, +2, 63355, 63355};
+  const int4 Cx3 = {-1, -1, int(0xF0F00000), 0x00000000};
 
   const auto Cr1 = (Cx1 & (~Cx3)) | Cx2;
   const auto Cr2 = (Cx2 & Cx3)    | Cx1;
@@ -310,9 +311,9 @@ bool vu4_test008_and_or()
 
 bool vi4_test009_shift()
 {
-  const vint4 Cx1 = {-1, -2, 3, 4};
-  const vint4 Cx2 = {+1, +2, 63355, 63355};
-  const vint4 Cx3 = {-1, -1, int(0xF0F00000), 0x00000000};
+  const int4 Cx1 = {-1, -2, 3, 4};
+  const int4 Cx2 = {+1, +2, 63355, 63355};
+  const int4 Cx3 = {-1, -1, int(0xF0F00000), 0x00000000};
 
   const auto Cr1 = (Cx1 << 8); // | (Cx2 >> 17);
   const auto Cr2 = (Cx3 >> 9); // | (Cx3 >> 4);
@@ -376,8 +377,8 @@ bool vu4_test010_shift()
 
 bool vf4_test011_splat()
 {
-  const vfloat4 Cx1 = cvex::splat(1.0f);
-  const vfloat4 Cx2 = cvex::splat(-5.0f);
+  const float4 Cx1 = cvex::splat(1.0f);
+  const float4 Cx2 = cvex::splat(-5.0f);
 
   float result1[4];
   float result2[4];
@@ -404,8 +405,8 @@ bool vf4_test011_splat()
 
 bool vi4_test012_splat()
 {
-  const vint4 Cx1 = cvex::splat(1);
-  const vint4 Cx2 = cvex::splat(-5);
+  const int4 Cx1 = cvex::splat(1);
+  const int4 Cx2 = cvex::splat(-5);
 
   int result1[4];
   int result2[4];
@@ -458,11 +459,11 @@ bool vu4_test013_splat()
 
 bool vfi4_test014_convert()
 {
-  const vint4  Cx1 = cvex::splat(-2456);
+  const int4  Cx1 = cvex::splat(-2456);
   const vuint4 Cx2 = cvex::splat(0xFFFFFF00);
 
-  const vfloat4 Cf1 = to_float32(Cx1);
-  const vfloat4 Cf2 = to_float32(Cx2);
+  const float4 Cf1 = to_float32(Cx1);
+  const float4 Cf2 = to_float32(Cx2);
 
   float result1[4];
   float result2[4];
@@ -491,13 +492,13 @@ bool vfi4_test014_convert()
 
 bool viu4_test015_convert()
 {
-  const vfloat4 Cx1 = { -334324.0f, -0.0f, 1.0f, 23423523.0f };
-  const vfloat4 Cx2 = { -10000.0f, 0.0f, 100.0f, 0.000005f };
+  const float4 Cx1 = { -334324.0f, -0.0f, 1.0f, 23423523.0f };
+  const float4 Cx2 = { -10000.0f, 0.0f, 100.0f, 0.000005f };
 
-  const vint4  Cr1 = to_int32(Cx1);
+  const int4  Cr1 = to_int32(Cx1);
   const vuint4 Cr2 = to_uint32(Cx2);
   const vuint4 Cr3 = to_uint32(Cr1);
-  const vint4  Cr4 = to_int32(Cr2);
+  const int4  Cr4 = to_int32(Cr2);
 
   int          result1[4];
   unsigned int result2[4];
@@ -533,14 +534,14 @@ bool viu4_test015_convert()
 
 bool vfi4_test016_cast()
 {
-  const vfloat4 Cx1 = { -334324.0f, -0.0f, 1.0f, 23423523.0f };
-  const vfloat4 Cx2 = { -10000.0f, 0.0f, 100.0f, 0.000005f };
+  const float4 Cx1 = { -334324.0f, -0.0f, 1.0f, 23423523.0f };
+  const float4 Cx2 = { -10000.0f, 0.0f, 100.0f, 0.000005f };
   
-  const vint4   Cx3 = as_int32(Cx1);
+  const int4   Cx3 = as_int32(Cx1);
   const vuint4  Cx4 = as_uint32(Cx2);
 
-  const vfloat4 Cr1 = as_float32(Cx3);
-  const vfloat4 Cr2 = as_float32(Cx4);
+  const float4 Cr1 = as_float32(Cx3);
+  const float4 Cr2 = as_float32(Cx4);
 
   float result1[4];
   float result2[4];
@@ -567,14 +568,14 @@ bool vfi4_test016_cast()
 
 bool vf4_test017_mMcRcp()
 {
-  const vfloat4 Cx1 = { +10000.0f,  -1.0f, 1.0f,   -99999999.0f };
-  const vfloat4 Cx2 = { +334324.0f, +1.0f, 100.0f, -0.000005f };
-  const vfloat4 Cx3 = { +10.0f,  +10.0f, +10.0f, +10.0f };
+  const float4 Cx1 = { +10000.0f,  -1.0f, 1.0f,   -99999999.0f };
+  const float4 Cx2 = { +334324.0f, +1.0f, 100.0f, -0.000005f };
+  const float4 Cx3 = { +10.0f,  +10.0f, +10.0f, +10.0f };
 
-  const vfloat4 Cr1 = cvex::min(Cx1, Cx2);
-  const vfloat4 Cr2 = cvex::max(Cx1, Cx2);
-  const vfloat4 Cr3 = cvex::clamp(Cx3, Cx1, Cx2);
-  const vfloat4 Cr4 = cvex::rcp_e(Cx2);
+  const float4 Cr1 = cvex::min(Cx1, Cx2);
+  const float4 Cr2 = cvex::max(Cx1, Cx2);
+  const float4 Cr3 = cvex::clamp(Cx3, Cx1, Cx2);
+  const float4 Cr4 = cvex::rcp_e(Cx2);
 
   float result1[4];
   float result2[4];
@@ -611,13 +612,13 @@ bool vf4_test017_mMcRcp()
 
 bool vi4_test018_minMax()
 {
-  const vint4 Cx1 = { 10000,  -1, 1, -99999999 };
-  const vint4 Cx2 = { 334324, +1, 100, 1 };
-  const vint4 Cx3 = { 10,  10, +10, +10 };
+  const int4 Cx1 = { 10000,  -1, 1, -99999999 };
+  const int4 Cx2 = { 334324, +1, 100, 1 };
+  const int4 Cx3 = { 10,  10, +10, +10 };
 
-  const vint4 Cr1 = cvex::min(Cx1, Cx2);
-  const vint4 Cr2 = cvex::max(Cx1, Cx2);
-  const vint4 Cr3 = cvex::clamp(Cx3, Cx1, Cx2);
+  const int4 Cr1 = cvex::min(Cx1, Cx2);
+  const int4 Cr2 = cvex::max(Cx1, Cx2);
+  const int4 Cr3 = cvex::clamp(Cx3, Cx1, Cx2);
 
   int result1[4];
   int result2[4];
@@ -691,14 +692,14 @@ bool vu4_test019_minMax()
 
 bool vf4_test020_blend()
 {
-  const vfloat4 Cx1  = { +1.0f, +2.0f, +3.0f, +4.0f };
-  const vfloat4 Cx2  = { -1.0f, -2.0f, -3.0f, -4.0f };
+  const float4 Cx1  = { +1.0f, +2.0f, +3.0f, +4.0f };
+  const float4 Cx2  = { -1.0f, -2.0f, -3.0f, -4.0f };
 
-  const vint4 mask1  = {int(0xFFFFFFFF), 0, int(0xFFFFFFFF), 0};
+  const int4 mask1  = {int(0xFFFFFFFF), 0, int(0xFFFFFFFF), 0};
   const vuint4 mask2 = {0, 0xFFFFFFFF, 0xFFFFFFFF, 0 };
 
-  const vfloat4 Cr1 = cvex::blend(Cx1, Cx2, mask1);
-  const vfloat4 Cr2 = cvex::blend(Cx1, Cx2, mask2);
+  const float4 Cr1 = cvex::blend(Cx1, Cx2, mask1);
+  const float4 Cr2 = cvex::blend(Cx1, Cx2, mask2);
 
   float result1[4];
   float result2[4];
@@ -726,14 +727,14 @@ bool vf4_test020_blend()
 
 bool vi4_test021_blend()
 {
-  const vint4 Cx1 = { +1, +2, +3, +4 };
-  const vint4 Cx2 = { -1, -2, -3, -4 };
+  const int4 Cx1 = { +1, +2, +3, +4 };
+  const int4 Cx2 = { -1, -2, -3, -4 };
 
-  const vint4 mask1 = { int(0xFFFFFFFF), 0, int(0xFFFFFFFF), 0 };
-  const vint4 mask2 = { 0, int(0xFFFFFFFF), int(0xFFFFFFFF), 0 };
+  const int4 mask1 = { int(0xFFFFFFFF), 0, int(0xFFFFFFFF), 0 };
+  const int4 mask2 = { 0, int(0xFFFFFFFF), int(0xFFFFFFFF), 0 };
 
-  const vint4 Cr1 = cvex::blend(Cx1, Cx2, mask1);
-  const vint4 Cr2 = cvex::blend(Cx1, Cx2, mask2);
+  const int4 Cr1 = cvex::blend(Cx1, Cx2, mask1);
+  const int4 Cr2 = cvex::blend(Cx1, Cx2, mask2);
 
   int result1[4];
   int result2[4];
@@ -791,10 +792,10 @@ bool vu4_test022_blend()
 
 bool vf4_test023_floor_ceil()
 {
-  const vfloat4 Cx1 = { +1.5f, -2.5f, +3.2f, -4.8f };
+  const float4 Cx1 = { +1.5f, -2.5f, +3.2f, -4.8f };
 
-  const vfloat4 Cr1 = cvex::floor(Cx1);
-  const vfloat4 Cr2 = cvex::ceil(Cx1);
+  const float4 Cr1 = cvex::floor(Cx1);
+  const float4 Cr2 = cvex::ceil(Cx1);
 
   CVEX_ALIGNED(16) float result1[4];
   CVEX_ALIGNED(16) float result2[4];
@@ -821,11 +822,11 @@ bool vf4_test023_floor_ceil()
 
 bool vfiu_test024_test_bits()
 {
-  const vfloat4 Cx1 = { 0.0f, 0.5f, 0.0f, 0.0f };
-  const vfloat4 Cx2 = { 0.0f, 0.0f, 0.0f, 0.0f };
+  const float4 Cx1 = { 0.0f, 0.5f, 0.0f, 0.0f };
+  const float4 Cx2 = { 0.0f, 0.0f, 0.0f, 0.0f };
 
-  const vint4 Cx3 = { 0, 0, 4, 0 };
-  const vint4 Cx4 = { 0, 0, 0, 0 };
+  const int4 Cx3 = { 0, 0, 4, 0 };
+  const int4 Cx4 = { 0, 0, 0, 0 };
 
   const vuint4 Cx5 = { 0, 0, 0, 8 };
   const vuint4 Cx6 = { 0, 0, 0, 0 };
@@ -842,11 +843,11 @@ bool vfiu_test024_test_bits()
 
 bool vfiu_test025_test_bits()
 {
-  const vfloat4 Cx1 = { 0.0f, 0.5f, 0.0f, 0.0f };
-  const vfloat4 Cx2 = { 0.0f, 0.0f, 0.0f, 0.0f };
+  const float4 Cx1 = { 0.0f, 0.5f, 0.0f, 0.0f };
+  const float4 Cx2 = { 0.0f, 0.0f, 0.0f, 0.0f };
 
-  const vint4 Cx3 = { -1, -1, -1, -1 };
-  const vint4 Cx4 = { -1, -1, -1, -10 };
+  const int4 Cx3 = { -1, -1, -1, -1 };
+  const int4 Cx4 = { -1, -1, -1, -10 };
 
   const vuint4 Cx5 = { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
   const vuint4 Cx6 = { 0xFFFFFFFF, 0, 0xFFFFFFFF, 0xFFFFFFFF };
@@ -863,14 +864,14 @@ bool vfiu_test025_test_bits()
 
 bool vf4_test026_dot_cross()
 {
-  const cvex::vfloat4 Cx1 = { 1.0f, 2.0f, 3.0f, 4.0f };
-  const cvex::vfloat4 Cx2 = { 5.0f, 6.0f, 7.0f, 8.0f };
+  const float4 Cx1 = { 1.0f, 2.0f, 3.0f, 4.0f };
+  const float4 Cx2 = { 5.0f, 6.0f, 7.0f, 8.0f };
 
   const float   dot1 = cvex::dot3f(Cx1, Cx2);
-  const vfloat4 dot2 = cvex::dot3v(Cx1, Cx2);
+  const float4 dot2 = cvex::dot3v(Cx1, Cx2);
   const float   dot3 = cvex::dot4f(Cx1, Cx2);
-  const vfloat4 dot4 = cvex::dot4v(Cx1, Cx2);
-  const vfloat4 crs3 = cvex::cross3(Cx1, Cx2);
+  const float4 dot4 = cvex::dot4v(Cx1, Cx2);
+  const float4 crs3 = cvex::cross3(Cx1, Cx2);
 
   CVEX_ALIGNED(16) float result1[4];
   CVEX_ALIGNED(16) float result2[4];
@@ -907,13 +908,13 @@ bool vf4_test026_dot_cross()
 
 bool vf4_test027_shuffle()
 {
-  const cvex::vfloat4 Cx1 = { 1.0f, 2.0f, 3.0f, 4.0f };
+  const float4 Cx1 = { 1.0f, 2.0f, 3.0f, 4.0f };
 
-  const cvex::vfloat4 Cr1 = shuffle_zyxw(Cx1);
-  const cvex::vfloat4 Cr2 = shuffle_yzxw(Cx1);
-  const cvex::vfloat4 Cr3 = shuffle_zxyw(Cx1);
-  const cvex::vfloat4 Cr4 = shuffle_xyxy(Cx1);
-  const cvex::vfloat4 Cr5 = shuffle_zwzw(Cx1);
+  const float4 Cr1 = shuffle_zyxw(Cx1);
+  const float4 Cr2 = shuffle_yzxw(Cx1);
+  const float4 Cr3 = shuffle_zxyw(Cx1);
+  const float4 Cr4 = shuffle_xyxy(Cx1);
+  const float4 Cr5 = shuffle_zwzw(Cx1);
 
   CVEX_ALIGNED(16) float result1[4];
   CVEX_ALIGNED(16) float result2[4];
@@ -937,12 +938,12 @@ bool vf4_test027_shuffle()
 
 bool vf4_test028_length()
 {
-  const cvex::vfloat4 Cx1 = { 1.0f, 2.0f, 3.0f, 4.0f };
+  const float4 Cx1 = { 1.0f, 2.0f, 3.0f, 4.0f };
 
   const float   dot1 = cvex::length3f(Cx1);
-  const vfloat4 dot2 = cvex::length3v(Cx1);
+  const float4 dot2 = cvex::length3v(Cx1);
   const float   dot3 = cvex::length4f(Cx1);
-  const vfloat4 dot4 = cvex::length4v(Cx1);
+  const float4 dot4 = cvex::length4v(Cx1);
 
   CVEX_ALIGNED(16) float result1[4];
   CVEX_ALIGNED(16) float result2[4];
@@ -969,12 +970,12 @@ bool vf4_test028_length()
 
 bool vf4_test029_ext_splt()
 {
-  const cvex::vfloat4 Cx1 = { 1.0f, 2.0f, 3.0f, 4.0f };
+  const float4 Cx1 = { 1.0f, 2.0f, 3.0f, 4.0f };
 
-  const cvex::vfloat4 Cr1 = splat_0(Cx1);
-  const cvex::vfloat4 Cr2 = splat_1(Cx1);
-  const cvex::vfloat4 Cr3 = splat_2(Cx1);
-  const cvex::vfloat4 Cr4 = splat_3(Cx1);
+  const float4 Cr1 = splat_0(Cx1);
+  const float4 Cr2 = splat_1(Cx1);
+  const float4 Cr3 = splat_2(Cx1);
+  const float4 Cr4 = splat_3(Cx1);
 
   CVEX_ALIGNED(16) float result1[4];
   CVEX_ALIGNED(16) float result2[4];
@@ -1012,12 +1013,12 @@ bool vf4_test029_ext_splt()
 
 bool vi4_test030_ext_splt()
 {
-  const cvex::vint4 Cx1 = { 1, 2, 3, 4 };
+  const int4 Cx1 = { 1, 2, 3, 4 };
 
-  const cvex::vint4 Cr1 = splat_0(Cx1);
-  const cvex::vint4 Cr2 = splat_1(Cx1);
-  const cvex::vint4 Cr3 = splat_2(Cx1);
-  const cvex::vint4 Cr4 = splat_3(Cx1);
+  const int4 Cr1 = splat_0(Cx1);
+  const int4 Cr2 = splat_1(Cx1);
+  const int4 Cr3 = splat_2(Cx1);
+  const int4 Cr4 = splat_3(Cx1);
 
   CVEX_ALIGNED(16) int result1[4];
   CVEX_ALIGNED(16) int result2[4];
@@ -1096,15 +1097,15 @@ bool vu4_test031_ext_splt()
 
 bool vf4_test032_compare()
 {
-  const cvex::vfloat4 Cx1 = { 1.0f, 2.0f, 3.0f,  4.0f };
-  const cvex::vfloat4 Cx2 = { 0.0f, 3.0f, -3.0f, 4.0f };
+  const float4 Cx1 = { 1.0f, 2.0f, 3.0f,  4.0f };
+  const float4 Cx2 = { 0.0f, 3.0f, -3.0f, 4.0f };
 
-  const vint4 Cr1 = (Cx1 < Cx2);
-  const vint4 Cr2 = (Cx1 > Cx2);
-  const vint4 Cr3 = (Cx1 <= Cx2);
-  const vint4 Cr4 = (Cx1 >= Cx2);
-  const vint4 Cr5 = (Cx1 == Cx2);
-  const vint4 Cr6 = (Cx1 != Cx2);
+  const int4 Cr1 = (Cx1 < Cx2);
+  const int4 Cr2 = (Cx1 > Cx2);
+  const int4 Cr3 = (Cx1 <= Cx2);
+  const int4 Cr4 = (Cx1 >= Cx2);
+  const int4 Cr5 = (Cx1 == Cx2);
+  const int4 Cr6 = (Cx1 != Cx2);
 
   CVEX_ALIGNED(16) int result1[4];
   CVEX_ALIGNED(16) int result2[4];
@@ -1132,9 +1133,9 @@ bool vf4_test032_compare()
 
 bool vf4_test033_compare()
 {
-  const cvex::vfloat4 Cx1 = { 1.0f, 2.0f, 7.0f, 10.0f };
-  const cvex::vfloat4 Cx2 = { 5.0f, 6.0f, 7.0f, 4.0f };
-  const cvex::vfloat4 Cx3 = { 5.0f, 6.0f, 8.0f, -4.0f };
+  const float4 Cx1 = { 1.0f, 2.0f, 7.0f, 10.0f };
+  const float4 Cx2 = { 5.0f, 6.0f, 7.0f, 4.0f };
+  const float4 Cx3 = { 5.0f, 6.0f, 8.0f, -4.0f };
 
   const bool b1 = cmpgt3(Cx1, Cx2);
   const bool b2 = cmplt3(Cx1, Cx2);
@@ -1151,7 +1152,7 @@ bool vf4_test033_compare()
 
 bool vf4_test034_colpack()
 {
-  const cvex::vfloat4 Cx1 = { 0.25f, 0.5f, 0.0, 1.0f };
+  const float4 Cx1 = { 0.25f, 0.5f, 0.0, 1.0f };
 
   const unsigned int packed_rgba = cvex::color_pack_rgba(Cx1);
   const unsigned int packed_bgra = cvex::color_pack_bgra(Cx1);
