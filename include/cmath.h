@@ -49,6 +49,8 @@ namespace cmath
     };
   };
 
+  #ifndef WIN32
+
   inline float4 operator+(const float4& a, const float4& b) { return a.v + b.v; }
   inline float4 operator-(const float4& a, const float4& b) { return a.v - b.v; }
   inline float4 operator*(const float4& a, const float4& b) { return a.v * b.v; }
@@ -70,6 +72,8 @@ namespace cmath
   inline cvex::vint4 operator<=(const float4& a, const float4& b) { return (a.v <= b.v); }
   inline cvex::vint4 operator==(const float4& a, const float4& b) { return (a.v == b.v); }
   inline cvex::vint4 operator!=(const float4& a, const float4& b) { return (a.v != b.v); }
+
+  #endif
 
 };
 
