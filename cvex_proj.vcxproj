@@ -134,6 +134,7 @@
     <ClCompile Include="tests\tests_vmatrix4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\cmath.h" />
     <ClInclude Include="include\LiteMath.h" />
     <ClInclude Include="include\vfloat4.h" />
     <ClInclude Include="include\vfloat4_x64.h" />

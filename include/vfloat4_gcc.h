@@ -356,57 +356,6 @@ namespace cvex
   	RES[3] = V[0] * B[3] + V[1] * B[7] + V[2] * B[11] + V[3] * B[15];
   }
 
-  /**
-  \brief this class use colmajor memory layout for effitient vector-matrix operations
-  */
-  struct vfloat4x4
-  {
-    vfloat4x4(){}
-    vfloat4x4(const float A[16])
-    {
-      m_col[0] = vfloat4{A[0], A[4], A[8 ], A[12]};
-      m_col[1] = vfloat4{A[1], A[5], A[9 ], A[13]};
-      m_col[2] = vfloat4{A[2], A[6], A[10], A[14]};
-      m_col[3] = vfloat4{A[3], A[7], A[11], A[15]};
-    }
-
-    inline vfloat4x4 operator*(const vfloat4x4& rhs)
-    {
-      vfloat4x4 res;
-      //mat4_mul_mat4((float*)res.m_col, (const float*)m_col, (const float*)rhs.m_col);
-      mat4_rowmajor_mul_mat4((float*)res.m_col, (const float*)rhs.m_col, (const float*)m_col); // transpose chenge multiplication order (due to in fact we use colmajor)
-      return res;
-    }
-
-    inline vfloat4 get_col(int i) const { return m_col[i]; }
-    inline void    set_col(int i, vfloat4 a_col) { m_col[i] = a_col; }
-
-    inline vfloat4 get_row(int i) const { return vfloat4{m_col[0][i], m_col[1][i], m_col[2][i], m_col[3][i]}; }
-    inline void    set_row(int i, vfloat4 a_col) 
-    { 
-      m_col[0][i] = a_col[0];
-      m_col[1][i] = a_col[1];
-      m_col[2][i] = a_col[2];
-      m_col[3][i] = a_col[3]; 
-    }
-
-  private:
-    vfloat4 m_col[4];
-  };
-
-  static inline vfloat4 operator*(const vfloat4x4& m, const vfloat4& v)
-  {
-    vfloat4 res;
-    mat4_colmajor_mul_vec4((float*)&res, (const float*)&m, (const float*)&v);
-    return res;
-  }
-
-  static inline vfloat4x4 transpose(const vfloat4x4& rhs)
-  {
-    vfloat4x4 res;
-    transpose4((const vfloat4*)&rhs, (vfloat4*)&res);
-    return res;
-  }
 };
 
 #endif //TEST_GL_TOP_VFLOAT4_GCC_H

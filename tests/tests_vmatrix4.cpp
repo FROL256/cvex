@@ -34,7 +34,7 @@ bool vf4_test035_matrixmul()
   cmath::float4x4 res_mm = m1*m2;
   cmath::float4   res_mv = m1*v1;
 
-  cmath::float4x4 res_mm_t = cvex::transpose(res_mm);
+  cmath::float4x4 res_mm_t = transpose(res_mm);
   
   //
   //
