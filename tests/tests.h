@@ -75,3 +75,4 @@ bool vf4_test034_colpack();
 //// matrix*matrix, matrix*vector
 //
 bool vf4_test035_matrixmul();
+bool vf4_test036_matrixinv();
