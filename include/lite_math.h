@@ -43,22 +43,22 @@ namespace litemath
     inline float& operator[](int i)       { return v[i]; }
     inline float  operator[](int i) const { return v[i]; }
 
-    inline float4 operator+(const float4& b) { return v + b.v; }
-    inline float4 operator-(const float4& b) { return v - b.v; }
-    inline float4 operator*(const float4& b) { return v * b.v; }
-    inline float4 operator/(const float4& b) { return v / b.v; }
+    inline float4 operator+(const float4& b) const { return v + b.v; }
+    inline float4 operator-(const float4& b) const { return v - b.v; }
+    inline float4 operator*(const float4& b) const { return v * b.v; }
+    inline float4 operator/(const float4& b) const { return v / b.v; }
 
-    inline float4 operator+(const float rhs) { return v + rhs; }
-    inline float4 operator-(const float rhs) { return v - rhs; }
-    inline float4 operator*(const float rhs) { return v * rhs; }
-    inline float4 operator/(const float rhs) { return v / rhs; }
+    inline float4 operator+(const float rhs) const { return v + rhs; }
+    inline float4 operator-(const float rhs) const { return v - rhs; }
+    inline float4 operator*(const float rhs) const { return v * rhs; }
+    inline float4 operator/(const float rhs) const { return v / rhs; }
 
-    inline cvex::vint4 operator> (const float4& b) { return (v > b.v); }
-    inline cvex::vint4 operator< (const float4& b) { return (v < b.v); }
-    inline cvex::vint4 operator>=(const float4& b) { return (v >= b.v); }
-    inline cvex::vint4 operator<=(const float4& b) { return (v <= b.v); }
-    inline cvex::vint4 operator==(const float4& b) { return (v == b.v); }
-    inline cvex::vint4 operator!=(const float4& b) { return (v != b.v); }
+    inline cvex::vint4 operator> (const float4& b) const { return (v > b.v); }
+    inline cvex::vint4 operator< (const float4& b) const { return (v < b.v); }
+    inline cvex::vint4 operator>=(const float4& b) const { return (v >= b.v); }
+    inline cvex::vint4 operator<=(const float4& b) const { return (v <= b.v); }
+    inline cvex::vint4 operator==(const float4& b) const { return (v == b.v); }
+    inline cvex::vint4 operator!=(const float4& b) const { return (v != b.v); }
 
     union
     {
@@ -66,6 +66,13 @@ namespace litemath
       cvex::vfloat4 v;
     };
   };
+
+  #ifndef WIN32
+  inline float4 operator+(const float a, const float4& b) { return float4( cvex::vfloat4{a,a,a,a} + b.v); }
+  inline float4 operator-(const float a, const float4& b) { return float4( cvex::vfloat4{a,a,a,a} - b.v); }
+  inline float4 operator*(const float a, const float4& b) { return float4( cvex::vfloat4{a,a,a,a} * b.v); }
+  inline float4 operator/(const float a, const float4& b) { return float4( cvex::vfloat4{a,a,a,a} / b.v); }
+  #endif
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
