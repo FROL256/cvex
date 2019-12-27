@@ -1,10 +1,10 @@
 #include <iostream>
 #include <cmath>
 
-#include "include/lite_math.h"
+#include "include/LiteMath.h"
 
 using namespace cvex;
-using namespace litemath;
+using namespace LiteMath;
 
 bool vf4_test001_basic()
 {
@@ -462,8 +462,8 @@ bool vfi4_test014_convert()
   const int4  Cx1  = splat(-2456);
   const vuint4 Cx2 = splat(0xFFFFFF00);
 
-  const float4 Cf1 = litemath::to_float32(Cx1);
-  const float4 Cf2 = litemath::to_float32(Cx2);
+  const float4 Cf1 = LiteMath::to_float32(Cx1);
+  const float4 Cf2 = LiteMath::to_float32(Cx2);
 
   float result1[4];
   float result2[4];
@@ -540,8 +540,8 @@ bool vfi4_test016_cast()
   const int4   Cx3 = as_int32 (Cx1);
   const vuint4 Cx4 = as_uint32(Cx2);
 
-  const float4 Cr1 = litemath::as_float32(Cx3);
-  const float4 Cr2 = litemath::as_float32(Cx4);
+  const float4 Cr1 = LiteMath::as_float32(Cx3);
+  const float4 Cr2 = LiteMath::as_float32(Cx4);
 
   float result1[4];
   float result2[4];
@@ -572,10 +572,10 @@ bool vf4_test017_mMcRcp()
   const float4 Cx2 = { +334324.0f, +1.0f, 100.0f, -0.000005f };
   const float4 Cx3 = { +10.0f,  +10.0f, +10.0f, +10.0f };
 
-  const float4 Cr1 = litemath::min(Cx1, Cx2);
-  const float4 Cr2 = litemath::max(Cx1, Cx2);
-  const float4 Cr3 = litemath::clamp(Cx3, Cx1, Cx2);
-  const float4 Cr4 = litemath::rcp_e(Cx2);
+  const float4 Cr1 = LiteMath::min(Cx1, Cx2);
+  const float4 Cr2 = LiteMath::max(Cx1, Cx2);
+  const float4 Cr3 = LiteMath::clamp(Cx3, Cx1, Cx2);
+  const float4 Cr4 = LiteMath::rcp_e(Cx2);
 
   float result1[4];
   float result2[4];
