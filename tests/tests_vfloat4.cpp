@@ -1,10 +1,10 @@
 #include <iostream>
 #include <cmath>
 
-#include "include/cmath.h"
+#include "include/lite_math.h"
 
 using namespace cvex;
-using namespace cmath;
+using namespace litemath;
 
 bool vf4_test001_basic()
 {

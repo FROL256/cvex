@@ -18,7 +18,7 @@
 // __mips__
 // __ppc__ 
 
-namespace cmath
+namespace litemath
 { 
   const float EPSILON    = 1e-6f;
   const float DEG_TO_RAD = float(3.14159265358979323846f) / 180.0f;
@@ -149,6 +149,9 @@ namespace cmath
       m_col[3][i] = a_col[3];
     }
 
+    inline float4& col(int i)       { return m_col[i]; }
+    inline float4  col(int i) const { return m_col[i]; }
+
     inline float& operator()(int row, int col)       { return m_col[col][row]; }
     inline float  operator()(int row, int col) const { return m_col[col][row]; }
 
@@ -190,10 +193,10 @@ namespace cmath
   static inline float4x4 rotate4x4X(float phi)
   {
     float4x4 res;
-    res.set_col(0, float4{1.0f,      0.0f,       0.0f, 0.0f});
+    res.set_col(0, float4{1.0f,      0.0f,       0.0f, 0.0f  });
     res.set_col(1, float4{0.0f, +cosf(phi),  +sinf(phi), 0.0f});
     res.set_col(2, float4{0.0f, -sinf(phi),  +cosf(phi), 0.0f});
-    res.set_col(3, float4{0.0f,      0.0f,       0.0f, 1.0f});
+    res.set_col(3, float4{0.0f,      0.0f,       0.0f, 1.0f  });
     return res;
   }
 
@@ -201,9 +204,9 @@ namespace cmath
   {
     float4x4 res;
     res.set_col(0, float4{+cosf(phi), 0.0f, -sinf(phi), 0.0f});
-    res.set_col(1, float4{     0.0f, 1.0f,      0.0f, 0.0f});
+    res.set_col(1, float4{     0.0f, 1.0f,      0.0f, 0.0f  });
     res.set_col(2, float4{+sinf(phi), 0.0f, +cosf(phi), 0.0f});
-    res.set_col(3, float4{     0.0f, 0.0f,      0.0f, 1.0f});
+    res.set_col(3, float4{     0.0f, 0.0f,      0.0f, 1.0f  });
     return res;
   }
 
@@ -212,8 +215,8 @@ namespace cmath
     float4x4 res;
     res.set_col(0, float4{+cosf(phi), sinf(phi), 0.0f, 0.0f});
     res.set_col(1, float4{-sinf(phi), cosf(phi), 0.0f, 0.0f});
-    res.set_col(2, float4{     0.0f,     0.0f, 1.0f, 0.0f});
-    res.set_col(3, float4{     0.0f,     0.0f, 0.0f, 1.0f});
+    res.set_col(2, float4{     0.0f,     0.0f, 1.0f, 0.0f  });
+    res.set_col(3, float4{     0.0f,     0.0f, 0.0f, 1.0f  });
     return res;
   }
   
@@ -303,16 +306,15 @@ namespace cmath
     return m;
   }
   
-
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  static inline float clamp(float u, float a, float b) { float r = fmax(a, u); return fmin(r, b); }
-  static inline int   clamp(int u, int a, int b) { int r = (a > u) ? a : u; return (r < b) ? r : b; }
+  static inline float clamp(float u, float a, float b) { const float r = fmax(a, u);      return fmin(r, b); }
 
-  static inline int max(int a, int b) { return a > b ? a : b; }
-  static inline int min(int a, int b) { return a < b ? a : b; }
+  static inline int imax  (int a, int b)        { return a > b ? a : b; }                                    // OpenCL C does not allow overloading!
+  static inline int imin  (int a, int b)        { return a < b ? a : b; }                                    // OpenCL C does not allow overloading!
+  static inline int iclamp(int u, int a, int b) { const int   r = (a > u) ? a : u; return (r < b) ? r : b; } // OpenCL C does not allow overloading!
 
   inline float rnd(float s, float e)
   {
@@ -320,7 +322,7 @@ namespace cmath
     return s + t*(e - s);
   }
 
-  #define SQR(x) ((x)*(x))
+  template<typename T> inline T SQR(T x) { return x * x; }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -386,8 +388,7 @@ namespace cmath
   static inline float2 operator - (const float2 & u, const float2 & v) { return float2{u.x - v.x, u.y - v.y}; }
   static inline float2 operator * (const float2 & u, const float2 & v) { return float2{u.x * v.x, u.y * v.y}; }
   static inline float2 operator / (const float2 & u, const float2 & v) { return float2{u.x / v.x, u.y / v.y}; }
-
-  static inline float2   operator - (const float2 & v) { return {-v.x, -v.y}; }
+  static inline float2 operator - (const float2 & v) { return {-v.x, -v.y}; }
 
   static inline float2 & operator += (float2 & u, const float2 & v) { u.x += v.x; u.y += v.y; return u; }
   static inline float2 & operator -= (float2 & u, const float2 & v) { u.x -= v.x; u.y -= v.y; return u; }
@@ -407,7 +408,15 @@ namespace cmath
   static inline float  length(const float2 & u)    { return sqrtf(SQR(u.x) + SQR(u.y)); }
   static inline float2 normalize(const float2 & u) { return u / length(u); }
 
-  static inline float lerp(float u, float v, float t) { return u + t * (v - u); }
+  static inline float  lerp(float u, float v, float t) { return u + t * (v - u); }
+
+  static inline float3 operator*(const float4x4& m, const float3& v)
+  {
+    float4 v2 = to_float4(v, 1.0f);
+    float4 res;
+    cvex::mat4_colmajor_mul_vec4((float*)&res, (const float*)&m, (const float*)&v2);
+    return to_float3(res);
+  }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -471,8 +480,103 @@ namespace cmath
     return box1Min.x <= box2Max.x && box2Min.x <= box1Max.x &&
            box1Min.y <= box2Max.y && box2Min.y <= box1Max.y;
   }
-  
+ 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  // Look At matrix creation
+  // return the inverse view matrix
+  //
+  static inline float4x4 lookAt(float3 eye, float3 center, float3 up)
+  {
+    float3 x, y, z; // basis; will make a rotation matrix
+
+    z.x = eye.x - center.x;
+    z.y = eye.y - center.y;
+    z.z = eye.z - center.z;
+    z = normalize(z);
+
+    y.x = up.x;
+    y.y = up.y;
+    y.z = up.z;
+
+    x = cross(y, z); // X vector = Y cross Z
+    y = cross(z, x); // Recompute Y = Z cross X
+
+    // cross product gives area of parallelogram, which is < 1.0 for
+    // non-perpendicular unit-length vectors; so normalize x, y here
+    x = normalize(x);
+    y = normalize(y);
+
+    float4x4 M;
+    M.set_col(0, float4{ x.x, y.x, z.x, 0.0f });
+    M.set_col(1, float4{ x.y, y.y, z.y, 0.0f });
+    M.set_col(2, float4{ x.z, y.z, z.z, 0.0f });
+    M.set_col(3, float4{ -x.x * eye.x - x.y * eye.y - x.z*eye.z,
+                         -y.x * eye.x - y.y * eye.y - y.z*eye.z,
+                         -z.x * eye.x - z.y * eye.y - z.z*eye.z,
+                         1.0f });
+    return M;
+  }
+
+  static inline float4x4 perspectiveMatrix(float fovy, float aspect, float zNear, float zFar)
+  {
+    const float ymax = zNear * tanf(fovy * 3.14159265358979323846f / 360.0f);
+    const float xmax = ymax * aspect;
+
+    const float left = -xmax;
+    const float right = +xmax;
+    const float bottom = -ymax;
+    const float top = +ymax;
+
+    const float temp = 2.0f * zNear;
+    const float temp2 = right - left;
+    const float temp3 = top - bottom;
+    const float temp4 = zFar - zNear;
+
+    float4x4 res;
+    res.set_col(0, float4{ temp / temp2, 0.0f, 0.0f, 0.0f });
+    res.set_col(1, float4{ 0.0f, temp / temp3, 0.0f, 0.0f });
+    res.set_col(2, float4{ (right + left) / temp2,  (top + bottom) / temp3, (-zFar - zNear) / temp4, -1.0 });
+    res.set_col(3, float4{ 0.0f, 0.0f, (-temp * zFar) / temp4, 0.0f });
+    return res;
+  }
+
+  static inline float4x4 ortoMatrix(const float l, const float r, const float b, const float t, const float n, const float f)
+  {
+    float4x4 res;
+    res(0,0) = 2.0f / (r - l);
+    res(0,1) = 0;
+    res(0,2) = 0;
+    res(0,3) = -(r + l) / (r - l);
+
+    res(1,0) = 0;
+    res(1,1) = -2.0f / (t - b);  // why minus ??? check it for OpenGL please
+    res(1,2) = 0;
+    res(1,3) = -(t + b) / (t - b);
+
+    res(2,0) = 0;
+    res(2,1) = 0;
+    res(2,2) = -2.0f / (f - n);
+    res(2,3) = -(f + n) / (f - n);
+
+    res(3,0) = 0.0f;
+    res(3,1) = 0.0f;
+    res(3,2) = 0.0f;
+    res(3,3) = 1.0f;
+    return res;
+  }
+
+  // http://matthewwellings.com/blog/the-new-vulkan-coordinate-system/
+  //
+  static inline float4x4 OpenglToVulkanProjectionMatrixFix()
+  {
+    float4x4 res;
+    res(1,1) = -1.0f;
+    res(2,2) = 0.5f;
+    res(2,3) = 0.5f;
+    return res;
+  }
 
 };
 

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "include/cmath.h"
+#include "include/lite_math.h"
 
 
 #include "tests/tests.h"
