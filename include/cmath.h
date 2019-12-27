@@ -19,7 +19,7 @@
 // __ppc__ 
 
 namespace cmath
-{
+{ 
   const float EPSILON    = 1e-6f;
   const float DEG_TO_RAD = float(3.14159265358979323846f) / 180.0f;
   
@@ -43,6 +43,23 @@ namespace cmath
     inline float& operator[](int i)       { return v[i]; }
     inline float  operator[](int i) const { return v[i]; }
 
+    inline float4 operator+(const float4& b) { return v + b.v; }
+    inline float4 operator-(const float4& b) { return v - b.v; }
+    inline float4 operator*(const float4& b) { return v * b.v; }
+    inline float4 operator/(const float4& b) { return v / b.v; }
+
+    inline float4 operator+(const float rhs) { return v + rhs; }
+    inline float4 operator-(const float rhs) { return v - rhs; }
+    inline float4 operator*(const float rhs) { return v * rhs; }
+    inline float4 operator/(const float rhs) { return v / rhs; }
+
+    inline cvex::vint4 operator> (const float4& b) { return (v > b.v); }
+    inline cvex::vint4 operator< (const float4& b) { return (v < b.v); }
+    inline cvex::vint4 operator>=(const float4& b) { return (v >= b.v); }
+    inline cvex::vint4 operator<=(const float4& b) { return (v <= b.v); }
+    inline cvex::vint4 operator==(const float4& b) { return (v == b.v); }
+    inline cvex::vint4 operator!=(const float4& b) { return (v != b.v); }
+
     union
     {
       struct {float x, y, z, w; };
@@ -50,32 +67,6 @@ namespace cmath
     };
   };
 
-  #ifndef WIN32
-
-  inline float4 operator+(const float4& a, const float4& b) { return a.v + b.v; }
-  inline float4 operator-(const float4& a, const float4& b) { return a.v - b.v; }
-  inline float4 operator*(const float4& a, const float4& b) { return a.v * b.v; }
-  inline float4 operator/(const float4& a, const float4& b) { return a.v / b.v; }
-
-  inline float4 operator+(const float4& a, const float rhs) { return a.v + rhs; }
-  inline float4 operator-(const float4& a, const float rhs) { return a.v - rhs; }
-  inline float4 operator*(const float4& a, const float rhs) { return a.v * rhs; }
-  inline float4 operator/(const float4& a, const float rhs) { return a.v / rhs; }
-
-  inline float4 operator+(const float c, float4 v) { return c + v.v; }
-  inline float4 operator-(const float c, float4 v) { return c - v.v; }
-  inline float4 operator*(const float c, float4 v) { return c * v.v; }
-  inline float4 operator/(const float c, float4 v) { return c / v.v; }
-
-  inline cvex::vint4 operator> (const float4& a, const float4& b) { return (a.v > b.v) ; }
-  inline cvex::vint4 operator< (const float4& a, const float4& b) { return (a.v < b.v) ; }
-  inline cvex::vint4 operator>=(const float4& a, const float4& b) { return (a.v >= b.v); }
-  inline cvex::vint4 operator<=(const float4& a, const float4& b) { return (a.v <= b.v); }
-  inline cvex::vint4 operator==(const float4& a, const float4& b) { return (a.v == b.v); }
-  inline cvex::vint4 operator!=(const float4& a, const float4& b) { return (a.v != b.v); }
-
-  #endif
-   
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
