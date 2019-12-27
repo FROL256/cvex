@@ -119,7 +119,7 @@ namespace cvex
     return res; 
   }
 
-  static inline vuint4 to_uint32(const vfloat4 a_val) 
+  static inline vuint4 to_uint32(const vfloat4 a_val) // _mm_cvtps_epu32 presents only in AXV512!!!
   {
     CVEX_ALIGNED(16) float temp_a[4];
     cvex::store(temp_a, a_val);
@@ -357,9 +357,6 @@ namespace cvex
   }
 
 
-};
-
-#ifdef WIN32 // MVSC does not define operators !!!
 
 static inline cvex::vfloat4 operator+(const cvex::vfloat4 a, const cvex::vfloat4 b) { return _mm_add_ps(a, b); }
 static inline cvex::vfloat4 operator-(const cvex::vfloat4 a, const cvex::vfloat4 b) { return _mm_sub_ps(a, b); }
@@ -375,6 +372,8 @@ static inline cvex::vfloat4 operator+(const float a, const cvex::vfloat4 b) { re
 static inline cvex::vfloat4 operator-(const float a, const cvex::vfloat4 b) { return _mm_sub_ps(_mm_broadcast_ss(&a), b); }
 static inline cvex::vfloat4 operator*(const float a, const cvex::vfloat4 b) { return _mm_mul_ps(_mm_broadcast_ss(&a), b); }
 static inline cvex::vfloat4 operator/(const float a, const cvex::vfloat4 b) { return _mm_div_ps(_mm_broadcast_ss(&a), b); }
+
+static inline vfloat4 lerp(const vfloat4& u, const vfloat4& v, const float t) { return u + t * (v - u); }
 
 static inline cvex::vint4 operator+(const cvex::vint4 a, const cvex::vint4 b) { return _mm_add_epi32(a, b);   }
 static inline cvex::vint4 operator-(const cvex::vint4 a, const cvex::vint4 b) { return _mm_sub_epi32(a, b);   }
@@ -462,6 +461,6 @@ static inline cvex::vuint4 operator&(const cvex::vuint4 a, const cvex::vuint4 b)
 static inline cvex::vuint4 operator~(const cvex::vuint4 a)                       { return _mm_andnot_si128(a, _mm_set1_epi32(0xFFFFFFFF)); }
 
 
-#endif
+};
 
 #endif //TEST_GL_TOP_VFLOAT4_H

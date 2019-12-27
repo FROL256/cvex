@@ -64,11 +64,14 @@ bool vi4_test002_basic()
   //
   bool passed = true;
 
+  const int Cx1_copy[4] = {10, 20, -3, 4};
+  const int Cx2_copy[4] = {50, -5, 6,  7};
+
   for(int i=0;i<4;i++)
   {
-    const int expr1 = Cx1[i] - Cx2[i];
-    const int expr2 = (Cx1[i] + Cx2[i])*Cx1[i];
-    const int expr3 = (Cx2[i] - Cx1[i])/Cx1[i];
+    const int expr1 = Cx1_copy[i] - Cx2_copy[i];
+    const int expr2 = (Cx1_copy[i] + Cx2_copy[i])*Cx1_copy[i];
+    const int expr3 = (Cx2_copy[i] - Cx1_copy[i])/Cx1_copy[i];
 
     if(result1[i] - expr1 != 0 || result2[i] - expr2 != 0 || result3[i] - expr3 != 0)  
     {
@@ -101,11 +104,14 @@ bool vu4_test003_basic()
   //
   bool passed = true;
 
+  const uint32_t Cx1_copy[4] = {10, 20, 3, 4};
+  const uint32_t Cx2_copy[4] = {50, +5, 6, 7};
+
   for(int i=0;i<4;i++)
   {
-    const unsigned int expr1 = Cx1[i] - Cx2[i];
-    const unsigned int expr2 = (Cx1[i] + Cx2[i])*Cx1[i];
-    const unsigned int expr3 = (Cx2[i] - Cx1[i])/Cx1[i];
+    const unsigned int expr1 = Cx1_copy[i] - Cx2_copy[i];
+    const unsigned int expr2 = (Cx1_copy[i] + Cx2_copy[i])*Cx1_copy[i];
+    const unsigned int expr3 = (Cx2_copy[i] - Cx1_copy[i])/Cx1_copy[i];
 
     if(result1[i] - expr1 != 0 || result2[i] - expr2 != 0 || result3[i] - expr3 != 0)  
     {
@@ -185,12 +191,14 @@ bool vi4_test005_basic()
   //
   bool passed = true;
 
+  const int Cx1_copy[4] = {1, -2, 3, -4};
+
   for(int i=0;i<4;i++)
   {
-    const int expr1 = Cx2*(Cx2 - Cx1[i]) - 2;
-    const int expr2 = 1 + (Cx1[i] + Cx2)*Cx2;
-    const int expr3 = 3 - Cx2/(Cx2 - Cx1[i]);
-    const int expr4 = (Cx2 + Cx1[i])/Cx2 + 5;
+    const int expr1 = Cx2*(Cx2 - Cx1_copy[i]) - 2;
+    const int expr2 = 1 + (Cx1_copy[i] + Cx2)*Cx2;
+    const int expr3 = 3 - Cx2/(Cx2 - Cx1_copy[i]);
+    const int expr4 = (Cx2 + Cx1_copy[i])/Cx2 + 5;
 
     if(result1[i] != expr1 || result2[i] != expr2 || 
        result3[i] != expr3 || result4[i] != expr4)  
@@ -227,12 +235,14 @@ bool vu4_test006_basic()
   //
   bool passed = true;
 
+  const uint32_t Cx1_copy[4] = {1, 2, 3, 4};
+
   for(int i=0;i<4;i++)
   {
-    const unsigned int expr1 = Cx2*(Cx2 - Cx1[i]) - 2;
-    const unsigned int expr2 = 1 + (Cx1[i] + Cx2)*Cx2;
-    const unsigned int expr3 = 3 - Cx2/(Cx2 - Cx1[i]);
-    const unsigned int expr4 = (Cx2 + Cx1[i])/Cx2 + 5;
+    const unsigned int expr1 = Cx2*(Cx2 - Cx1_copy[i]) - 2;
+    const unsigned int expr2 = 1 + (Cx1_copy[i] + Cx2)*Cx2;
+    const unsigned int expr3 = 3 - Cx2/(Cx2 - Cx1_copy[i]);
+    const unsigned int expr4 = (Cx2 + Cx1_copy[i])/Cx2 + 5;
 
     if(result1[i] != expr1 || result2[i] != expr2 || 
        result3[i] != expr3 || result4[i] != expr4)    
@@ -262,10 +272,14 @@ bool vi4_test007_and_or()
 
   bool passed = true;
 
+  const int Cx1_copy[4] = {-1, -2, 3, 4};
+  const int Cx2_copy[4] = {+1, +2, 63355, 63355};
+  const int Cx3_copy[4] = {-1, -1, int(0xF0F00000), 0x00000000};
+
   for(int i=0;i<4;i++)
   {
-    const int expr1 = (Cx1[i] & (~Cx3[i])) | Cx2[i];
-    const int expr2 = (Cx2[i] & Cx3[i])    | Cx1[i];
+    const int expr1 = (Cx1_copy[i] & (~Cx3_copy[i])) | Cx2_copy[i];
+    const int expr2 = (Cx2_copy[i] & Cx3_copy[i])    | Cx1_copy[i];
 
     if(result1[i] != expr1 || result2[i] != expr2)    
     {
@@ -294,10 +308,15 @@ bool vu4_test008_and_or()
 
   bool passed = true;
 
+  const uint32_t Cx1_copy[4] = {0xFFFFFFFF, (unsigned int)(-2), 3, 4};
+  const uint32_t Cx2_copy[4] = {+1, +2, 63355, 63355};
+  const uint32_t Cx3_copy[4] = {0xFFFFFFFF, 0xFFFFFFFF, 0xF0F00000, 0x00000000};
+
+
   for(int i=0;i<4;i++)
   {
-    const unsigned int expr1 = (Cx1[i] & (~Cx3[i])) | Cx2[i];
-    const unsigned int expr2 = (Cx2[i] & Cx3[i])    | Cx1[i];
+    const unsigned int expr1 = (Cx1_copy[i] & (~Cx3_copy[i])) | Cx2_copy[i];
+    const unsigned int expr2 = (Cx2_copy[i] & Cx3_copy[i])    | Cx1_copy[i];
 
     if(result1[i] != expr1 || result2[i] != expr2)    
     {
@@ -326,10 +345,13 @@ bool vi4_test009_shift()
 
   bool passed = true;
 
+  const int Cx1_copy[4] = {-1, -2, 3, 4};
+  const int Cx3_copy[4] = {-1, -1, int(0xF0F00000), 0x00000000};
+
   for(int i=0;i<4;i++)
   {
-    const int expr1 = (Cx1[i] << 8); // | (Cx2[i] >> 17);
-    const int expr2 = (Cx3[i] >> 9); //   (Cx3[i] >> 4);
+    const int expr1 = (Cx1_copy[i] << 8); // | (Cx2[i] >> 17);
+    const int expr2 = (Cx3_copy[i] >> 9); //   (Cx3[i] >> 4);
 
     if(result1[i] != expr1 || result2[i] != expr2)    
     {
@@ -359,10 +381,14 @@ bool vu4_test010_shift()
 
   bool passed = true;
 
+  const unsigned int Cx1_copy[4] = {0xFFFFFFFF, (unsigned int)(-2), 3, 4};
+  const unsigned int Cx2_copy[4] = {+1, +2, 63355, 63355};
+  const unsigned int Cx3_copy[4] = {0xFFFFFFFF, 0xFFFFFFFF, 0xF0F00000, 0x00000000};
+
   for(int i=0;i<4;i++)
   {
-    const unsigned int expr1 = (Cx1[i] << 8) | (Cx2[i] >> 17);
-    const unsigned int expr2 = (Cx3[i] << 9) | (Cx3[i] >> 4); 
+    const unsigned int expr1 = (Cx1_copy[i] << 8) | (Cx2_copy[i] >> 17);
+    const unsigned int expr2 = (Cx3_copy[i] << 9) | (Cx3_copy[i] >> 4); 
 
     if(result1[i] != expr1 || result2[i] != expr2)    
     {
