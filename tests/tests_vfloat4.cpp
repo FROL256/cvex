@@ -19,9 +19,9 @@ bool vf4_test001_basic()
   float result2[4];
   float result3[4];
 
-  cvex::store_u(result1, Cx3);
-  cvex::store_u(result2, Cx4);
-  cvex::store_u(result3, Cx5);
+  store_u(result1, Cx3);
+  store_u(result2, Cx4);
+  store_u(result3, Cx5);
   
   // check 
   //
@@ -56,9 +56,9 @@ bool vi4_test002_basic()
   int result2[4];
   int result3[4];
 
-  cvex::store_u(result1, Cx3);
-  cvex::store_u(result2, Cx4);
-  cvex::store_u(result3, Cx5);
+  store_u(result1, Cx3);
+  store_u(result2, Cx4);
+  store_u(result3, Cx5);
   
   // check 
   //
@@ -93,9 +93,9 @@ bool vu4_test003_basic()
   unsigned int result2[4];
   unsigned int result3[4];
 
-  cvex::store_u(result1, Cx3);
-  cvex::store_u(result2, Cx4);
-  cvex::store_u(result3, Cx5);
+  store_u(result1, Cx3);
+  store_u(result2, Cx4);
+  store_u(result3, Cx5);
   
   // check 
   //
@@ -122,7 +122,7 @@ bool vu4_test003_basic()
 bool vf4_test004_basic()
 {
   const float4 Cx1 = {1.0f, 2.0f, 3.0f, 4.0f};
-  const float   Cx2 = 5.0f;
+  const float  Cx2 = 5.0f;
 
   const auto Cx3 = Cx2*(Cx2 - Cx1) - 2.0f;
   const auto Cx4 = 1.0f + (Cx1 + Cx2)*Cx2;
@@ -134,10 +134,10 @@ bool vf4_test004_basic()
   CVEX_ALIGNED(16) float result3[4];
   CVEX_ALIGNED(16) float result4[4];
 
-  cvex::store(result1, Cx3);
-  cvex::store(result2, Cx4);
-  cvex::store(result3, Cx5);
-  cvex::store(result4, Cx6);
+  store(result1, Cx3);
+  store(result2, Cx4);
+  store(result3, Cx5);
+  store(result4, Cx6);
   
   // check 
   //
@@ -176,10 +176,10 @@ bool vi4_test005_basic()
   CVEX_ALIGNED(16) int result3[4];
   CVEX_ALIGNED(16) int result4[4];
 
-  cvex::store(result1, Cx3);
-  cvex::store(result2, Cx4);
-  cvex::store(result3, Cx5);
-  cvex::store(result4, Cx6);
+  store(result1, Cx3);
+  store(result2, Cx4);
+  store(result3, Cx5);
+  store(result4, Cx6);
   
   // check 
   //
@@ -218,10 +218,10 @@ bool vu4_test006_basic()
   CVEX_ALIGNED(16) unsigned int result3[4];
   CVEX_ALIGNED(16) unsigned int result4[4];
 
-  cvex::store(result1, Cx3);
-  cvex::store(result2, Cx4);
-  cvex::store(result3, Cx5);
-  cvex::store(result4, Cx6);
+  store(result1, Cx3);
+  store(result2, Cx4);
+  store(result3, Cx5);
+  store(result4, Cx6);
   
   // check 
   //
@@ -257,8 +257,8 @@ bool vi4_test007_and_or()
   int result1[4];
   int result2[4];
 
-  cvex::store_u(result1, Cr1);
-  cvex::store_u(result2, Cr2);
+  store_u(result1, Cr1);
+  store_u(result2, Cr2);
 
   bool passed = true;
 
@@ -289,8 +289,8 @@ bool vu4_test008_and_or()
   unsigned int result1[4];
   unsigned int result2[4];
 
-  cvex::store_u(result1, Cr1);
-  cvex::store_u(result2, Cr2);
+  store_u(result1, Cr1);
+  store_u(result2, Cr2);
 
   bool passed = true;
 
@@ -321,8 +321,8 @@ bool vi4_test009_shift()
   int result1[4];
   int result2[4];
 
-  cvex::store_u(result1, Cr1);
-  cvex::store_u(result2, Cr2);
+  store_u(result1, Cr1);
+  store_u(result2, Cr2);
 
   bool passed = true;
 
@@ -354,8 +354,8 @@ bool vu4_test010_shift()
   unsigned int result1[4];
   unsigned int result2[4];
 
-  cvex::store_u(result1, Cr1);
-  cvex::store_u(result2, Cr2);
+  store_u(result1, Cr1);
+  store_u(result2, Cr2);
 
   bool passed = true;
 
@@ -383,8 +383,8 @@ bool vf4_test011_splat()
   float result1[4];
   float result2[4];
 
-  cvex::store_u(result1, Cx1);
-  cvex::store_u(result2, Cx2);
+  store_u(result1, Cx1);
+  store_u(result2, Cx2);
   
   // check 
   //
@@ -411,8 +411,8 @@ bool vi4_test012_splat()
   int result1[4];
   int result2[4];
 
-  cvex::store_u(result1, Cx1);
-  cvex::store_u(result2, Cx2);
+  store_u(result1, Cx1);
+  store_u(result2, Cx2);
   
   // check 
   //
@@ -438,8 +438,8 @@ bool vu4_test013_splat()
   unsigned int result1[4];
   unsigned int result2[4];
 
-  cvex::store_u(result1, Cx1);
-  cvex::store_u(result2, Cx2);
+  store_u(result1, Cx1);
+  store_u(result2, Cx2);
   
   // check 
   //
@@ -459,17 +459,17 @@ bool vu4_test013_splat()
 
 bool vfi4_test014_convert()
 {
-  const int4  Cx1 = cvex::splat(-2456);
-  const vuint4 Cx2 = cvex::splat(0xFFFFFF00);
+  const int4  Cx1  = splat(-2456);
+  const vuint4 Cx2 = splat(0xFFFFFF00);
 
-  const float4 Cf1 = to_float32(Cx1);
-  const float4 Cf2 = to_float32(Cx2);
+  const float4 Cf1 = litemath::to_float32(Cx1);
+  const float4 Cf2 = litemath::to_float32(Cx2);
 
   float result1[4];
   float result2[4];
 
-  cvex::store_u(result1, Cf1);
-  cvex::store_u(result2, Cf2);
+  store_u(result1, Cf1);
+  store_u(result2, Cf2);
 
   // check 
   //
@@ -495,20 +495,20 @@ bool viu4_test015_convert()
   const float4 Cx1 = { -334324.0f, -0.0f, 1.0f, 23423523.0f };
   const float4 Cx2 = { -10000.0f, 0.0f, 100.0f, 0.000005f };
 
-  const int4  Cr1 = to_int32(Cx1);
+  const int4  Cr1  = to_int32(Cx1);
   const vuint4 Cr2 = to_uint32(Cx2);
   const vuint4 Cr3 = to_uint32(Cr1);
-  const int4  Cr4 = to_int32(Cr2);
+  const int4  Cr4  = to_int32(Cr2);
 
   int          result1[4];
   unsigned int result2[4];
   unsigned int result3[4];
   int          result4[4];
 
-  cvex::store_u(result1, Cr1);
-  cvex::store_u(result2, Cr2);
-  cvex::store_u(result3, Cr3);
-  cvex::store_u(result4, Cr4);
+  store_u(result1, Cr1);
+  store_u(result2, Cr2);
+  store_u(result3, Cr3);
+  store_u(result4, Cr4);
 
   // check 
   //
@@ -537,16 +537,16 @@ bool vfi4_test016_cast()
   const float4 Cx1 = { -334324.0f, -0.0f, 1.0f, 23423523.0f };
   const float4 Cx2 = { -10000.0f, 0.0f, 100.0f, 0.000005f };
   
-  const int4   Cx3 = as_int32(Cx1);
-  const vuint4  Cx4 = as_uint32(Cx2);
+  const int4   Cx3 = as_int32 (Cx1);
+  const vuint4 Cx4 = as_uint32(Cx2);
 
-  const float4 Cr1 = as_float32(Cx3);
-  const float4 Cr2 = as_float32(Cx4);
+  const float4 Cr1 = litemath::as_float32(Cx3);
+  const float4 Cr2 = litemath::as_float32(Cx4);
 
   float result1[4];
   float result2[4];
-  cvex::store_u(result1, Cr1);
-  cvex::store_u(result2, Cr2);
+  store_u(result1, Cr1);
+  store_u(result2, Cr2);
 
   bool passed = true;
 
@@ -572,20 +572,20 @@ bool vf4_test017_mMcRcp()
   const float4 Cx2 = { +334324.0f, +1.0f, 100.0f, -0.000005f };
   const float4 Cx3 = { +10.0f,  +10.0f, +10.0f, +10.0f };
 
-  const float4 Cr1 = cvex::min(Cx1, Cx2);
-  const float4 Cr2 = cvex::max(Cx1, Cx2);
-  const float4 Cr3 = cvex::clamp(Cx3, Cx1, Cx2);
-  const float4 Cr4 = cvex::rcp_e(Cx2);
+  const float4 Cr1 = litemath::min(Cx1, Cx2);
+  const float4 Cr2 = litemath::max(Cx1, Cx2);
+  const float4 Cr3 = litemath::clamp(Cx3, Cx1, Cx2);
+  const float4 Cr4 = litemath::rcp_e(Cx2);
 
   float result1[4];
   float result2[4];
   float result3[4];
   float result4[4];
 
-  cvex::store_u(result1, Cr1);
-  cvex::store_u(result2, Cr2);
-  cvex::store_u(result3, Cr3);
-  cvex::store_u(result4, Cr4);
+  store_u(result1, Cr1);
+  store_u(result2, Cr2);
+  store_u(result3, Cr3);
+  store_u(result4, Cr4);
 
   bool passed = true;
 
@@ -624,9 +624,9 @@ bool vi4_test018_minMax()
   int result2[4];
   int result3[4];
 
-  cvex::store_u(result1, Cr1);
-  cvex::store_u(result2, Cr2);
-  cvex::store_u(result3, Cr3);
+  store_u(result1, Cr1);
+  store_u(result2, Cr2);
+  store_u(result3, Cr3);
 
   bool passed = true;
 
@@ -664,9 +664,9 @@ bool vu4_test019_minMax()
   unsigned int result2[4];
   unsigned int result3[4];
 
-  cvex::store_u(result1, Cr1);
-  cvex::store_u(result2, Cr2);
-  cvex::store_u(result3, Cr3);
+  store_u(result1, Cr1);
+  store_u(result2, Cr2);
+  store_u(result3, Cr3);
 
   bool passed = true;
 
@@ -698,13 +698,13 @@ bool vf4_test020_blend()
   const int4 mask1  = {int(0xFFFFFFFF), 0, int(0xFFFFFFFF), 0};
   const vuint4 mask2 = {0, 0xFFFFFFFF, 0xFFFFFFFF, 0 };
 
-  const float4 Cr1 = cvex::blend(Cx1, Cx2, mask1);
-  const float4 Cr2 = cvex::blend(Cx1, Cx2, mask2);
+  const float4 Cr1 = cvex::blend(Cx1.v, Cx2.v, mask1);
+  const float4 Cr2 = cvex::blend(Cx1.v, Cx2.v, mask2);
 
   float result1[4];
   float result2[4];
-  cvex::store_u(result1, Cr1);
-  cvex::store_u(result2, Cr2);
+  store_u(result1, Cr1);
+  store_u(result2, Cr2);
 
   bool passed = true;
 
@@ -738,8 +738,8 @@ bool vi4_test021_blend()
 
   int result1[4];
   int result2[4];
-  cvex::store_u(result1, Cr1);
-  cvex::store_u(result2, Cr2);
+  store_u(result1, Cr1);
+  store_u(result2, Cr2);
 
   bool passed = true;
 
@@ -771,8 +771,8 @@ bool vu4_test022_blend()
 
   unsigned int result1[4];
   unsigned int result2[4];
-  cvex::store_u(result1, Cr1);
-  cvex::store_u(result2, Cr2);
+  store_u(result1, Cr1);
+  store_u(result2, Cr2);
 
   bool passed = true;
 
@@ -794,13 +794,13 @@ bool vf4_test023_floor_ceil()
 {
   const float4 Cx1 = { +1.5f, -2.5f, +3.2f, -4.8f };
 
-  const float4 Cr1 = cvex::floor(Cx1);
-  const float4 Cr2 = cvex::ceil(Cx1);
+  const float4 Cr1 = floor(Cx1);
+  const float4 Cr2 = ceil (Cx1);
 
   CVEX_ALIGNED(16) float result1[4];
   CVEX_ALIGNED(16) float result2[4];
-  cvex::store(result1, Cr1);
-  cvex::store(result2, Cr2);
+  store(result1, Cr1);
+  store(result2, Cr2);
 
   const float res1[4] = { +1.0f, -3.0f, +3.0f, -5.0f };
   const float res2[4] = { +2.0f, -2.0f, +4.0f, -4.0f };
@@ -831,8 +831,8 @@ bool vfiu_test024_test_bits()
   const vuint4 Cx5 = { 0, 0, 0, 8 };
   const vuint4 Cx6 = { 0, 0, 0, 0 };
 
-  const bool b1 = cvex::test_bits_any(Cx1);
-  const bool b2 = cvex::test_bits_any(Cx2);
+  const bool b1 = cvex::test_bits_any(Cx1.v);
+  const bool b2 = cvex::test_bits_any(Cx2.v);
   const bool b3 = cvex::test_bits_any(Cx3);
   const bool b4 = cvex::test_bits_any(Cx4);
   const bool b5 = cvex::test_bits_any(Cx5);
@@ -852,8 +852,8 @@ bool vfiu_test025_test_bits()
   const vuint4 Cx5 = { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
   const vuint4 Cx6 = { 0xFFFFFFFF, 0, 0xFFFFFFFF, 0xFFFFFFFF };
 
-  const bool b1 = cvex::test_bits_all(Cx1);
-  const bool b2 = cvex::test_bits_all(Cx2);
+  const bool b1 = cvex::test_bits_all(Cx1.v);
+  const bool b2 = cvex::test_bits_all(Cx2.v);
   const bool b3 = cvex::test_bits_all(Cx3);
   const bool b4 = cvex::test_bits_all(Cx4);
   const bool b5 = cvex::test_bits_all(Cx5);
@@ -867,18 +867,18 @@ bool vf4_test026_dot_cross()
   const float4 Cx1 = { 1.0f, 2.0f, 3.0f, 4.0f };
   const float4 Cx2 = { 5.0f, 6.0f, 7.0f, 8.0f };
 
-  const float   dot1 = cvex::dot3f(Cx1, Cx2);
-  const float4 dot2 = cvex::dot3v(Cx1, Cx2);
-  const float   dot3 = cvex::dot4f(Cx1, Cx2);
-  const float4 dot4 = cvex::dot4v(Cx1, Cx2);
-  const float4 crs3 = cvex::cross3(Cx1, Cx2);
+  const float   dot1 = dot3f(Cx1, Cx2);
+  const float4 dot2  = dot3v(Cx1, Cx2);
+  const float   dot3 = dot4f(Cx1, Cx2);
+  const float4 dot4  = dot4v(Cx1, Cx2);
+  const float4 crs3  = cross3(Cx1, Cx2);
 
   CVEX_ALIGNED(16) float result1[4];
   CVEX_ALIGNED(16) float result2[4];
   CVEX_ALIGNED(16) float result3[4];
-  cvex::store(result1, dot2);
-  cvex::store(result2, dot4);
-  cvex::store(result3, crs3);
+  store(result1, dot2);
+  store(result2, dot4);
+  store(result3, crs3);
 
   const float ref_dp3 = 1.0f*5.0f + 2.0f*6.0f + 3.0f*7.0f;
   const float ref_dp4 = 1.0f*5.0f + 2.0f*6.0f + 3.0f*7.0f + 4.0f*8.0f;
@@ -910,22 +910,22 @@ bool vf4_test027_shuffle()
 {
   const float4 Cx1 = { 1.0f, 2.0f, 3.0f, 4.0f };
 
-  const float4 Cr1 = shuffle_zyxw(Cx1);
-  const float4 Cr2 = shuffle_yzxw(Cx1);
-  const float4 Cr3 = shuffle_zxyw(Cx1);
-  const float4 Cr4 = shuffle_xyxy(Cx1);
-  const float4 Cr5 = shuffle_zwzw(Cx1);
+  const float4 Cr1 = shuffle_zyxw(Cx1.v);
+  const float4 Cr2 = shuffle_yzxw(Cx1.v);
+  const float4 Cr3 = shuffle_zxyw(Cx1.v);
+  const float4 Cr4 = shuffle_xyxy(Cx1.v);
+  const float4 Cr5 = shuffle_zwzw(Cx1.v);
 
   CVEX_ALIGNED(16) float result1[4];
   CVEX_ALIGNED(16) float result2[4];
   CVEX_ALIGNED(16) float result3[4];
   CVEX_ALIGNED(16) float result4[4];
   CVEX_ALIGNED(16) float result5[4];
-  cvex::store(result1, Cr1);
-  cvex::store(result2, Cr2);
-  cvex::store(result3, Cr3);
-  cvex::store(result4, Cr4);
-  cvex::store(result5, Cr5);
+  store(result1, Cr1);
+  store(result2, Cr2);
+  store(result3, Cr3);
+  store(result4, Cr4);
+  store(result5, Cr5);
 
   const bool b1 = (result1[0] == 3.0f) && (result1[1] == 2.0f) && (result1[2] == 1.0f) && (result1[3] == 4.0f);
   const bool b2 = (result2[0] == 2.0f) && (result2[1] == 3.0f) && (result2[2] == 1.0f) && (result2[3] == 4.0f);
@@ -940,15 +940,15 @@ bool vf4_test028_length()
 {
   const float4 Cx1 = { 1.0f, 2.0f, 3.0f, 4.0f };
 
-  const float   dot1 = cvex::length3f(Cx1);
-  const float4 dot2 = cvex::length3v(Cx1);
-  const float   dot3 = cvex::length4f(Cx1);
-  const float4 dot4 = cvex::length4v(Cx1);
+  const float   dot1 = length3f(Cx1);
+  const float4 dot2  = length3v(Cx1);
+  const float   dot3 = length4f(Cx1);
+  const float4 dot4  = length4v(Cx1);
 
   CVEX_ALIGNED(16) float result1[4];
   CVEX_ALIGNED(16) float result2[4];
-  cvex::store(result1, dot2);
-  cvex::store(result2, dot4);
+  store(result1, dot2);
+  store(result2, dot4);
 
   const float ref_dp3 = sqrtf(1.0f*1.0f + 2.0f*2.0f + 3.0f*3.0f);
   const float ref_dp4 = sqrtf(1.0f*1.0f + 2.0f*2.0f + 3.0f*3.0f + 4.0f*4.0f);
@@ -982,11 +982,10 @@ bool vf4_test029_ext_splt()
   CVEX_ALIGNED(16) float result3[4];
   CVEX_ALIGNED(16) float result4[4];
 
-  cvex::store(result1, Cr1);
-  cvex::store(result2, Cr2);
-  cvex::store(result3, Cr3);
-  cvex::store(result4, Cr4);
-
+  store(result1, Cr1);
+  store(result2, Cr2);
+  store(result3, Cr3);
+  store(result4, Cr4);
 
   const float x = extract_0(Cx1);
   const float y = extract_1(Cx1);
@@ -1154,8 +1153,8 @@ bool vf4_test034_colpack()
 {
   const float4 Cx1 = { 0.25f, 0.5f, 0.0, 1.0f };
 
-  const unsigned int packed_rgba = cvex::color_pack_rgba(Cx1);
-  const unsigned int packed_bgra = cvex::color_pack_bgra(Cx1);
+  const unsigned int packed_rgba = color_pack_rgba(Cx1);
+  const unsigned int packed_bgra = color_pack_bgra(Cx1);
 
   return (packed_bgra == 0xFF408000) && (packed_rgba == 0xFF008040);
 }
