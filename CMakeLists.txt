@@ -11,7 +11,12 @@ if(WIN32)
   link_directories(${ADDITIONAL_LIBRARY_DIRS})
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx")
+
+if (ARCHITECTURE_ID MATCHES "^(X86|X32|X64|x64)$" )
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx")
+else()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpu=neon")
+endif()
 
 #uncomment this to detect broken memory problems via gcc sanitizers
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fsanitize-address-use-after-scope -fno-omit-frame-pointer -fsanitize=leak -fsanitize=undefined -fsanitize=bounds-strict")
