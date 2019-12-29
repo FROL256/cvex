@@ -7,7 +7,13 @@
 
 #include <arm_neon.h>
 
-#define ALIGNED(x) __attribute__ ((aligned (x)))
+#if __GNUC__
+#define CVEX_ALIGNED(X) __attribute__((__aligned__(X)))
+#elif _MSC_VER
+#define CVEX_ALIGNED(X) __declspec(align(X))
+#else
+#error "Unsupported compiler"
+#endif
 
 namespace cvex
 {
@@ -70,6 +76,11 @@ namespace cvex
   static inline vuint4  to_uint32 (vfloat4 a)  { return vcvtq_u32_f32(a); }
   static inline vuint4  to_uint32 (vint4 a)    { return (uint32x4_t)a.data; }
 
+  //static inline vfloat4 as_float32(const vint4 a_val)   { return reinterpret_cast<vfloat4>(a_val); }
+  //static inline vfloat4 as_float32(const vuint4 a_val)  { return reinterpret_cast<vfloat4>(a_val); }
+  //static inline vint4   as_int32  (const vfloat4 a_val) { return reinterpret_cast<vint4>(a_val);   }
+  //static inline vuint4  as_uint32 (const vfloat4 a_val)  { return reinterpret_cast<vuint4>(a_val);  }
+
   static inline vfloat4 rcp_e(vfloat4 a)       { return vrecpeq_f32(a); }
 
   static inline vfloat4 blend(const vfloat4 a, const vfloat4 b, const vint4 mask) { return vbslq_f32((uint32x4_t)mask.data, a.data, b.data); }
@@ -88,8 +99,15 @@ namespace cvex
 
   static inline vfloat4 min(const vfloat4 a, const vfloat4 b) { return vminq_f32(a.data,b.data); }
   static inline vfloat4 max(const vfloat4 a, const vfloat4 b) { return vmaxq_f32(a.data,b.data); }
+  static inline vfloat4 clamp(const vfloat4 x, const vfloat4 minVal, const vfloat4 maxVal) { return max(min(x, maxVal), minVal);  }
 
-  static inline vfloat4 vclamp(const vfloat4 x, const vfloat4 minVal, const vfloat4 maxVal) { return max(min(x, maxVal), minVal);  }
+  static inline vfloat4 dot4v(const vfloat4 a, const vfloat4 b)
+  {
+    const float32x4_t prod = vmulq_f32(a.data, b.data);
+    const float32x4_t sum1 = vaddq_f32(prod, vrev64q_f32(prod));
+    const float32x4_t sum2 = vaddq_f32(sum1, vcombine_f32(vget_high_f32(sum1), vget_low_f32(sum1)));
+    return sum2;
+  }
 
   static inline void set_ftz() { }
 
@@ -160,5 +178,9 @@ static inline cvex::vint4 operator> (const cvex::vfloat4 a, const cvex::vfloat4 
 static inline cvex::vint4 operator< (const cvex::vfloat4 a, const cvex::vfloat4 b) { return (int32x4_t)vcltq_f32(a, b); }
 static inline cvex::vint4 operator>=(const cvex::vfloat4 a, const cvex::vfloat4 b) { return (int32x4_t)vcgeq_f32(a, b); }
 static inline cvex::vint4 operator<=(const cvex::vfloat4 a, const cvex::vfloat4 b) { return (int32x4_t)vcleq_f32(a, b); }
+static inline cvex::vint4 operator==(const cvex::vfloat4 a, const cvex::vfloat4 b) { return (int32x4_t)vceqq_f32(a, b); }
+static inline cvex::vint4 operator!=(const cvex::vfloat4 a, const cvex::vfloat4 b) { return (int32x4_t)vmvnq_u32(vceqq_f32(a, b)); }
+
+//float32_t vget_lane_f32(float32x2_t vec, __constrange(0,1) int lane);
 
 #endif //TEST_GL_TOP_VFLOAT4_GCC_H
