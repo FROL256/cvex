@@ -76,10 +76,10 @@ namespace cvex
   static inline vuint4  to_uint32 (vfloat4 a)  { return vcvtq_u32_f32(a); }
   static inline vuint4  to_uint32 (vint4 a)    { return (uint32x4_t)a.data; }
 
-  //static inline vfloat4 as_float32(const vint4 a_val)   { return reinterpret_cast<vfloat4>(a_val); }
-  //static inline vfloat4 as_float32(const vuint4 a_val)  { return reinterpret_cast<vfloat4>(a_val); }
-  //static inline vint4   as_int32  (const vfloat4 a_val) { return reinterpret_cast<vint4>(a_val);   }
-  //static inline vuint4  as_uint32 (const vfloat4 a_val)  { return reinterpret_cast<vuint4>(a_val);  }
+  static inline vfloat4 as_float32(const vint4 a_val)   { return vreinterpretq_f32_s32(a_val); }
+  static inline vfloat4 as_float32(const vuint4 a_val)  { return vreinterpretq_f32_u32(a_val); }
+  static inline vint4   as_int32  (const vfloat4 a_val) { return vreinterpretq_s32_f32(a_val);   }
+  static inline vuint4  as_uint32 (const vfloat4 a_val) { return vreinterpretq_u32_f32(a_val);  }
 
   static inline vfloat4 rcp_e(vfloat4 a)       { return vrecpeq_f32(a); }
 
@@ -107,6 +107,13 @@ namespace cvex
     const float32x4_t sum1 = vaddq_f32(prod, vrev64q_f32(prod));
     const float32x4_t sum2 = vaddq_f32(sum1, vcombine_f32(vget_high_f32(sum1), vget_low_f32(sum1)));
     return sum2;
+  }
+
+  //float32_t vget_lane_f32(float32x2_t vec, __constrange(0,1) int lane);
+
+  static inline vfloat4 lerp(const vfloat4 u, const vfloat4 v, const float t) 
+  {
+    return vmlaq_f32(u.data, vld1q_dup_f32(&t), vsubq_f32(u.data, v.data)); // vmlaq_f32(a, b, c) | Multiply and add 	a + (b * c)
   }
 
   static inline void set_ftz() { }
@@ -180,7 +187,6 @@ static inline cvex::vint4 operator>=(const cvex::vfloat4 a, const cvex::vfloat4 
 static inline cvex::vint4 operator<=(const cvex::vfloat4 a, const cvex::vfloat4 b) { return (int32x4_t)vcleq_f32(a, b); }
 static inline cvex::vint4 operator==(const cvex::vfloat4 a, const cvex::vfloat4 b) { return (int32x4_t)vceqq_f32(a, b); }
 static inline cvex::vint4 operator!=(const cvex::vfloat4 a, const cvex::vfloat4 b) { return (int32x4_t)vmvnq_u32(vceqq_f32(a, b)); }
-
-//float32_t vget_lane_f32(float32x2_t vec, __constrange(0,1) int lane);
+ 
 
 #endif //TEST_GL_TOP_VFLOAT4_GCC_H
