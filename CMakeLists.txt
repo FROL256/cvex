@@ -12,10 +12,10 @@ if(WIN32)
 endif()
 
 
-if (ARCHITECTURE_ID MATCHES "^(X86|X32|X64|x64)$" )
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx")
-else()
+if (ARCHITECTURE_ID MATCHES "arm" )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpu=neon")
+else()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx")
 endif()
 
 #uncomment this to detect broken memory problems via gcc sanitizers

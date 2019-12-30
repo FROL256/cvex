@@ -179,7 +179,10 @@ namespace cvex
   static inline float extract_2(const vfloat4 a_val) { return a_val[2]; }
   static inline float extract_3(const vfloat4 a_val) { return a_val[3]; }
 
+  static inline __m128i as_m128i(const vfloat4& a) { return reinterpret_cast<__m128i>(a);  } 
+
   #ifdef __x86_64
+
   static inline float   dot3f(const vfloat4 a, const vfloat4 b) { return _mm_cvtss_f32(_mm_dp_ps(a, b, 0x7f)); }
   static inline vfloat4 dot3v(const vfloat4 a, const vfloat4 b) { return _mm_dp_ps(a, b, 0x7f); }
   static inline vfloat4 dot4v(const vfloat4 a, const vfloat4 b) { return _mm_dp_ps(a, b, 0xff); }
@@ -220,7 +223,26 @@ namespace cvex
     return _mm_cvtsi128_si32(out2);
   }
 
+  static inline void transpose4(const vfloat4 __restrict in_rows[4], vfloat4 __restrict out_rows[4])
+  {
+    const auto a0 = as_m128i(in_rows[0]);
+    const auto a1 = as_m128i(in_rows[1]);
+    const auto a2 = as_m128i(in_rows[2]);
+    const auto a3 = as_m128i(in_rows[3]);
+
+    const auto b0 = _mm_unpacklo_epi32(a0, a1);
+    const auto b1 = _mm_unpackhi_epi32(a0, a1);
+    const auto b2 = _mm_unpacklo_epi32(a2, a3);
+    const auto b3 = _mm_unpackhi_epi32(a2, a3);
+  
+    out_rows[0] = _mm_castsi128_ps(_mm_unpacklo_epi64(b0, b2));
+    out_rows[1] = _mm_castsi128_ps(_mm_unpackhi_epi64(b0, b2));
+    out_rows[2] = _mm_castsi128_ps(_mm_unpacklo_epi64(b1, b3));
+    out_rows[3] = _mm_castsi128_ps(_mm_unpackhi_epi64(b1, b3));
+  }
+
   static inline void set_ftz() { _MM_SET_ROUNDING_MODE(_MM_ROUND_TOWARD_ZERO); }
+
   #else
   static inline float   dot3f(const vfloat4 a, const vfloat4 b) 
   {
@@ -298,27 +320,7 @@ namespace cvex
 
   inline static void set_ftz() {}
 
-  static inline void transpose4(const vfloat4 __restrict in_rows[4], vfloat4 __restrict out_rows[4])
-  {
-    const auto a0 = as_m128i(in_rows[0]);
-    const auto a1 = as_m128i(in_rows[1]);
-    const auto a2 = as_m128i(in_rows[2]);
-    const auto a3 = as_m128i(in_rows[3]);
-
-    const auto b0 = _mm_unpacklo_epi32(a0, a1);
-    const auto b1 = _mm_unpackhi_epi32(a0, a1);
-    const auto b2 = _mm_unpacklo_epi32(a2, a3);
-    const auto b3 = _mm_unpackhi_epi32(a2, a3);
-  
-    out_rows[0] = _mm_castsi128_ps(_mm_unpacklo_epi64(b0, b2));
-    out_rows[1] = _mm_castsi128_ps(_mm_unpackhi_epi64(b0, b2));
-    out_rows[2] = _mm_castsi128_ps(_mm_unpacklo_epi64(b1, b3));
-    out_rows[3] = _mm_castsi128_ps(_mm_unpackhi_epi64(b1, b3));
-  }
-
   #endif
-
-  static inline __m128i as_m128i(const vfloat4& a) { return reinterpret_cast<__m128i>(a);  } 
 
  
   static inline void mat4_rowmajor_mul_mat4(float* __restrict M, const float* __restrict A, const float* __restrict B) // modern gcc compiler succesfuly vectorize such implementation!
