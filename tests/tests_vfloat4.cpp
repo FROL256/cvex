@@ -921,7 +921,18 @@ bool vfiu_test025_test_bits()
   const bool b5 = cvex::test_bits_all(Cx5);
   const bool b6 = cvex::test_bits_all(Cx6);
 
-  return (!b1 && !b2 && b3 && !b4 && b5 && !b6);
+  const bool passed = (!b1 && !b2 && b3 && !b4 && b5 && !b6);
+  if(!passed)
+  {
+    std::cout << "b1:" << b1 << std::endl;
+    std::cout << "b2:" << b2 << std::endl;
+    std::cout << "b3:" << b3 << std::endl;
+    std::cout << "b4:" << b4 << std::endl;
+    std::cout << "b5:" << b5 << std::endl;
+    std::cout << "b6:" << b6 << std::endl;
+  }
+
+  return passed;
 }
 
 bool vf4_test026_dot_cross()
@@ -995,7 +1006,18 @@ bool vf4_test027_shuffle()
   const bool b4 = (result4[0] == 1.0f) && (result4[1] == 2.0f) && (result4[2] == 1.0f) && (result4[3] == 2.0f);
   const bool b5 = (result5[0] == 3.0f) && (result5[1] == 4.0f) && (result5[2] == 3.0f) && (result5[3] == 4.0f);
  
-  return (b1 && b2 && b3 && b4 && b5);
+  const bool passed = (b1 && b2 && b3 && b4 && b5);
+
+  if(!passed)
+  {
+    std::cout << result1[0] << " " << result1[1] << " " << result1[2] << " " << result1[3] << std::endl;
+    std::cout << result2[0] << " " << result2[1] << " " << result2[2] << " " << result2[3] << std::endl;
+    std::cout << result3[0] << " " << result3[1] << " " << result3[2] << " " << result3[3] << std::endl;
+    std::cout << result4[0] << " " << result4[1] << " " << result4[2] << " " << result4[3] << std::endl;
+    std::cout << result5[0] << " " << result5[1] << " " << result5[2] << " " << result5[3] << std::endl;
+  }
+
+  return passed;
 }
 
 bool vf4_test028_length()
