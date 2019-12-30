@@ -117,6 +117,8 @@ namespace LiteMath
   static inline float4 clamp(const float4& x, const float4& minVal, const float4& maxVal) { return cvex::clamp(x.v, minVal.v, maxVal.v); }
   static inline float4 lerp (const float4& u, const float4& v, const float t)             { return cvex::lerp(u.v, v.v, t); }
   
+  // todo: float32x2_t vrsqrte_f32(float32x2_t a);
+
   static inline float4 rcp_e(const float4& a) { return cvex::rcp_e(a.v); }
   static inline float  dot3f(const float4& a, const float4& b) { return cvex::dot3f(a.v, b.v); }
   static inline float4 dot3v(const float4& a, const float4& b) { return cvex::dot3v(a.v, b.v); }
