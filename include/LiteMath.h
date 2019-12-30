@@ -73,10 +73,29 @@ namespace LiteMath
     };
   };
 
-  static inline float4 operator+(const float a, const float4 b) { return cvex::operator+(a,b.v); }
-  static inline float4 operator-(const float a, const float4 b) { return cvex::operator-(a,b.v); }
-  static inline float4 operator*(const float a, const float4 b) { return cvex::operator*(a,b.v); }
-  static inline float4 operator/(const float a, const float4 b) { return cvex::operator/(a,b.v); }
+  static inline float4 operator+(const float a, const float4 b) 
+  { 
+    const cvex::vfloat4 res = (a + b.v);
+    return float4(res); 
+  }
+
+  static inline float4 operator-(const float a, const float4 b) 
+  { 
+    const cvex::vfloat4 res = (a - b.v);
+    return float4(res); 
+  }
+
+  static inline float4 operator*(const float a, const float4 b) 
+  { 
+    const cvex::vfloat4 res = (a * b.v);
+    return float4(res); 
+  }
+
+  static inline float4 operator/(const float a, const float4 b) 
+  { 
+    const cvex::vfloat4 res = (a / b.v);
+    return float4(res); 
+  }
 
   static inline float4 load   (const float* p)         { return cvex::load(p); }
   static inline float4 load_u (const float* p)         { return cvex::load_u(p); }
