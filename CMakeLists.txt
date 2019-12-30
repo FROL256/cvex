@@ -12,7 +12,7 @@ if(WIN32)
 endif()
 
 
-if (ARCHITECTURE_ID MATCHES "arm" )
+if (CMAKE_SYSTEM_PROCESSOR MATCHES "arm" )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpu=neon")
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx")
