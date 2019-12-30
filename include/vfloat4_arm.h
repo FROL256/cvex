@@ -122,18 +122,8 @@ namespace cvex
     return (vget_lane_u32(vpmax_u32(tmp, tmp), 0) != 0);
   }
 
-  static inline bool test_bits_all(const vuint4 v)
-  {
-    const uint32x2_t tmp = vorr_u32(vget_low_u32(v.data), vget_high_u32(v.data));
-    return (vget_lane_u32(vpmax_u32(tmp, tmp), 0) != 0);
-  }
-
-  static inline bool test_bits_all(const vint4 v)
-  {
-    const int32x2_t tmp = vorr_s32(vget_low_s32(v.data), vget_high_s32(v.data));
-    return (vget_lane_s32(vpmax_s32(tmp, tmp), 0) != 0);
-  }
-  
+  static inline bool test_bits_all(const vuint4 v)  { return !test_bits_any(vmvnq_u32(v)); }
+  static inline bool test_bits_all(const vint4 v)   { return !test_bits_any(vmvnq_s32(v)); }
   static inline bool test_bits_all(const vfloat4 v) { return test_bits_all(as_int32(v)); }
  
   static inline vfloat4 min(const vfloat4 a, const vfloat4 b)                              { return vminq_f32(a.data,b.data); }
@@ -248,53 +238,71 @@ namespace cvex
     return cvex::splat(res); 
   }
   
-  //https://github.com/jratcliff63367/sse2neon/blob/master/SSE2NEON.h
-  //
+  inline vfloat4 VectorSwizzleGeneral(vfloat4 V, uint32_t E0, uint32_t E1, uint32_t E2, uint32_t E3)
+  {
+    static const uint32_t ControlElement[ 4 ] =
+    {
+        0x03020100, // XM_SWIZZLE_X
+        0x07060504, // XM_SWIZZLE_Y
+        0x0B0A0908, // XM_SWIZZLE_Z
+        0x0F0E0D0C, // XM_SWIZZLE_W
+    };
+     
+    struct TEMP
+    {
+      union 
+      {
+        float32x2x2_t tbl;
+        uint8x8x2_t   tbl2;
+      };
+    } temp;
+    temp.tbl.val[0] = vget_low_f32(V.data);
+    temp.tbl.val[1] = vget_high_f32(V.data);
 
-  static inline vfloat4 shuffle_zyxw(vfloat4 a) // _mm_shuffle_ps_2103
-  { 
-    float32x2_t a03 = vget_low_f32(vextq_f32(a, a, 3));
-	  float32x2_t b21 = vget_high_f32(vextq_f32(a, a, 3));
-	  return vcombine_f32(a03, b21);   
+    uint32x2_t idx = vcreate_u32( ((uint64_t)ControlElement[E0]) | (((uint64_t)ControlElement[E1]) << 32) );
+    const uint8x8_t rL = vtbl2_u8( temp.tbl2, vreinterpret_u8_u32(idx) );
+
+    idx = vcreate_u32( ((uint64_t)ControlElement[E2]) | (((uint64_t)ControlElement[E3]) << 32) );
+    const uint8x8_t rH = vtbl2_u8( temp.tbl2, vreinterpret_u8_u32(idx) );
+
+    return vcombine_f32( vreinterpret_f32_u8(rL), vreinterpret_f32_u8(rH) );
   }
 
-  static inline vfloat4 shuffle_yzxw(vfloat4 a) //  _mm_shuffle_ps_2301
+  static inline vfloat4 shuffle_zyxw(vfloat4 a) { return VectorSwizzleGeneral(a,2,1,0,3); }
+  static inline vfloat4 shuffle_yzxw(vfloat4 a) { return VectorSwizzleGeneral(a,1,2,0,3); }
+  static inline vfloat4 shuffle_zxyw(vfloat4 v) { return VectorSwizzleGeneral(v,2,0,1,3); }
+
+  static inline vfloat4 shuffle_xyxy(vfloat4 a) 
   { 
-    float32x2_t a01 = vrev64_f32(vget_low_f32(a));
-	  float32x2_t b23 = vrev64_f32(vget_high_f32(a));
-	  return vcombine_f32(a01, b23);
+    const float32x2_t a01 = vget_low_f32(a); // vrev64_f32 to get yxyx
+	  return vcombine_f32(a01, a01);
   }
 
-  static inline vfloat4 shuffle_xyxy(vfloat4 a) //  _mm_shuffle_ps_0101
+  static inline vfloat4 shuffle_zwzw(vfloat4 a) 
   { 
-    float32x2_t a01 = vrev64_f32(vget_low_f32(a));
-	  float32x2_t b01 = vrev64_f32(vget_low_f32(a));
-	  return vcombine_f32(a01, b01);
+	  const float32x2_t b01 = vget_high_f32(a);
+	  return vcombine_f32(b01, b01);
   }
 
-  static inline vfloat4 shuffle_zwzw(vfloat4 a) //  #ALERT, NOT TESTED!!!!
-  { 
-    float32x2_t a01 = vrev64_f32(vget_high_f32(a));
-	  float32x2_t b01 = vrev64_f32(vget_high_f32(a));
-	  return vcombine_f32(a01, b01);
-  }
-
-  static inline vfloat4 shuffle_zxyw(vfloat4 v) //  _mm_shuffle_ps_2301
-  { 
-    CVEX_ALIGNED(16) float array[4];
-    cvex::store(array, v);
-	  return { array[2], array[0], array[1], array[3]  };
+  static inline void cross3_c(float v0[3], float v1[3], float d[3])
+  {
+  	d[0] = v0[1]*v1[2] - v0[2]*v1[1];
+  	d[1] = v0[2]*v1[0] - v0[0]*v1[2];
+  	d[2] = v0[0]*v1[1] - v0[1]*v1[0];
   }
 
   static inline vfloat4 cross3(const vfloat4 a, const vfloat4 b) 
   {
-    const vfloat4 a_yzx = shuffle_yzxw(a);
-    const vfloat4 b_yzx = shuffle_yzxw(b);
+    CVEX_ALIGNED(16) float arr_a[4];
+    CVEX_ALIGNED(16) float arr_b[4];
+    CVEX_ALIGNED(16) float arr_c[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 
-    const float32x4_t ayzx = vmulq_f32(a.data,b_yzx.data);
-    const float32x4_t byzx = vmulq_f32(a_yzx.data,b.data);
+    cvex::store(arr_a, a);
+    cvex::store(arr_b, b);
 
-    return shuffle_yzxw( vsubq_f32(ayzx, byzx) );
+    cross3_c(arr_a, arr_b, arr_c);
+
+    return cvex::load(arr_c);
   }
 
   static inline vfloat4 lerp(const vfloat4 u, const vfloat4 v, const float t) 
@@ -445,17 +453,29 @@ namespace cvex
 static inline cvex::vfloat4 operator+(cvex::vfloat4 a, cvex::vfloat4 b) { return vaddq_f32(a.data, b.data); }
 static inline cvex::vfloat4 operator-(cvex::vfloat4 a, cvex::vfloat4 b) { return vsubq_f32(a.data, b.data); }
 static inline cvex::vfloat4 operator*(cvex::vfloat4 a, cvex::vfloat4 b) { return vmulq_f32(a.data, b.data); }
-static inline cvex::vfloat4 operator/(cvex::vfloat4 a, cvex::vfloat4 b) { float32x4_t rcp = vrecpeq_f32(b); return vmulq_f32(a.data, rcp); }
+static inline cvex::vfloat4 operator/(cvex::vfloat4 a, cvex::vfloat4 b) 
+{ 
+  CVEX_ALIGNED(16) float temp_a[4];
+  CVEX_ALIGNED(16) float temp_b[4];
+  cvex::store(temp_a, a);
+  cvex::store(temp_b, b);
+  return { temp_a[0] / temp_b[0], temp_a[1] / temp_b[1], temp_a[2] / temp_b[2], temp_a[3] / temp_b[3] };
+}
 
 static inline cvex::vfloat4 operator+(const cvex::vfloat4 a, const float b) { return vaddq_f32(a.data, vmovq_n_f32(b)); }
 static inline cvex::vfloat4 operator-(const cvex::vfloat4 a, const float b) { return vsubq_f32(a.data, vmovq_n_f32(b)); }
 static inline cvex::vfloat4 operator*(const cvex::vfloat4 a, const float b) { return vmulq_f32(a.data, vmovq_n_f32(b)); }
-static inline cvex::vfloat4 operator/(const cvex::vfloat4 a, const float b) { const float bInv = 1.0f/b; return vmulq_f32(a.data, vld1q_dup_f32(&bInv)); }
+static inline cvex::vfloat4 operator/(const cvex::vfloat4 a, const float b) { return vmulq_f32(a.data, vmovq_n_f32(1.0f/b)); }
 
 static inline cvex::vfloat4 operator+(const float b, const cvex::vfloat4 a) { return vaddq_f32(vmovq_n_f32(b), a.data); }
 static inline cvex::vfloat4 operator-(const float b, const cvex::vfloat4 a) { return vsubq_f32(vmovq_n_f32(b), a.data); }
 static inline cvex::vfloat4 operator*(const float b, const cvex::vfloat4 a) { return vmulq_f32(vmovq_n_f32(b), a.data); }
-static inline cvex::vfloat4 operator/(const float b, const cvex::vfloat4 a) { return vmulq_f32(vmovq_n_f32(b), vrecpeq_f32(a)); }
+static inline cvex::vfloat4 operator/(const float b, const cvex::vfloat4 a) 
+{ 
+  CVEX_ALIGNED(16) float temp_a[4];
+  cvex::store(temp_a, a);
+  return { b / temp_a[0], b / temp_a[1], b / temp_a[2], b / temp_a[3] }; 
+}
 
 static inline cvex::vint4 operator+(const cvex::vint4 a, const cvex::vint4 b) { return vaddq_s32(a.data, b.data); }
 static inline cvex::vint4 operator-(const cvex::vint4 a, const cvex::vint4 b) { return vsubq_s32(a.data, b.data);}
