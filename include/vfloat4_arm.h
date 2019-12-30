@@ -445,17 +445,29 @@ namespace cvex
 static inline cvex::vfloat4 operator+(cvex::vfloat4 a, cvex::vfloat4 b) { return vaddq_f32(a.data, b.data); }
 static inline cvex::vfloat4 operator-(cvex::vfloat4 a, cvex::vfloat4 b) { return vsubq_f32(a.data, b.data); }
 static inline cvex::vfloat4 operator*(cvex::vfloat4 a, cvex::vfloat4 b) { return vmulq_f32(a.data, b.data); }
-static inline cvex::vfloat4 operator/(cvex::vfloat4 a, cvex::vfloat4 b) { float32x4_t rcp = vrecpeq_f32(b); return vmulq_f32(a.data, rcp); }
+static inline cvex::vfloat4 operator/(cvex::vfloat4 a, cvex::vfloat4 b) 
+{ 
+  CVEX_ALIGNED(16) float temp_a[4];
+  CVEX_ALIGNED(16) float temp_b[4];
+  cvex::store(temp_a, a);
+  cvex::store(temp_b, b);
+  return { temp_a[0] / temp_b[0], temp_a[1] / temp_b[1], temp_a[2] / temp_b[2], temp_a[3] / temp_b[3] };
+}
 
 static inline cvex::vfloat4 operator+(const cvex::vfloat4 a, const float b) { return vaddq_f32(a.data, vmovq_n_f32(b)); }
 static inline cvex::vfloat4 operator-(const cvex::vfloat4 a, const float b) { return vsubq_f32(a.data, vmovq_n_f32(b)); }
 static inline cvex::vfloat4 operator*(const cvex::vfloat4 a, const float b) { return vmulq_f32(a.data, vmovq_n_f32(b)); }
-static inline cvex::vfloat4 operator/(const cvex::vfloat4 a, const float b) { const float bInv = 1.0f/b; return vmulq_f32(a.data, vld1q_dup_f32(&bInv)); }
+static inline cvex::vfloat4 operator/(const cvex::vfloat4 a, const float b) { return vmulq_f32(a.data, vmovq_n_f32(1.0f/b)); }
 
 static inline cvex::vfloat4 operator+(const float b, const cvex::vfloat4 a) { return vaddq_f32(vmovq_n_f32(b), a.data); }
 static inline cvex::vfloat4 operator-(const float b, const cvex::vfloat4 a) { return vsubq_f32(vmovq_n_f32(b), a.data); }
 static inline cvex::vfloat4 operator*(const float b, const cvex::vfloat4 a) { return vmulq_f32(vmovq_n_f32(b), a.data); }
-static inline cvex::vfloat4 operator/(const float b, const cvex::vfloat4 a) { return vmulq_f32(vmovq_n_f32(b), vrecpeq_f32(a)); }
+static inline cvex::vfloat4 operator/(const float b, const cvex::vfloat4 a) 
+{ 
+  CVEX_ALIGNED(16) float temp_a[4];
+  cvex::store(temp_a, a);
+  return { b / temp_a[0], b / temp_a[1], b / temp_a[2], b / temp_a[3] }; 
+}
 
 static inline cvex::vint4 operator+(const cvex::vint4 a, const cvex::vint4 b) { return vaddq_s32(a.data, b.data); }
 static inline cvex::vint4 operator-(const cvex::vint4 a, const cvex::vint4 b) { return vsubq_s32(a.data, b.data);}
