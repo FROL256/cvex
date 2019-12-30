@@ -27,17 +27,31 @@ bool vf4_test001_basic()
   //
   bool passed = true;
 
+  float expr1[4], expr2[4], expr3[4];
+
   for(int i=0;i<4;i++)
   {
-    const float expr1 = Cx1[i] - Cx2[i];
-    const float expr2 = (Cx1[i] + Cx2[i])*Cx1[i];
-    const float expr3 = (Cx2[i] - Cx1[i])/Cx1[i];
+    expr1[i] = Cx1[i] - Cx2[i];
+    expr2[i] = (Cx1[i] + Cx2[i])*Cx1[i];
+    expr3[i] = (Cx2[i] - Cx1[i])/Cx1[i];
 
-    if(fabs(result1[i] - expr1) > 1e-6f || fabs(result2[i] - expr2) > 1e-6f || fabs(result3[i] - expr3) > 1e-6f)  
-    {
+    if(fabs(result1[i] - expr1[i]) > 1e-6f || fabs(result2[i] - expr2[i]) > 1e-6f || fabs(result3[i] - expr3[i]) > 1e-5f) // 1e-2f
       passed = false;
-      break;
-    } 
+  }
+
+  if(!passed)
+  {
+    std::cout << "exp1_res:" << result1[0] << " " << result1[1] << " " << result1[2] << " " << result1[3] << std::endl;
+    std::cout << "exp1_ref:" << expr1  [0] << " " << expr1  [1] << " " << expr1  [2] << " " << expr1[3] << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "exp2_res:" << result2[0] << " " << result2[1] << " " << result2[2] << " " << result2[3] << std::endl;
+    std::cout << "exp2_ref:" << expr2  [0] << " " << expr2  [1] << " " << expr2  [2] << " " << expr2[3] << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "exp3_res:" << result3[0] << " " << result3[1] << " " << result3[2] << " " << result3[3] << std::endl;
+    std::cout << "exp3_ref:" << expr3  [0] << " " << expr3  [1] << " " << expr3  [2] << " " << expr3[3] << std::endl;
+    std::cout << std::endl;
   }
   
   return passed;

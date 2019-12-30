@@ -440,7 +440,7 @@ namespace cvex
 
   static inline void prefetch(const float* ptr) {  __builtin_prefetch(ptr); }
   static inline void prefetch(const int* ptr)   {  __builtin_prefetch(ptr); }
-};
+
 
 static inline cvex::vfloat4 operator+(cvex::vfloat4 a, cvex::vfloat4 b) { return vaddq_f32(a.data, b.data); }
 static inline cvex::vfloat4 operator-(cvex::vfloat4 a, cvex::vfloat4 b) { return vsubq_f32(a.data, b.data); }
@@ -455,6 +455,7 @@ static inline cvex::vfloat4 operator/(const cvex::vfloat4 a, const float b) { co
 static inline cvex::vfloat4 operator+(const float b, const cvex::vfloat4 a) { return vaddq_f32(vmovq_n_f32(b), a.data); }
 static inline cvex::vfloat4 operator-(const float b, const cvex::vfloat4 a) { return vsubq_f32(vmovq_n_f32(b), a.data); }
 static inline cvex::vfloat4 operator*(const float b, const cvex::vfloat4 a) { return vmulq_f32(vmovq_n_f32(b), a.data); }
+static inline cvex::vfloat4 operator/(const float b, const cvex::vfloat4 a) { return vmulq_f32(vmovq_n_f32(b), vrecpeq_f32(a)); }
 
 static inline cvex::vint4 operator+(const cvex::vint4 a, const cvex::vint4 b) { return vaddq_s32(a.data, b.data); }
 static inline cvex::vint4 operator-(const cvex::vint4 a, const cvex::vint4 b) { return vsubq_s32(a.data, b.data);}
@@ -577,5 +578,7 @@ static inline cvex::vint4 operator>=(const cvex::vfloat4 a, const cvex::vfloat4 
 static inline cvex::vint4 operator<=(const cvex::vfloat4 a, const cvex::vfloat4 b) { return (int32x4_t)vcleq_f32(a, b); }
 static inline cvex::vint4 operator==(const cvex::vfloat4 a, const cvex::vfloat4 b) { return (int32x4_t)vceqq_f32(a, b); }
 static inline cvex::vint4 operator!=(const cvex::vfloat4 a, const cvex::vfloat4 b) { return (int32x4_t)vmvnq_u32(vceqq_f32(a, b)); }
+
+};
 
 #endif //TEST_GL_TOP_VFLOAT4_GCC_H
