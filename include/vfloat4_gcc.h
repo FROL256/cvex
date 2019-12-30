@@ -267,13 +267,13 @@ namespace cvex
 
   static inline vfloat4 ceil(const vfloat4 a)
   {
-    const vfloat4 res = {::ceil(a[0]), ::ceil(a[1]), ::ceil(a[2]), ::ceil(a[3])};
+    const vfloat4 res = {::ceilf(a[0]), ::ceilf(a[1]), ::ceilf(a[2]), ::ceilf(a[3])};
     return res;
   }
 
   static inline vfloat4 floor(const vfloat4 a)
   {
-    const vfloat4 res = {::floor(a[0]), ::floor(a[1]), ::floor(a[2]), ::floor(a[3])};
+    const vfloat4 res = {::floorf(a[0]), ::floorf(a[1]), ::floorf(a[2]), ::floorf(a[3])};
     return res;
   }
 
@@ -298,10 +298,6 @@ namespace cvex
 
   inline static void set_ftz() {}
 
-  #endif
-
-  static inline __m128i as_m128i(const vfloat4& a) { return reinterpret_cast<__m128i>(a);  } 
-
   static inline void transpose4(const vfloat4 __restrict in_rows[4], vfloat4 __restrict out_rows[4])
   {
     const auto a0 = as_m128i(in_rows[0]);
@@ -319,6 +315,10 @@ namespace cvex
     out_rows[2] = _mm_castsi128_ps(_mm_unpacklo_epi64(b1, b3));
     out_rows[3] = _mm_castsi128_ps(_mm_unpackhi_epi64(b1, b3));
   }
+
+  #endif
+
+  static inline __m128i as_m128i(const vfloat4& a) { return reinterpret_cast<__m128i>(a);  } 
 
  
   static inline void mat4_rowmajor_mul_mat4(float* __restrict M, const float* __restrict A, const float* __restrict B) // modern gcc compiler succesfuly vectorize such implementation!
@@ -339,14 +339,6 @@ namespace cvex
   	M[13] = A[12] * B[ 1] + A[13] * B[ 5] + A[14] * B[ 9] + A[15] * B[13];
   	M[14] = A[12] * B[ 2] + A[13] * B[ 6] + A[14] * B[10] + A[15] * B[14];
   	M[15] = A[12] * B[ 3] + A[13] * B[ 7] + A[14] * B[11] + A[15] * B[15];
-  }
-
-  static inline void mat4_rowmajor_mul_vec4(float* __restrict RES, const float* __restrict B, const float* __restrict V) // FAILED TO VECTORIZE !!!
-  {
-  	RES[0] = V[0] * B[ 0] + V[1] * B[ 1] + V[2] * B[ 2] + V[3] * B[3];
-  	RES[1] = V[0] * B[ 4] + V[1] * B[ 5] + V[2] * B[ 6] + V[3] * B[7];
-  	RES[2] = V[0] * B[ 8] + V[1] * B[ 9] + V[2] * B[10] + V[3] * B[11];
-  	RES[3] = V[0] * B[12] + V[1] * B[13] + V[2] * B[14] + V[3] * B[15];
   }
 
   static inline void mat4_colmajor_mul_vec4(float* __restrict RES, const float* __restrict B, const float* __restrict V) // modern gcc compiler succesfuly vectorize such implementation!
