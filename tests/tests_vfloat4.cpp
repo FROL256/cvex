@@ -1240,7 +1240,8 @@ bool vf4_test034_colpack()
   const unsigned int packed_rgba = color_pack_rgba(Cx1);
   const unsigned int packed_bgra = color_pack_bgra(Cx1);
 
-  const bool passed = (packed_bgra == 0xFF408000) && (packed_rgba == 0xFF008040);
+  const bool passed = ((packed_bgra == 0xFF408000) || (packed_bgra == 0xFF3f7f00)) && 
+                      ((packed_rgba == 0xFF008040) || (packed_rgba == 0xFF007f3f));
 
   if(!passed)
   {
