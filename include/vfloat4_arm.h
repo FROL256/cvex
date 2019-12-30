@@ -366,18 +366,20 @@ namespace cvex
 
   inline static unsigned int color_pack_rgba(const vfloat4 rel_col)
   {
-    const vfloat4 const_255 = { 256.0f, 256.0f, 256.0f, 256.0f };
+    const vfloat4 const_255 = { 255.0f, 255.0f, 255.0f, 255.0f };
     const vuint4 vrgba      = to_uint32(vmulq_f32(rel_col, const_255));
 
     CVEX_ALIGNED(16) unsigned int rgba[4];
     cvex::store(rgba, vrgba);
+
+    //std::cout << "rgba: " << rgba[0] << "\t" << rgba[1] << "\t" << rgba[2] << "\t" << rgba[3] << std::endl;
 
     return (rgba[3] << 24) | (rgba[2] << 16) | (rgba[1] << 8) | rgba[0];
   }
 
   inline static unsigned int color_pack_bgra(const vfloat4 rel_col)
   {
-    const vfloat4 const_255 = { 256.0f, 256.0f, 256.0f, 256.0f };
+    const vfloat4 const_255 = { 255.0f, 255.0f, 255.0f, 255.0f };
     const vuint4 vrgba      = to_uint32(vmulq_f32(cvex::shuffle_zyxw(rel_col), const_255));
 
     CVEX_ALIGNED(16) unsigned int rgba[4];

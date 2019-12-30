@@ -1240,5 +1240,16 @@ bool vf4_test034_colpack()
   const unsigned int packed_rgba = color_pack_rgba(Cx1);
   const unsigned int packed_bgra = color_pack_bgra(Cx1);
 
-  return (packed_bgra == 0xFF408000) && (packed_rgba == 0xFF008040);
+  const bool passed = (packed_bgra == 0xFF408000) && (packed_rgba == 0xFF008040);
+
+  if(!passed)
+  {
+    std::cout << std::hex << "bgra_res: " << packed_bgra << std::endl;
+    std::cout << std::hex << "bgra_ref: " << 0xFF408000  << std::endl;
+
+    std::cout << std::hex << "rgba_res: " << packed_rgba << std::endl;
+    std::cout << std::hex << "rgba_ref: " << 0xFF008040  << std::endl;
+  }
+
+  return passed;
 }
