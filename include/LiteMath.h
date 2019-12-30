@@ -42,8 +42,8 @@ namespace LiteMath
     inline explicit float4(float a[4]) : x(a[0]), y(a[1]), z(a[2]), w(a[3]) {}
 
     inline float4(const std::initializer_list<float> a_v) { v = cvex::load_u(a_v.begin()); }
-    inline float4(cvex::vfloat4 rhs) { v = rhs; }
-    inline float4 operator=(cvex::vfloat4 rhs) { v = rhs; return *this; }
+    inline float4          (cvex::vfloat4 rhs)            { v = rhs; }
+    inline float4 operator=(cvex::vfloat4 rhs)            { v = rhs; return *this; }
     
     inline float& operator[](int i)       { return M[i]; }
     inline float  operator[](int i) const { return M[i]; }
