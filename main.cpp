@@ -1,6 +1,7 @@
 #include <iostream>
 #include "include/LiteMath.h"
 
+#include "include/vfloat8_gcc.h"
 
 #include "tests/tests.h"
 
