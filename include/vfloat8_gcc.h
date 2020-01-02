@@ -112,7 +112,6 @@ namespace cvex8
   static inline bool test_bits_any(const vuint8 a)  { return test_bits_any( reinterpret_cast<vint8>(a) );  } 
   static inline bool test_bits_any(const vfloat8 a) { return test_bits_any( reinterpret_cast<vint8>(a) );  } 
 
-
   static inline bool test_bits_all(const vint8  v)  { return !test_bits_any(~v); }
   static inline bool test_bits_all(const vuint8 v)  { return !test_bits_any(~v); }
   static inline bool test_bits_all(const vfloat8 v) { return !test_bits_any(~as_int32(v)); }
@@ -147,14 +146,14 @@ namespace cvex8
   static inline vint8   splat_6(const vint8 v) { return __builtin_shuffle(v, vint8{6,6,6,6,6,6,6,6}); }
   static inline vint8   splat_7(const vint8 v) { return __builtin_shuffle(v, vint8{7,7,7,7,7,7,7,7}); }
 
-  static inline vuint8  splat_0(const vuint8 v){ return __builtin_shuffle(v, vint8{0,0,0,0,0,0,0,0}); }
-  static inline vuint8  splat_1(const vuint8 v){ return __builtin_shuffle(v, vint8{1,1,1,1,1,1,1,1}); }
-  static inline vuint8  splat_2(const vuint8 v){ return __builtin_shuffle(v, vint8{2,2,2,2,2,2,2,2}); }
-  static inline vuint8  splat_3(const vuint8 v){ return __builtin_shuffle(v, vint8{3,3,3,3,3,3,3,3}); }
-  static inline vuint8  splat_4(const vuint8 v){ return __builtin_shuffle(v, vint8{4,4,4,4,4,4,4,4}); }
-  static inline vuint8  splat_5(const vuint8 v){ return __builtin_shuffle(v, vint8{5,5,5,5,5,5,5,5}); }
-  static inline vuint8  splat_6(const vuint8 v){ return __builtin_shuffle(v, vint8{6,6,6,6,6,6,6,6}); }
-  static inline vuint8  splat_7(const vuint8 v){ return __builtin_shuffle(v, vint8{7,7,7,7,7,7,7,7}); }
+  static inline vuint8  splat_0(const vuint8 v){ return __builtin_shuffle(v, vuint8{0,0,0,0,0,0,0,0}); }
+  static inline vuint8  splat_1(const vuint8 v){ return __builtin_shuffle(v, vuint8{1,1,1,1,1,1,1,1}); }
+  static inline vuint8  splat_2(const vuint8 v){ return __builtin_shuffle(v, vuint8{2,2,2,2,2,2,2,2}); }
+  static inline vuint8  splat_3(const vuint8 v){ return __builtin_shuffle(v, vuint8{3,3,3,3,3,3,3,3}); }
+  static inline vuint8  splat_4(const vuint8 v){ return __builtin_shuffle(v, vuint8{4,4,4,4,4,4,4,4}); }
+  static inline vuint8  splat_5(const vuint8 v){ return __builtin_shuffle(v, vuint8{5,5,5,5,5,5,5,5}); }
+  static inline vuint8  splat_6(const vuint8 v){ return __builtin_shuffle(v, vuint8{6,6,6,6,6,6,6,6}); }
+  static inline vuint8  splat_7(const vuint8 v){ return __builtin_shuffle(v, vuint8{7,7,7,7,7,7,7,7}); }
 
   static inline float extract_0(const vfloat8 a_val) { return a_val[0]; }
   static inline float extract_1(const vfloat8 a_val) { return a_val[1]; }
@@ -182,7 +181,6 @@ namespace cvex8
   static inline unsigned int extract_5(const vuint8 a_val) { return a_val[5]; }
   static inline unsigned int extract_6(const vuint8 a_val) { return a_val[6]; }
   static inline unsigned int extract_7(const vuint8 a_val) { return a_val[7]; }
-
 
   static inline void prefetch(const float* ptr) {  __builtin_prefetch(ptr); }
   static inline void prefetch(const int* ptr)   {  __builtin_prefetch(ptr); }
