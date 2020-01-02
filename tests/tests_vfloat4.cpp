@@ -1220,15 +1220,15 @@ bool vf4_test033_compare()
   const float4 Cx2 = { 5.0f, 6.0f, 7.0f, 4.0f };
   const float4 Cx3 = { 5.0f, 6.0f, 8.0f, -4.0f };
 
-  const bool b1 = cmpgt3(Cx1, Cx2);
-  const bool b2 = cmplt3(Cx1, Cx2);
-  const bool b3 = cmpge3(Cx1, Cx2);
-  const bool b4 = cmple3(Cx1, Cx2);
+  const bool b1 = cmp_gt3(Cx1, Cx2);
+  const bool b2 = cmp_lt3(Cx1, Cx2);
+  const bool b3 = cmp_ge3(Cx1, Cx2);
+  const bool b4 = cmp_le3(Cx1, Cx2);
 
-  const bool b5 = cmpgt3(Cx1, Cx3);
-  const bool b6 = cmplt3(Cx1, Cx3);
-  const bool b7 = cmpge3(Cx1, Cx3);
-  const bool b8 = cmple3(Cx1, Cx3);
+  const bool b5 = cmp_gt3(Cx1, Cx3);
+  const bool b6 = cmp_lt3(Cx1, Cx3);
+  const bool b7 = cmp_ge3(Cx1, Cx3);
+  const bool b8 = cmp_le3(Cx1, Cx3);
 
   return (!b1 && !b2 && !b3 && b4) && (!b5 && b6 && !b7 && b8);
 }
@@ -1253,4 +1253,12 @@ bool vf4_test034_colpack()
   }
 
   return passed;
+}
+
+bool vf4_test037_fabs()
+{
+  LiteMath::float4 Cx1(-1.0f,2.0f,-0.03f,0.005f);
+  LiteMath::float4 Cr = fabs(Cx1);
+
+  return (Cr.x == 1.0f) && (Cr.y == 2.0f) && (Cr.z == 0.03f) && (Cr.w == 0.005f);
 }

@@ -60,6 +60,7 @@ void run_all_tests()
 
       { &vf4_test035_matrixmul, "vf4_test035_matrixmul"},
       { &vf4_test036_matrixinv, "vf4_test036_matrixinv"},
+      { &vf4_test037_fabs,      "vf4_test037_fabs"},
   };
 
   const auto arraySize = sizeof(tests)/sizeof(TestRun);

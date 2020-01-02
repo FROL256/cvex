@@ -76,3 +76,4 @@ bool vf4_test034_colpack();
 //
 bool vf4_test035_matrixmul();
 bool vf4_test036_matrixinv();
+bool vf4_test037_fabs();

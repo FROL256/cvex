@@ -328,7 +328,15 @@ namespace cvex
     return res;
   }
 
-  static inline bool cmpgt3(const vfloat4 a, const vfloat4 b) 
+  static inline vfloat4 fabs(const vfloat4 a)
+  {
+    CVEX_ALIGNED(16) float mres[4];
+    vst1q_f32(mres, a);
+    const vfloat4 res = {::fabs(mres[0]), ::fabs(mres[1]), ::fabs(mres[2]), ::fabs(mres[3])};
+    return res;
+  }
+
+  static inline bool cmp_gt3(const vfloat4 a, const vfloat4 b) 
   { 
     CVEX_ALIGNED(16) float aa[4];
     CVEX_ALIGNED(16) float ab[4];
@@ -337,7 +345,7 @@ namespace cvex
     return (aa[0] > ab[0]) && (aa[1] > ab[1]) && (aa[2] > ab[2]); 
   }
 
-  static inline bool cmplt3(const vfloat4 a, const vfloat4 b) 
+  static inline bool cmp_lt3(const vfloat4 a, const vfloat4 b) 
   { 
     CVEX_ALIGNED(16) float aa[4];
     CVEX_ALIGNED(16) float ab[4];
@@ -346,7 +354,7 @@ namespace cvex
     return (aa[0] < ab[0]) && (aa[1] < ab[1]) && (aa[2] < ab[2]); 
   }
 
-  static inline bool cmpge3(const vfloat4 a, const vfloat4 b) 
+  static inline bool cmp_ge3(const vfloat4 a, const vfloat4 b) 
   { 
     CVEX_ALIGNED(16) float aa[4];
     CVEX_ALIGNED(16) float ab[4];
@@ -355,7 +363,7 @@ namespace cvex
     return (aa[0] >= ab[0]) && (aa[1] >= ab[1]) && (aa[2] >= ab[2]); 
   }
 
-  static inline bool cmple3(const vfloat4 a, const vfloat4 b) 
+  static inline bool cmp_le3(const vfloat4 a, const vfloat4 b) 
   { 
     CVEX_ALIGNED(16) float aa[4];
     CVEX_ALIGNED(16) float ab[4];

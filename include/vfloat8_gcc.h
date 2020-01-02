@@ -67,6 +67,39 @@ namespace cvex8
   static inline vint8 blend(const vint8 a, const vint8 b, const vint8 mask)  { return ((mask & a)        | (~mask & b)); }
   static inline vint8 blend(const vuint8 a, const vint8 b, const vint8 mask) { return ((mask & (vint8)a) | (~mask & b)); }
 
+#ifdef __x86_64
+  
+  static inline void set_ftz() { _MM_SET_ROUNDING_MODE(_MM_ROUND_TOWARD_ZERO); }
+  static inline vfloat8 rcp_e(vfloat8 a) { return _mm256_rcp_ps(a); }
+
+  //static inline bool test_bits_any(const vfloat8 a) { return (_mm256_movemask_ps(a) & 15) != 0; }
+
+  static inline vfloat8 floor(const vfloat8 a_val) { return _mm256_floor_ps(a_val); }
+  static inline vfloat8 ceil (const vfloat8 a_val) { return _mm256_ceil_ps(a_val);  }
+  static inline vfloat8 fabs (const vfloat8 a_val)
+  {
+    const __m256 absmask = _mm256_castsi256_ps(_mm256_set1_epi32((1<<31)));
+    return _mm256_andnot_ps(absmask, a_val);
+  }
+
+  static inline bool cmp_gt(const vfloat8 a, const vfloat8 b) { return (_mm256_movemask_ps(_mm256_cmp_ps(a, b, _MM_CMPINT_GT))) == 255; }
+  static inline bool cmp_lt(const vfloat8 a, const vfloat8 b) { return (_mm256_movemask_ps(_mm256_cmp_ps(a, b, _MM_CMPINT_LT))) == 255; }
+  static inline bool cmp_ge(const vfloat8 a, const vfloat8 b) { return (_mm256_movemask_ps(_mm256_cmp_ps(a, b, _MM_CMPINT_GE))) == 255; }
+  static inline bool cmp_le(const vfloat8 a, const vfloat8 b) { return (_mm256_movemask_ps(_mm256_cmp_ps(a, b, _MM_CMPINT_LE))) == 255; }
+  static inline bool cmp_eq(const vfloat8 a, const vfloat8 b) { return (_mm256_movemask_ps(_mm256_cmp_ps(a, b, _MM_CMPINT_EQ))) == 255; }
+  static inline bool cmp_ne(const vfloat8 a, const vfloat8 b) { return (_mm256_movemask_ps(_mm256_cmp_ps(a, b, _MM_CMPINT_NE))) == 255; }
+  
+#else
+  
+  static inline void set_ftz() {}
+  static inline vfloat8 rcp_e(vfloat8 a)  { return 1.0f/a; }
+
+  static inline vfloat8 floor(const vfloat8 a_val) { return vfloat8{::floorf(a[0]), ::floorf(a[1]), ::floorf(a[2]), ::floorf(a[3]), ::floorf(a[4]), ::floorf(a[5]), ::floorf(a[6]), ::floorf(a[7])}; }
+  static inline vfloat8 ceil (const vfloat8 a_val) { return vfloat8{::ceilf(a[0]), ::ceilf(a[1]), ::ceilf(a[2]), ::ceilf(a[3]), ::ceilf(a[4]), ::ceilf(a[5]), ::ceilf(a[6]), ::ceilf(a[7])}; }
+  static inline vfloat8 fabs (const vfloat8 a_val) { return vfloat8{::fabs(a[0]), ::fabs(a[1]), ::fabs(a[2]), ::fabs(a[3]), ::fabs(a[4]), ::fabs(a[5]), ::fabs(a[6]), ::fabs(a[7])}; }
+
+#endif
+
   static inline bool test_bits_any(const vint8 a)
   {
     typedef int myvint4 __attribute__((vector_size(16)));
@@ -78,6 +111,7 @@ namespace cvex8
 
   static inline bool test_bits_any(const vuint8 a)  { return test_bits_any( reinterpret_cast<vint8>(a) );  } 
   static inline bool test_bits_any(const vfloat8 a) { return test_bits_any( reinterpret_cast<vint8>(a) );  } 
+
 
   static inline bool test_bits_all(const vint8  v)  { return !test_bits_any(~v); }
   static inline bool test_bits_all(const vuint8 v)  { return !test_bits_any(~v); }
@@ -149,20 +183,6 @@ namespace cvex8
   static inline unsigned int extract_6(const vuint8 a_val) { return a_val[6]; }
   static inline unsigned int extract_7(const vuint8 a_val) { return a_val[7]; }
 
-
-#ifdef __x86_64
-  
-  static inline vfloat8 rcp_e(vfloat8 a) { return _mm256_rcp_ps(a); }
-
-  void set_ftz() { _MM_SET_ROUNDING_MODE(_MM_ROUND_TOWARD_ZERO); }
-
-#else
-  
-  void set_ftz() {}
-
-  static inline vfloat8 rcp_e(vfloat8 a)  { return 1.0f/a; }
-
-#endif
 
   static inline void prefetch(const float* ptr) {  __builtin_prefetch(ptr); }
   static inline void prefetch(const int* ptr)   {  __builtin_prefetch(ptr); }

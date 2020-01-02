@@ -147,7 +147,12 @@ namespace cvex
   static inline vuint4 clamp(const vuint4 x, const vuint4 minVal, const vuint4 maxVal) { return _mm_max_epu32(_mm_min_epu32(x, maxVal), minVal); }
 
   static inline vfloat4 floor(const vfloat4 a_val) { return _mm_floor_ps(a_val); }
-  static inline vfloat4 ceil(const vfloat4 a_val)  { return _mm_ceil_ps(a_val);  }
+  static inline vfloat4 ceil (const vfloat4 a_val) { return _mm_ceil_ps(a_val);  }
+  static inline vfloat4 fabs (const vfloat4 a_val)
+  {
+    const __m128 absmask = _mm_castsi128_ps(_mm_set1_epi32((1<<31)));
+    return _mm_andnot_ps(absmask, a_val);
+  }
 
   static inline vfloat4 blend(const vfloat4 a, const vfloat4 b, const vint4 mask)
   {
@@ -301,21 +306,17 @@ namespace cvex
     return _mm_cvtsi128_si32(out2);
   }
 
-  inline static unsigned int color_pack_bgra(const vfloat4 rel_col)
-  {
-    static const vfloat4 const_255 = { 255.0f, 255.0f, 255.0f, 255.0f };
+  inline static unsigned int color_pack_bgra(const vfloat4 rel_col) { return color_pack_rgba(cvex::shuffle_zyxw(rel_col)); }
 
-    const __m128i rgba = _mm_cvtps_epi32(_mm_mul_ps(cvex::shuffle_zyxw(rel_col), const_255));
-    const __m128i out  = _mm_packus_epi32(rgba, _mm_setzero_si128());
-    const __m128i out2 = _mm_packus_epi16(out, _mm_setzero_si128());
+  static inline bool cmp_gt3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ps(a, b)) & 7) == 7; }
+  static inline bool cmp_lt3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmplt_ps(a, b)) & 7) == 7; }
+  static inline bool cmp_ge3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpge_ps(a, b)) & 7) == 7; }
+  static inline bool cmp_le3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmple_ps(a, b)) & 7) == 7; }
 
-    return _mm_cvtsi128_si32(out2);
-  }
-
-  static inline bool cmpgt3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ps(a, b)) & 7) == 7; }
-  static inline bool cmplt3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmplt_ps(a, b)) & 7) == 7; }
-  static inline bool cmpge3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpge_ps(a, b)) & 7) == 7; }
-  static inline bool cmple3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmple_ps(a, b)) & 7) == 7; }
+  static inline bool cmp_gt (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ps(a, b)))     == 15; }
+  static inline bool cmp_lt (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmplt_ps(a, b)))     == 15; }
+  static inline bool cmp_ge (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpge_ps(a, b)))     == 15; }
+  static inline bool cmp_le (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmple_ps(a, b)))     == 15; }
 
   static inline void prefetch(const float* ptr) {  _mm_prefetch((const char*)ptr, _MM_HINT_T0); }
   static inline void prefetch(const int* ptr)   {  _mm_prefetch((const char*)ptr, _MM_HINT_T0); }

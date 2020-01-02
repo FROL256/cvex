@@ -130,12 +130,13 @@ namespace LiteMath
 
   static inline float4 floor(const float4 a_val) { return cvex::floor(a_val.v); }
   static inline float4 ceil (const float4 a_val) { return cvex::ceil(a_val.v);  }
+  static inline float4 fabs (const float4& a)    { return cvex::fabs (a.v);} 
   static inline float4 rcp_e(const float4& a)    { return cvex::rcp_e(a.v);     }
 
-  static inline bool cmpgt3(const float4& a, const float4& b) { return cvex::cmpgt3(a.v, b.v); }
-  static inline bool cmplt3(const float4& a, const float4& b) { return cvex::cmplt3(a.v, b.v); }
-  static inline bool cmpge3(const float4& a, const float4& b) { return cvex::cmpge3(a.v, b.v); }
-  static inline bool cmple3(const float4& a, const float4& b) { return cvex::cmple3(a.v, b.v); }
+  static inline bool cmp_gt3(const float4& a, const float4& b) { return cvex::cmp_gt3(a.v, b.v); }
+  static inline bool cmp_lt3(const float4& a, const float4& b) { return cvex::cmp_lt3(a.v, b.v); }
+  static inline bool cmp_ge3(const float4& a, const float4& b) { return cvex::cmp_ge3(a.v, b.v); }
+  static inline bool cmp_le3(const float4& a, const float4& b) { return cvex::cmp_le3(a.v, b.v); }
 
   static inline unsigned int color_pack_rgba(const float4 rel_col) { return cvex::color_pack_rgba(rel_col.v); }
   static inline unsigned int color_pack_bgra(const float4 rel_col) { return cvex::color_pack_bgra(rel_col.v); }
@@ -444,8 +445,8 @@ namespace LiteMath
   static inline float3 & operator -= (float3 & u, float v) { u.x -= v; u.y -= v; u.z -= v; return u; }
   static inline float3 & operator *= (float3 & u, float v) { u.x *= v; u.y *= v; u.z *= v; return u; }
   static inline float3 & operator /= (float3 & u, float v) { u.x /= v; u.y /= v; u.z /= v; return u; }
-  static inline bool     operator == (const float3 & u, const float3 & v) { return (fabs(u.x - v.x) < EPSILON) && (fabs(u.y - v.y) < EPSILON) &&
-                                                                                   (fabs(u.z - v.z) < EPSILON); }
+  static inline bool     operator == (const float3 & u, const float3 & v) { return (::fabs(u.x - v.x) < EPSILON) && (::fabs(u.y - v.y) < EPSILON) && (::fabs(u.z - v.z) < EPSILON); }
+  
   static inline float3 lerp(const float3 & u, const float3 & v, float t) { return u + t * (v - u); }
   static inline float  dot(const float3 & u, const float3 & v) { return (u.x*v.x + u.y*v.y + u.z*v.z); }
   static inline float3 cross(const float3 & u, const float3 & v) { return float3{u.y*v.z - u.z*v.y, u.z*v.x - u.x*v.z, u.x*v.y - u.y*v.x}; }
@@ -482,7 +483,7 @@ namespace LiteMath
   static inline float2 & operator -= (float2 & u, float v) { u.x -= v; u.y -= v; return u; }
   static inline float2 & operator *= (float2 & u, float v) { u.x *= v; u.y *= v; return u; }
   static inline float2 & operator /= (float2 & u, float v) { u.x /= v; u.y /= v; return u; }
-  static inline bool     operator == (const float2 & u, const float2 & v) { return (fabs(u.x - v.x) < EPSILON) && (fabs(u.y - v.y) < EPSILON); }
+  static inline bool     operator == (const float2 & u, const float2 & v) { return (::fabs(u.x - v.x) < EPSILON) && (::fabs(u.y - v.y) < EPSILON); }
 
   static inline float2 lerp(const float2 & u, const float2 & v, float t) { return u + t * (v - u); }
   static inline float  dot(const float2 & u, const float2 & v)   { return (u.x*v.x + u.y*v.y); }

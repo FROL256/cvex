@@ -194,12 +194,22 @@ namespace cvex
   static inline vfloat4 length4v(const vfloat4 a) { return _mm_sqrt_ps(dot4v(a,a)); }
 
   static inline vfloat4 floor(const vfloat4 a_val) { return _mm_floor_ps(a_val); }
-  static inline vfloat4 ceil(const vfloat4 a_val)  { return _mm_ceil_ps(a_val);  }
+  static inline vfloat4 ceil (const vfloat4 a_val) { return _mm_ceil_ps(a_val);  }
+  static inline vfloat4 fabs (const vfloat4 a_val)
+  {
+    const __m128 absmask = _mm_castsi128_ps(_mm_set1_epi32((1<<31)));
+    return _mm_andnot_ps(absmask, a_val);
+  }
 
-  static inline bool cmpgt3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ps(a, b)) & 7)  == 7; }
-  static inline bool cmplt3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmplt_ps(a, b)) & 7)  == 7; }
-  static inline bool cmpge3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpge_ps(a, b)) & 7)  == 7; }
-  static inline bool cmple3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmple_ps(a, b)) & 7)  == 7; }
+  static inline bool cmp_gt3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ps(a, b)) & 7)  == 7; }
+  static inline bool cmp_lt3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmplt_ps(a, b)) & 7)  == 7; }
+  static inline bool cmp_ge3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpge_ps(a, b)) & 7)  == 7; }
+  static inline bool cmp_le3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmple_ps(a, b)) & 7)  == 7; }
+
+  static inline bool cmp_gt (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ps(a, b)))      == 15; }
+  static inline bool cmp_lt (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmplt_ps(a, b)))      == 15; }
+  static inline bool cmp_ge (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpge_ps(a, b)))      == 15; }
+  static inline bool cmp_le (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmple_ps(a, b)))      == 15; }
 
   inline static unsigned int color_pack_rgba(const vfloat4 rel_col)
   {
@@ -212,16 +222,7 @@ namespace cvex
     return _mm_cvtsi128_si32(out2);
   }
 
-  inline static unsigned int color_pack_bgra(const vfloat4 rel_col)
-  {
-    static constexpr vfloat4 const_255 = { 255.0f, 255.0f, 255.0f, 255.0f };
-  
-    const __m128i rgba = _mm_cvtps_epi32(_mm_mul_ps(cvex::shuffle_zyxw(rel_col), const_255));
-    const __m128i out  = _mm_packus_epi32(rgba, _mm_setzero_si128());
-    const __m128i out2 = _mm_packus_epi16(out, _mm_setzero_si128());
-  
-    return _mm_cvtsi128_si32(out2);
-  }
+  inline static unsigned int color_pack_bgra(const vfloat4 rel_col) { return color_pack_rgba(cvex::shuffle_zyxw(rel_col)); }
 
   static inline void transpose4(const vfloat4 __restrict in_rows[4], vfloat4 __restrict out_rows[4])
   {
@@ -296,6 +297,12 @@ namespace cvex
   static inline vfloat4 floor(const vfloat4 a)
   {
     const vfloat4 res = {::floorf(a[0]), ::floorf(a[1]), ::floorf(a[2]), ::floorf(a[3])};
+    return res;
+  }
+
+  static inline vfloat4 fabs(const vfloat4 a)
+  {
+    const vfloat4 res = {::fabs(a[0]), ::fabs(a[1]), ::fabs(a[2]), ::fabs(a[3])};
     return res;
   }
 
