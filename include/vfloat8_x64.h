@@ -56,7 +56,7 @@ namespace cvex8
 
   static inline bool test_bits_any(const vint8 a) { return (_mm256_movemask_ps(_mm256_castsi256_ps(a)) & 15) != 0; }
 
-  static inline vfloat8 vclamp(const vfloat8 x, const vfloat8 minVal, const vfloat8 maxVal) { return _mm256_max_ps(_mm256_min_ps(x, maxVal), minVal); }
+  static inline vfloat8 clamp(const vfloat8 x, const vfloat8 minVal, const vfloat8 maxVal) { return _mm256_max_ps(_mm256_min_ps(x, maxVal), minVal); }
 
   static inline void prefetch(const float* ptr) {  _mm_prefetch((const char*)ptr, _MM_HINT_T0); }
   static inline void prefetch(const int* ptr)   {  _mm_prefetch((const char*)ptr, _MM_HINT_T0); }

@@ -8,6 +8,8 @@
     #include "vfloat4_arm.h"
   #else
     #include "vfloat4_gcc.h"
+    #include "vfloat8_gcc.h"
+    #include "vfloat16_gcc.h"
   #endif  
 #endif 
 
@@ -22,6 +24,7 @@
 // __ppc__ 
 
 #include <cmath>
+#include <initializer_list>
 
 namespace LiteMath
 { 
@@ -64,6 +67,8 @@ namespace LiteMath
     inline cvex::vint4 operator<=(const float4& b) const { return (v <= b.v); }
     inline cvex::vint4 operator==(const float4& b) const { return (v == b.v); }
     inline cvex::vint4 operator!=(const float4& b) const { return (v != b.v); }
+
+    inline void operator*=(const float rhs) { v = v * rhs; }
 
     union
     {
@@ -196,13 +201,7 @@ namespace LiteMath
   */
   struct float4x4
   {
-    inline float4x4() 
-    {
-      m_col[0] = float4{ 1.0f, 0.0f, 0.0f, 0.0f };
-      m_col[1] = float4{ 0.0f, 1.0f, 0.0f, 0.0f };
-      m_col[2] = float4{ 0.0f, 0.0f, 1.0f, 0.0f };
-      m_col[3] = float4{ 0.0f, 0.0f, 0.0f, 1.0f };
-    }
+    inline float4x4()  { identity(); }
 
     inline explicit float4x4(const float A[16])
     {
@@ -210,6 +209,14 @@ namespace LiteMath
       m_col[1] = float4{ A[1], A[5], A[9],  A[13] };
       m_col[2] = float4{ A[2], A[6], A[10], A[14] };
       m_col[3] = float4{ A[3], A[7], A[11], A[15] };
+    }
+
+    inline void identity()
+    {
+      m_col[0] = float4{ 1.0f, 0.0f, 0.0f, 0.0f };
+      m_col[1] = float4{ 0.0f, 1.0f, 0.0f, 0.0f };
+      m_col[2] = float4{ 0.0f, 0.0f, 1.0f, 0.0f };
+      m_col[3] = float4{ 0.0f, 0.0f, 0.0f, 1.0f };
     }
 
     inline float4x4 operator*(const float4x4& rhs)
@@ -396,9 +403,9 @@ namespace LiteMath
 
   static inline float clamp(float u, float a, float b) { const float r = fmax(a, u);      return fmin(r, b); }
 
-  static inline int imax  (int a, int b)        { return a > b ? a : b; }                                    // OpenCL C does not allow overloading!
-  static inline int imin  (int a, int b)        { return a < b ? a : b; }                                    // OpenCL C does not allow overloading!
-  static inline int iclamp(int u, int a, int b) { const int   r = (a > u) ? a : u; return (r < b) ? r : b; } // OpenCL C does not allow overloading!
+  static inline int max  (int a, int b)        { return a > b ? a : b; }                                    
+  static inline int min  (int a, int b)        { return a < b ? a : b; }                                    
+  static inline int clamp(int u, int a, int b) { const int   r = (a > u) ? a : u; return (r < b) ? r : b; } 
 
   inline float rnd(float s, float e)
   {
@@ -564,7 +571,23 @@ namespace LiteMath
     return box1Min.x <= box2Max.x && box2Min.x <= box1Max.x &&
            box1Min.y <= box2Max.y && box2Min.y <= box1Max.y;
   }
+
+  static inline bool IntersectBox2Box2(int2 box1Min, int2 box1Max, int2 box2Min, int2 box2Max)
+  {
+    return box1Min.x <= box2Max.x && box2Min.x <= box1Max.x &&
+           box1Min.y <= box2Max.y && box2Min.y <= box1Max.y;
+  }
  
+  inline static float4 color_unpack_bgra(int packedColor)
+  {
+    const int red   = (packedColor & 0x00FF0000) >> 16;
+    const int green = (packedColor & 0x0000FF00) >> 8;
+    const int blue  = (packedColor & 0x000000FF) >> 0;
+    const int alpha = (packedColor & 0xFF000000) >> 24;
+  
+    return float4((float)red, (float)green, (float)blue, (float)alpha)*(1.0f / 255.0f);
+  }
+
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -6,9 +6,7 @@
 #define TEST_GL_TOP_VFLOAT4_GCC_H
 
 #ifdef __x86_64
-  #include <xmmintrin.h> // SSE
-  #include <emmintrin.h> // SSE2
-  #include <smmintrin.h> // SSE4.1 
+  #include <immintrin.h>
 #endif
 
 #if __GNUC__
@@ -97,8 +95,10 @@ namespace cvex
 
   // shuffle operations ...
   //
-  static inline vint4   blend(const vint4 a,   const vint4 b,   const vint4  mask) { return ((mask & a) | (~mask & b)); }
-  static inline vuint4  blend(const vuint4 a,  const vuint4 b,  const vuint4 mask) { return ((mask & a) | (~mask & b)); }
+  static inline vint4   blend(const vint4 a,  const vint4 b,  const vint4  mask) { return ((mask & a) | (~mask & b)); }
+  static inline vuint4  blend(const vuint4 a, const vuint4 b, const vuint4 mask) { return ((mask & a) | (~mask & b)); }
+  static inline vint4   blend(const vuint4 a, const vint4 b,  const vint4  mask) { return ((mask & (vint4)a) | (~mask & b)); }
+
   static inline vfloat4 blend(const vfloat4 a, const vfloat4 b, const vint4  mask)
   {
     const vint4 ia = reinterpret_cast<vint4>(a);
@@ -211,6 +211,8 @@ namespace cvex
   static inline bool cmp_ge (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpge_ps(a, b)))      == 15; }
   static inline bool cmp_le (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmple_ps(a, b)))      == 15; }
 
+  static inline bool any_of (const vint4 a) { return _mm_movemask_ps(as_float32(a)) != 0; }
+
   inline static unsigned int color_pack_rgba(const vfloat4 rel_col)
   {
     static constexpr vfloat4 const_255 = { 255.0f, 255.0f, 255.0f, 255.0f };
@@ -244,7 +246,17 @@ namespace cvex
 
   static inline void set_ftz() { _MM_SET_ROUNDING_MODE(_MM_ROUND_TOWARD_ZERO); }
 
+  static inline void stream(int* p,       vint4   a_val)   { _mm_stream_ps((float*)p, as_float32(a_val)); }
+  static inline void stream(_uint32_t* p, vuint4  a_val)   { _mm_stream_ps((float*)p, as_float32(a_val)); }
+  static inline void stream(float* p,     vfloat4 a_val)   { _mm_stream_ps(p, a_val); }
+
+  static inline vint4 gather(const int* a_data, const vint4 offset) { return (vint4)_mm_i32gather_epi32(a_data, (__m128i)offset, 4); }
+
   #else
+  static inline void stream(int* p,       vint4   a_val)   { *((vint4*)(p))   = a_val; }
+  static inline void stream(_uint32_t* p, vuint4  a_val)   { *((vuint4*)(p))  = a_val; }
+  static inline void stream(float* p,     vfloat4 a_val)   { *((vfloat4*)(p)) = a_val; }
+
   static inline float   dot3f(const vfloat4 a, const vfloat4 b) 
   {
     const vfloat4 mres = a*b; 
@@ -326,6 +338,19 @@ namespace cvex
   }
 
   inline static void set_ftz() {}
+
+  static inline vint4 gather(const int* a_data, const vint4 offset)
+  {
+    CVEX_ALIGNED(16) int myOffsets[4];
+    store(myOffsets, offset);
+
+    const int d01 = a_data[myOffsets[0]];
+    const int d11 = a_data[myOffsets[1]];
+    const int d21 = a_data[myOffsets[2]];
+    const int d31 = a_data[myOffsets[3]];
+
+    return vint4{d01, d11, d21, d31};
+  }
 
   #endif
 
