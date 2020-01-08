@@ -1216,21 +1216,20 @@ bool vf4_test032_compare()
 
 bool vf4_test033_compare()
 {
-  const float4 Cx1 = { 1.0f, 2.0f, 7.0f, 10.0f };
+  const float4 Cx1 = { 1.0f, 2.0f, 7.0f, 2.0f };
   const float4 Cx2 = { 5.0f, 6.0f, 7.0f, 4.0f };
   const float4 Cx3 = { 5.0f, 6.0f, 8.0f, -4.0f };
 
-  const bool b1 = cmp_gt3(Cx1, Cx2);
-  const bool b2 = cmp_lt3(Cx1, Cx2);
-  const bool b3 = cmp_ge3(Cx1, Cx2);
-  const bool b4 = cmp_le3(Cx1, Cx2);
+  const auto cmp1 = (Cx1 > Cx2);
+  const auto cmp2 = (Cx1 <= Cx3);
 
-  const bool b5 = cmp_gt3(Cx1, Cx3);
-  const bool b6 = cmp_lt3(Cx1, Cx3);
-  const bool b7 = cmp_ge3(Cx1, Cx3);
-  const bool b8 = cmp_le3(Cx1, Cx3);
+  const bool b1 = any_of(cmp1);
+  const bool b2 = all_of(cmp1);
 
-  return (!b1 && !b2 && !b3 && b4) && (!b5 && b6 && !b7 && b8);
+  const bool b3 = any_of(cmp2);
+  const bool b4 = all_of(cmp2);
+
+  return (!b1 && !b2 && b3 && !b4);
 }
 
 bool vf4_test034_colpack()

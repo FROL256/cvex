@@ -308,15 +308,8 @@ namespace cvex
 
   inline static unsigned int color_pack_bgra(const vfloat4 rel_col) { return color_pack_rgba(cvex::shuffle_zyxw(rel_col)); }
 
-  static inline bool cmp_gt3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ps(a, b)) & 7) == 7; }
-  static inline bool cmp_lt3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmplt_ps(a, b)) & 7) == 7; }
-  static inline bool cmp_ge3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpge_ps(a, b)) & 7) == 7; }
-  static inline bool cmp_le3(const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmple_ps(a, b)) & 7) == 7; }
-
-  static inline bool cmp_gt (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpgt_ps(a, b)))     == 15; }
-  static inline bool cmp_lt (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmplt_ps(a, b)))     == 15; }
-  static inline bool cmp_ge (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmpge_ps(a, b)))     == 15; }
-  static inline bool cmp_le (const vfloat4 a, const vfloat4 b) { return (_mm_movemask_ps(_mm_cmple_ps(a, b)))     == 15; }
+  static inline bool any_of (const vint4 a) { return _mm_movemask_ps(as_float32(a)) != 0; }
+  static inline bool all_of (const vint4 a) { return _mm_movemask_ps(as_float32(a)) == 15; }
 
   static inline void prefetch(const float* ptr) {  _mm_prefetch((const char*)ptr, _MM_HINT_T0); }
   static inline void prefetch(const int* ptr)   {  _mm_prefetch((const char*)ptr, _MM_HINT_T0); }
@@ -341,14 +334,6 @@ namespace cvex
     M[15] = A[12] * B[3] + A[13] * B[7] + A[14] * B[11] + A[15] * B[15];
   }
 
-  static inline void mat4_rowmajor_mul_vec4(float* __restrict RES, const float* __restrict B, const float* __restrict V) // FAILED TO VECTORIZE !!!
-  {
-    RES[0] = V[0] * B[0] + V[1] * B[1] + V[2] * B[2] + V[3] * B[3];
-    RES[1] = V[0] * B[4] + V[1] * B[5] + V[2] * B[6] + V[3] * B[7];
-    RES[2] = V[0] * B[8] + V[1] * B[9] + V[2] * B[10] + V[3] * B[11];
-    RES[3] = V[0] * B[12] + V[1] * B[13] + V[2] * B[14] + V[3] * B[15];
-  }
-
   static inline void mat4_colmajor_mul_vec4(float* __restrict RES, const float* __restrict B, const float* __restrict V) // modern gcc compiler succesfuly vectorize such implementation!
   {
     RES[0] = V[0] * B[0] + V[1] * B[4] + V[2] * B[8] + V[3] * B[12];
@@ -356,7 +341,6 @@ namespace cvex
     RES[2] = V[0] * B[2] + V[1] * B[6] + V[2] * B[10] + V[3] * B[14];
     RES[3] = V[0] * B[3] + V[1] * B[7] + V[2] * B[11] + V[3] * B[15];
   }
-
 
 
 static inline cvex::vfloat4 operator+(const cvex::vfloat4 a, const cvex::vfloat4 b) { return _mm_add_ps(a, b); }
